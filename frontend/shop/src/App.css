@@ -1,0 +1,75 @@
+/* Minimal Theme Colors */
+:root {
+  --minimal-black: #222222;
+  --minimal-white: #ffffff;
+  --minimal-skyblue: #E0F7FA; /* 아주 연한 하늘색 */
+  --minimal-skyblue-hover: #B2EBF2;
+}
+
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  color: var(--minimal-black);
+  background-color: var(--minimal-white);
+}
+
+/* 네비바 커스텀 스타일 */
+.custom-navbar {
+  background-color: var(--minimal-white);
+  border-bottom: 1px solid #eee;
+  padding: 1rem 2rem;
+}
+
+.logo-text {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--minimal-black);
+  text-decoration: none;
+  letter-spacing: -0.5px;
+}
+
+/* 아이콘 버튼 스타일 */
+.icon-btn {
+  color: var(--minimal-black);
+  font-size: 1.2rem;
+  margin-left: 1.5rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.icon-btn:hover {
+  color: #4DD0E1; /* 조금 더 진한 하늘색 포인트 */
+}
+
+/* 네비게이션 링크 스타일 */
+.nav-bottom-row {
+  display: flex;
+  justify-content: flex-start;
+  padding-top: 10px;
+}
+
+.nav-link-custom {
+  color: var(--minimal-black) !important;
+  font-weight: 500;
+  margin-right: 2rem;
+  padding: 0.5rem 0;
+  transition: all 0.3s;
+}
+
+.nav-link-custom:hover {
+  color: #00BCD4 !important; /* 포인트 컬러 */
+  background-color: var(--minimal-skyblue);
+  border-radius: 4px;
+}
+
+/* 드롭다운 호버 처리 (CSS로 처리) */
+.dropdown:hover .dropdown-menu {
+  display: block;
+  margin-top: 0;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.dropdown-item:active, .dropdown-item:active {
+    background-color: var(--minimal-skyblue);
+    color: var(--minimal-black);
+}

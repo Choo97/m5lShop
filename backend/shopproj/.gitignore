@@ -1,0 +1,14 @@
+# Gradle 빌드 결과물 (가장 중요!)
+/build/
+/.gradle/
+
+# Java 클래스 파일
+*.class
+
+# Gradle Wrapper (이건 지우면 안 되므로 무시하지 않음 설정을 할 수도 있지만, 보통은 그냥 둠)
+!gradle/wrapper/gradle-wrapper.jar
+
+# 로컬 설정파일 (DB 비밀번호 등) - 보안상 중요!
+application-secret.yml
+application-secret.properties
+application.properties (만약 비밀번호가 들어있다면)

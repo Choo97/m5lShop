@@ -1,0 +1,27 @@
+body {
+	background: url('../images/login.jpg') no-repeat fixed center;
+	background-size: cover;	
+}	
+.result {
+	width: 60%;
+	margin-top: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+h1{
+	font-size: 45px;
+	color: white;
+}
+.result button {
+	width: 150px;
+	height: 39px;
+	background:#a3b926;
+	box-sizing: border-box;
+	border: 0 solid transparent;
+	border-radius: 5px;	
+	color: #fff;
+	font-weight: bold;
+	font-size: 14px;
+	cursor: pointer;
+}

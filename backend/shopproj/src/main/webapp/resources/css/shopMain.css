@@ -1,0 +1,74 @@
+h1{
+	text-align:center;
+}
+.menu {	
+	width: 95%;
+	text-align: right;	
+}
+.menu a{
+	color:#395F9E;
+	font-weight: bold;
+	cursor: pointer;
+}
+p a {
+	cursor: pointer;
+	text-decoration: none;
+	color:#FF5711;
+}
+
+p a:visited{	
+	color:#FF5711;
+}
+.goods {
+    margin-top: 20px;    
+    text-align:center;     
+}
+
+ul.tabs {    
+    list-style: none;    
+    width: 95%;
+}
+ul.tabs li {
+    float: left;
+    line-height: 31px; 
+    border: 1px solid #999;
+    background: #e0e0e0;
+    font-size: 1.2em;
+    line-height:45px;
+    padding: 0 22px;
+    cursor: pointer;   
+    width:22%;
+}
+ul.tabs li:hover {
+    background: #ccc;
+}
+ul.tabs li.active {
+    background: #fff;
+    border-bottom: 1px solid #fff;
+    cursor: default;
+}
+.tab_content {
+	display: none;
+}
+.tab_content.active {
+	padding-left: 20px;
+	display: block;
+}
+.item {
+	float: left;
+	width: 28%;	
+	padding: 20px;
+	margin: 20px;
+	background-color: #f9f9f9;
+	cursor: pointer;
+}
+.item .gName {
+	font-weight:bold;
+    font-size: 1.2em;
+	color: #FF5711;
+}
+
+.item img {
+	height: 200px;
+	overflow: hidden;
+}

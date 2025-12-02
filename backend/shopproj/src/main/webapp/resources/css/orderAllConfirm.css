@@ -1,0 +1,70 @@
+h1{
+	text-align: center;
+}
+
+.menu {	
+	width: 95%;
+	text-align: right;	
+}
+div a{
+	color:#395F9E;
+	font-weight: bold;
+	cursor: pointer;
+}
+.order {
+	width: 50%;
+	margin-top: 20px;
+	margin-left: auto;
+	margin-right: auto;	
+	text-align:center;	
+}
+
+table{
+	border-collapse: collapse;
+	padding: 10px;
+	width:100%;
+	text-align:left;
+	border-bottom:1px solid #665b5f;
+}
+
+td{	
+	margin-right: 5px;
+	height: 35px;
+}
+
+input[type=text] {
+	margin-right: 5px;
+	height: 35px;
+	
+}
+.addr{
+	width: 60%;
+}
+table input:focus {
+	border: 4px solid #006d94;
+}
+
+td img{
+	width: 80px;
+}
+
+
+button{
+	width: 100px;
+	height: 40px;
+	background: #a3b926;
+	box-sizing: border-box;
+	border-radius: 5px;
+	border: 0 solid transparent;
+	color: #fff;
+	font-weight: bold;
+	font-size: 14px;
+	text-align: center;
+	cursor: pointer;	
+}
+#btnBox{
+	text-align: center;
+}
+#totalPrice{
+	text-align: right;
+}
