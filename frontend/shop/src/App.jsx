@@ -7,18 +7,22 @@ import Join from './component/Join'
 import NoticeWrite from './component/NoticeWrite'
 import HeaderNavbar from './component/Header'
 import TestComponent from './component/TestComponent';
+import Main from './component/Main';
+import Footer from './component/Footer';
 
 function App() {
 
   return (
     <>
-      <HeaderNavbar/>
+      <HeaderNavbar />
       {/* <TestComponent/> */}
       <Routes>
+        <Route path='/' element={<Main />} />
         <Route path='/noticeWrite' element={<NoticeWrite />} />
         <Route path="/login" element={<Login />} />
         <Route path="/join" element={<Join />} />
       </Routes>
+      <Footer />
     </>
   )
 }
