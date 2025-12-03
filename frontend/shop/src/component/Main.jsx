@@ -6,6 +6,7 @@ import { FaStar } from 'react-icons/fa';
 import '../App.css';
 import adImage1 from '../images/빌보드에_소셜_거리_광고_Large.jpg';
 import adImage2 from '../images/보도_게시물에_실물_광고판_Large.jpg';
+import './Main.css';
 
 // 캐러셀 더미 데이터 (광고)
 const carouselItems = [

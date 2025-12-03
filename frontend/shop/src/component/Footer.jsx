@@ -5,6 +5,7 @@ import { FaXTwitter } from 'react-icons/fa6'; // X 아이콘 (버전 6이상 필
 // 만약 fa6 에러가 나면: import { FaTwitter as FaXTwitter } from 'react-icons/fa'; 로 대체하세요.
 
 import '../App.css'; 
+import './Footer.css'; // Footer 전용 CSS
 
 const Footer = () => {
   return (

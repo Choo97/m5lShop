@@ -1,0 +1,150 @@
+/* 로그인 페이지 컨테이너 */
+.login-container {
+  min-height: 80vh; /* 화면 중앙 배치를 위해 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-color: var(--minimal-white);
+}
+
+/* 도트 패턴 장식 (CSS로 구현) */
+.dots-decoration {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background-image: radial-gradient(#448AFF 20%, transparent 20%);
+  background-position: 0 0;
+  background-size: 10px 10px; /* 도트 간격 */
+  opacity: 0.7;
+}
+
+.dots-top-right {
+  top: 10%;
+  right: 20%;
+}
+
+.dots-bottom-left {
+  bottom: 10%;
+  left: 20%;
+}
+
+/* 로고 영역 */
+.login-logo {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--minimal-black);
+  margin-bottom: 0.5rem;
+  letter-spacing: -1px;
+}
+
+/* 폼 스타일 */
+.login-form-wrapper {
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.custom-input {
+  height: 50px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  padding: 0 15px;
+  font-size: 0.95rem;
+}
+
+.custom-input:focus {
+  border-color: #448AFF; /* 포커스 시 파란색 */
+  box-shadow: 0 0 0 0.2rem rgba(68, 138, 255, 0.1);
+}
+
+.input-error {
+  border-color: #ff4d4f !important;
+  background-color: #fff1f0;
+}
+
+.error-message {
+  color: #ff4d4f;
+  font-size: 0.85rem;
+  text-align: left;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+/* 로그인 버튼 */
+.btn-login-submit {
+  width: 100%;
+  height: 50px;
+  background-color: #5A6169; /* 이미지의 짙은 회색 톤 */
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-top: 10px;
+}
+
+.btn-login-submit:hover {
+  background-color: #40454B;
+}
+
+/* 간편 로그인 구분선 */
+.social-divider {
+  display: flex;
+  align-items: center;
+  color: #aaa;
+  font-size: 0.9rem;
+  margin: 2rem 0;
+}
+
+.social-divider::before,
+.social-divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #eee;
+}
+
+.social-divider span {
+  padding: 0 10px;
+}
+
+/* 소셜 버튼 그리드 */
+.social-btn-container {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.social-img-btn {
+  flex: 1;
+  height: 50px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  overflow: hidden;
+  padding: 0;
+  background: transparent;
+}
+
+.social-img-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지가 버튼에 꽉 차게 */
+}
+
+/* 하단 링크 */
+.bottom-links {
+  margin-top: 2rem;
+  font-size: 0.9rem;
+  color: var(--minimal-black);
+}
+
+.bottom-link-item {
+  color: var(--minimal-black);
+  text-decoration: none;
+  margin: 0 5px;
+}
+
+.bottom-link-item:hover {
+  text-decoration: underline;
+  color: #448AFF;
+}

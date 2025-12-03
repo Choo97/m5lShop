@@ -16,6 +16,7 @@ import { FaShoppingBag, FaHeart, FaUser } from 'react-icons/fa'; // 아이콘
 import { useNavigate, Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css'; // 위에 정의한 CSS
+import './Header.css';
 
 const HeaderNavbar = () => {
   const navigate = useNavigate();

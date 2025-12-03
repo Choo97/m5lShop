@@ -1,0 +1,84 @@
+/* 메인 페이지 섹션 공통 */
+.main-section {
+  padding: 4rem 0;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.view-all-link {
+  font-size: 0.9rem;
+  color: #888;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.view-all-link:hover {
+  color: var(--minimal-black);
+}
+
+/* 상품 카드 */
+.product-card {
+  border: none;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+}
+
+.product-img {
+  width: 100%;
+  height: 300px; /* 고정 높이 */
+  object-fit: cover;
+  background-color: #f8f9fa;
+  margin-bottom: 1rem;
+}
+
+.color-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 5px;
+  border: 1px solid #ddd;
+}
+
+/* 연령대 탭 버튼 */
+.age-tab-btn {
+  border: 1px solid #ddd;
+  background: white;
+  padding: 0.5rem 1.5rem;
+  margin-right: 0.5rem;
+  color: #888;
+  border-radius: 20px;
+  transition: all 0.3s;
+}
+
+.age-tab-btn.active {
+  background-color: var(--minimal-black);
+  color: white;
+  border-color: var(--minimal-black);
+}
+
+/* 리뷰 카드 */
+.review-card {
+  border: 1px solid #eee;
+  padding: 1.5rem;
+  height: 100%;
+  background-color: #fafafa;
+}
+
+.review-profile-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
