@@ -9,6 +9,7 @@ import HeaderNavbar from './component/Header'
 import TestComponent from './component/TestComponent';
 import Main from './component/Main';
 import Footer from './component/Footer';
+import Signup from './component/Signup';
 
 function App() {
 
@@ -20,7 +21,7 @@ function App() {
         <Route path='/' element={<Main />} />
         <Route path='/noticeWrite' element={<NoticeWrite />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/join" element={<Join />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
       <Footer />
     </>

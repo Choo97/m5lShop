@@ -1,0 +1,105 @@
+/* 회원가입 컨테이너 */
+.signup-container {
+  max-width: 500px;
+  margin: 4rem auto;
+  padding: 0 1rem;
+}
+
+.signup-title {
+  font-size: 2rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 3rem;
+  color: var(--minimal-black);
+}
+
+/* 폼 라벨 */
+.form-label-custom {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+/* 커스텀 인풋 (기본) */
+.signup-input {
+  height: 48px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  padding-left: 15px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.signup-input:focus {
+  border-color: #448AFF; /* Sky Blue Tone */
+  box-shadow: 0 0 0 0.2rem rgba(68, 138, 255, 0.15);
+}
+
+/* 에러 상태 인풋 */
+.signup-input.is-invalid {
+  border-color: #ff4d4f;
+}
+
+.signup-input.is-invalid:focus {
+  box-shadow: 0 0 0 0.2rem rgba(255, 77, 79, 0.15);
+}
+
+/* 에러 메시지 텍스트 */
+.error-text {
+  color: #ff4d4f;
+  font-size: 0.8rem;
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+/* 비밀번호 눈 아이콘 버튼 */
+.password-toggle-btn {
+  background: transparent;
+  border: none;
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  cursor: pointer;
+}
+
+/* 성별 라디오 버튼 그룹 */
+.gender-group {
+  display: flex;
+  gap: 2rem;
+  padding: 0.5rem 0 1rem;
+}
+
+/* 주소 찾기 버튼 */
+.btn-address-search {
+  background-color: #999;
+  border: none;
+  color: white;
+  height: 48px;
+  width: 100%;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.btn-address-search:hover {
+  background-color: #777;
+}
+
+/* 회원가입 제출 버튼 */
+.btn-signup-submit {
+  background-color: #1A1F27; /* Dark Navy/Black */
+  color: white;
+  height: 54px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-radius: 6px;
+  width: 100%;
+  margin-top: 2rem;
+  border: none;
+}
+
+.btn-signup-submit:hover {
+  background-color: #333;
+}

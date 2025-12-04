@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Navbar, 
-  Nav, 
-  NavItem, 
-  NavLink, 
-  UncontrolledDropdown, 
-  DropdownToggle, 
-  DropdownMenu, 
+import {
+  Navbar,
+  Nav,
+  NavItem,
+  NavLink,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
   DropdownItem,
   Container,
   Row,
@@ -17,78 +17,92 @@ import { useNavigate, Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css'; // 위에 정의한 CSS
 import './Header.css';
+import { useAtom } from 'jotai';
+import { initUser, userAtom } from '../atoms';
 
 const HeaderNavbar = () => {
   const navigate = useNavigate();
-  
-  // 로그인 상태 관리 (실제로는 Context API나 Redux, API 호출로 관리)
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  // 페이지 로드 시 로그인 상태 확인 (백엔드 API 연동 예시)
-  useEffect(() => {
-    // fetch('/api/users/status').then(res => res.json()).then(data => setIsLoggedIn(data.isLoggedIn));
-    // 여기서는 테스트를 위해 false로 둡니다.
-    setIsLoggedIn(false); 
-  }, []);
+  const { user, setUser } = useAtom(userAtom); // 저장된 user 정보 가져오기
 
   // 인증이 필요한 메뉴 클릭 핸들러
   const handleAuthNavigation = (path) => {
-    if (isLoggedIn) {
+    if (user?.isLogined) {
       navigate(path);
     } else {
-      alert("로그인이 필요한 서비스입니다.");
       navigate('/login');
     }
+  };
+
+  const handleLogout = () => {
+
+    setUser(initUser);
+    localStorage.removeItem('accessToken');
+    navigate('/');
+
   };
 
   return (
     <header className="sticky-top">
       <div className="custom-navbar">
         <Container fluid>
-          {/* 상단: 로고 및 아이콘 */}
+
           <Row className="align-items-center mb-3">
             <Col xs="6">
               <Link to="/" className="logo-text">
                 MINIMAL SHOP
               </Link>
             </Col>
-            
+
             <Col xs="6" className="d-flex justify-content-end align-items-center">
-              {/* 장바구니 */}
-              <div 
-                className="icon-btn" 
+
+              {user?.isLogined && (
+                <span className="me-3 d-none d-md-block" style={{ fontSize: '0.9rem', color: '#555' }}>
+                  <b>{user.nickname}</b>님
+                </span>
+              )}
+
+
+              <div
+                className="icon-btn"
                 onClick={() => handleAuthNavigation('/cart')}
                 title="장바구니"
               >
                 <FaShoppingBag />
               </div>
-              
-              {/* 찜목록 */}
-              <div 
-                className="icon-btn" 
+
+              <div
+                className="icon-btn"
                 onClick={() => handleAuthNavigation('/wishlist')}
                 title="찜목록"
               >
                 <FaHeart />
               </div>
-              
-              {/* 마이페이지 */}
-              <div 
-                className="icon-btn" 
+
+              <div
+                className="icon-btn"
                 onClick={() => handleAuthNavigation('/mypage')}
-                title="마이페이지"
+                title={user?.isLogined ? "마이페이지" : "로그인"}
               >
                 <FaUser />
               </div>
+
+              {user?.isLogined && (
+                <div
+                  className="icon-btn"
+                  onClick={handleLogout}
+                  title="로그아웃"
+                  style={{ marginLeft: '1.5rem', color: '#888' }} // 약간 연하게 처리
+                >
+                  <FaSignOutAlt />
+                </div>
+              )}
             </Col>
           </Row>
 
-          {/* 하단: 네비게이션 링크 (상품, 커뮤니티 등) */}
           <Row>
             <Col>
               <Nav className="nav-bottom-row">
-                
-                {/* 상품 네비게이션 (Dropdown) */}
+
                 <UncontrolledDropdown nav inNavbar className="me-3">
                   <DropdownToggle nav caret className="nav-link-custom">
                     PRODUCTS
@@ -103,7 +117,6 @@ const HeaderNavbar = () => {
                   </DropdownMenu>
                 </UncontrolledDropdown>
 
-                {/* 커뮤니티 네비게이션 (Dropdown) */}
                 <UncontrolledDropdown nav inNavbar>
                   <DropdownToggle nav caret className="nav-link-custom">
                     COMMUNITY
