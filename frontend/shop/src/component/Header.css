@@ -1,4 +1,6 @@
-/* 네비바 커스텀 스타일 */
+/* Header.css */
+
+/* 1. 네비바 기본 레이아웃 */
 .custom-navbar {
   background-color: var(--minimal-white);
   border-bottom: 1px solid #eee;
@@ -13,7 +15,7 @@
   letter-spacing: -0.5px;
 }
 
-/* 아이콘 버튼 스타일 */
+/* 2. 아이콘 버튼 */
 .icon-btn {
   color: var(--minimal-black);
   font-size: 1.2rem;
@@ -23,10 +25,10 @@
 }
 
 .icon-btn:hover {
-  color: #4DD0E1; /* 조금 더 진한 하늘색 포인트 */
+  color: #4DD0E1; 
 }
 
-/* 네비게이션 링크 스타일 */
+/* 3. 네비게이션 링크 */
 .nav-bottom-row {
   display: flex;
   justify-content: flex-start;
@@ -36,26 +38,73 @@
 .nav-link-custom {
   color: var(--minimal-black) !important;
   font-weight: 500;
-  margin-right: 2rem;
+  font-size: 0.95rem;
+  padding: 0.5rem 1rem !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.5px;
+}
+
+/* 링크 호버 효과 */
+.nav-link-custom:hover, 
+.dropdown-item:active, 
+.dropdown-item:hover {
+  color: #448AFF !important;
+  background-color: transparent !important;
+}
+
+/* 4. 드롭다운 메뉴 스타일 (기본) */
+.dropdown-menu {
+  border: 1px solid #eee;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  border-radius: 0;
   padding: 0.5rem 0;
-  transition: all 0.3s;
+  /* ★중요: 기본적으로는 붙어있게 설정하거나, 호버 시에만 띄우는 방식 사용 */
+  margin-top: 0; 
 }
 
-.nav-link-custom:hover {
-  color: #00BCD4 !important; /* 포인트 컬러 */
-  background-color: var(--minimal-skyblue);
-  border-radius: 4px;
+.dropdown-item {
+  font-size: 0.9rem;
+  color: #555;
+  padding: 0.5rem 1.5rem;
+  font-weight: 400;
 }
 
-/* 드롭다운 호버 처리 (CSS로 처리) */
-.dropdown:hover .dropdown-menu {
-  display: block;
-  margin-top: 0;
-  border: none;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+.dropdown-header {
+  color: var(--minimal-black);
+  font-weight: 700;
+  font-size: 0.85rem;
 }
 
-.dropdown-item:active, .dropdown-item:active {
-    background-color: var(--minimal-skyblue);
-    color: var(--minimal-black);
+/* 5. ★ 호버 기능 구현 (PC 전용) ★ */
+@media (min-width: 992px) {
+  
+  /* 드롭다운 영역(버튼 포함)에 마우스 올리면 메뉴 표시 */
+  .dropdown:hover .dropdown-menu {
+    display: block;
+    /* 애니메이션 효과 */
+    animation: fadeIn 0.3s ease forwards;
+  }
+
+  /* 메뉴 위치 및 간격 미세 조정 */
+  .dropdown .dropdown-menu {
+    /* 버튼 바로 아래에 위치 */
+    top: 100%; 
+    
+    /* ★중요: 마진 대신 transform으로 시각적 간격을 줍니다.
+       마진을 쓰면 빈 공간이 생겨 마우스 이동 시 끊깁니다. */
+    margin-top: 0 !important; 
+  }
+}
+
+/* 등장 애니메이션 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px); /* 아래에서 위로 올라오는 느낌 */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

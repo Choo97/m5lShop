@@ -1,5 +1,5 @@
 import axios from "axios";
-export const baseUrl = "http://3.36.126.47:8090";
+export const baseUrl = "http://localhost:8090";
 export const reactUrl = "http://localhost:5173";
 
 export const myAxios = (token, setToken) => {

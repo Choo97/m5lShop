@@ -11,3 +11,26 @@ body {
   color: var(--minimal-black);
   background-color: var(--minimal-white);
 }
+/* Toastify 커스텀 스타일 (미니멀) */
+.Toastify__toast {
+  border-radius: 4px !important; /* 둥근 모서리 살짝 */
+  font-family: 'Helvetica Neue', sans-serif;
+  color: var(--minimal-black);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+}
+
+/* 진행바 색상 (하늘색 포인트) */
+.Toastify__progress-bar--success {
+  background: #4DD0E1 !important;
+}
+.Toastify__progress-bar--info {
+  background: #4DD0E1 !important;
+}
+.Toastify__progress-bar--error {
+  background: #ff6b6b !important;
+}
+
+/* 아이콘 색상 변경 (선택사항) */
+.Toastify__toast-icon svg {
+  fill: #4DD0E1; 
+}

@@ -10,6 +10,8 @@ import TestComponent from './component/TestComponent';
 import Main from './component/Main';
 import Footer from './component/Footer';
 import Signup from './component/Signup';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
 
@@ -24,6 +26,18 @@ function App() {
         <Route path="/signup" element={<Signup />} />
       </Routes>
       <Footer />
+      <ToastContainer 
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
     </>
   )
 }

@@ -6,12 +6,14 @@ import { useSetAtom } from 'jotai';
 import { userAtom } from '../atoms'; // 경로는 실제 구조에 맞게 수정
 import '../App.css';
 import './Login.css';
+import { toast } from 'react-toastify';
 
 // 소셜 로그인 이미지 (가지고 계신 파일 경로로 수정하세요)
 import naverLoginImg from '../images/naver_LoginImage.png'; // 예시 경로
 import kakaoLoginImg from '../images/kakao_LoginImage.png'; // 예시 경로
 
 const Login = () => {
+
   const navigate = useNavigate();
   const setUser = useSetAtom(userAtom); // Jotai 상태 업데이트 함수
 
@@ -50,7 +52,9 @@ const Login = () => {
             profileImage : data.profileImage || '',
             isLoggedIn: true 
         });
-        
+
+        toast.info("로그인 되었습니다.");
+
         // 메인 페이지로 이동
         navigate('/');
       }
