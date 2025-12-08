@@ -3,6 +3,7 @@ package com.kosta.shop.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -12,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AccessLevel;
@@ -52,6 +54,10 @@ public class Product extends BaseTimeEntity{
     private boolean isSale;
 
     private int stockQuantity; // 재고
+    
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ProductImage> productImages = new ArrayList<>();
+
 
     // 색상 정보 (별도 테이블로 자동 생성됨)
     @ElementCollection(fetch = FetchType.LAZY)
