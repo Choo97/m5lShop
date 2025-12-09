@@ -8,7 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import com.kosta.board.entity.User;
+import com.kosta.shop.entity.User;
 
 import lombok.Data;
 // security가 /loginProc 주소를 낚아채서 로그인 한다.

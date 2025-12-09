@@ -14,9 +14,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kosta.board.auth.PrincipalDetails;
-import com.kosta.board.entity.User;
-import com.kosta.board.repository.UserRepository;
+import com.kosta.shop.auth.PrincipalDetails;
+import com.kosta.shop.entity.User;
+import com.kosta.shop.repository.UserRepository;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 	private UserRepository userRepository;
@@ -38,8 +38,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		User user = principalDetails.getUser();
 		
 		//fcmToken 저장
-		String fcmToken = request.getParameter("fcmToken");
-		user.setFcmToken(fcmToken);
+//		String fcmToken = request.getParameter("fcmToken");
+//		user.setFcmToken(fcmToken);
 		userRepository.save(user);
 		
 		String accesssToken = jwtToken.makeAccessToken(username);
@@ -58,8 +58,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		response.setContentType("application/json; charset=utf-8");
 		
 		Map<String,Object> userInfo = new HashMap<>();
+		userInfo.put("name", user.getNickname());
 		userInfo.put("username", user.getUsername());
-		userInfo.put("name", user.getName());
 		userInfo.put("email", user.getEmail());
 		userInfo.put("address", user.getAddress());
 		userInfo.put("detailAddress", user.getDetailAddress());

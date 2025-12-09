@@ -19,9 +19,9 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kosta.board.auth.PrincipalDetails;
-import com.kosta.board.entity.User;
-import com.kosta.board.repository.UserRepository;
+import com.kosta.shop.auth.PrincipalDetails;
+import com.kosta.shop.entity.User;
+import com.kosta.shop.repository.UserRepository;
 
 //인가 : 로그인 처리가 되어야만 하는 처리가 들어왔을때 실행
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
@@ -78,7 +78,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 				return;
 			}
 			//1-2. username check
-			Optional<User> ouser = userRepository.findById(username);
+			Optional<User> ouser = userRepository.findByEmail(username);
 			if(ouser.isEmpty()) {
 				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "로그인 필요");
 				return;
@@ -114,7 +114,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 					return;				
 				}
 				
-				Optional<User> ouser =  userRepository.findById(username);
+				Optional<User> ouser =  userRepository.findByEmail(username);
 				if(ouser.isEmpty()) {
 					response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "로그인 필요");
 					return;									
@@ -144,7 +144,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 			} catch(TokenExpiredException re) {  //2. refresh token 기간 만료
 				re.printStackTrace();
 				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "로그인 필요");
-				return;				
+				return;	
 			}
 		} catch(Exception e) {
 			e.printStackTrace();

@@ -12,11 +12,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.kosta.board.config.jwt.JwtAuthenticationFilter;
-import com.kosta.board.config.jwt.JwtAuthorizationFilter;
-import com.kosta.board.config.oauth.OAuth2SuccessHandler;
-import com.kosta.board.config.oauth.PrincipalOAuth2UserService;
-import com.kosta.board.repository.UserRepository;
+import com.kosta.shop.config.jwt.JwtAuthenticationFilter;
+import com.kosta.shop.config.jwt.JwtAuthorizationFilter;
+import com.kosta.shop.config.oauth.OAuth2SuccessHandler;
+import com.kosta.shop.config.oauth.PrincipalOAuth2UserService;
+import com.kosta.shop.repository.UserRepository;
 
 @Configuration
 @EnableWebSecurity

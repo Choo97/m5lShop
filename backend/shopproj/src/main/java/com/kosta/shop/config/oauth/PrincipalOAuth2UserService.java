@@ -9,9 +9,10 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import com.kosta.board.auth.PrincipalDetails;
-import com.kosta.board.entity.User;
-import com.kosta.board.repository.UserRepository;
+import com.kosta.shop.auth.PrincipalDetails;
+import com.kosta.shop.entity.Role;
+import com.kosta.shop.entity.User;
+import com.kosta.shop.repository.UserRepository;
 
 @Service
 public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
@@ -49,12 +50,12 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
 						.provider(oAuth2UserInfo.getProvider())
 						.providerId(oAuth2UserInfo.getProviderId())
 						.profileImage(oAuth2UserInfo.getProfileImage())
-						.roles("ROLE_USER")
+						.role(Role.ROLE_USER)
 						.build();
 		} else { //정보 변경
 			user = ouser.get();
 			user.setEmail(oAuth2UserInfo.getEmail());
-			user.setName(oAuth2UserInfo.getName());
+			user.setUsername(oAuth2UserInfo.getName());
 			user.setProfileImage(oAuth2UserInfo.getProfileImage());
 		}
 		userRepository.save(user);

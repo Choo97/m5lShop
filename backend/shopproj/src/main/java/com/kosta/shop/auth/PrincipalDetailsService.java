@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.kosta.board.entity.User;
-import com.kosta.board.repository.UserRepository;
+import com.kosta.shop.entity.User;
+import com.kosta.shop.repository.UserRepository;
 
 // security 설정에서 loginProcessingUrl("/loginProc")
 // /loginProc 요청이 오면 자동으로 UserDetailsService의 타입으로 IoC 되어있는 loadUserByUsername 함수가 호출된다.
@@ -16,9 +16,10 @@ public class PrincipalDetailsService implements UserDetailsService {
 
 	@Autowired
 	private UserRepository userRepository;
+	
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userRepository.findById(username).orElseThrow(()->new UsernameNotFoundException(username));
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		User user = userRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException(email));
 		return new PrincipalDetails(user);
 	}
 

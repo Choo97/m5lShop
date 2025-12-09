@@ -6,7 +6,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import com.kosta.board.config.jwt.JwtProperties;
+import com.kosta.shop.config.jwt.JwtProperties;
 
 @Configuration
 public class CorsConfig {

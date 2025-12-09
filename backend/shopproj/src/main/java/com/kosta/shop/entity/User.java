@@ -9,9 +9,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -29,7 +31,7 @@ public class User extends BaseTimeEntity{
 	@Column(nullable = false, length = 100)
 	private String password;
 	@Column(nullable = false, length = 50)
-	private String name;
+	private String username;
 	@Column(nullable = false, length = 50, unique = true)
 	private String nickname;
 	@Column(length = 20)
@@ -41,7 +43,7 @@ public class User extends BaseTimeEntity{
 	@Column(length = 100)
 	private String detailAddress;
 	@Enumerated(EnumType.STRING)
-	private Role role; // ROLE_USER, ROLE_ADMIN
+	private Role role; // ROLE_USER, ROLE_ADMIN, ROLE_GUEST
 
 	@Column
 	private String profileImage;
@@ -51,6 +53,10 @@ public class User extends BaseTimeEntity{
 	private String provider;
 	@Column
 	private String providerId;
+	
+	public String getRoles() {
+        return this.role != null ? this.role.name() : "";
+    }
 	
 }
 

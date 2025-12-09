@@ -15,9 +15,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kosta.board.auth.PrincipalDetails;
-import com.kosta.board.config.jwt.JwtProperties;
-import com.kosta.board.config.jwt.JwtToken;
+import com.kosta.shop.auth.PrincipalDetails;
+import com.kosta.shop.config.jwt.JwtProperties;
+import com.kosta.shop.config.jwt.JwtToken;
 
 @Component
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
