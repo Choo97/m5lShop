@@ -11,20 +11,26 @@ import './Main.css';
 // 캐러셀 더미 데이터 (광고)
 const carouselItems = [
   {
-    src: 'https://plus.unsplash.com/premium_photo-1750311650758-9dce26d169e9?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8JUVBJUI0JTkxJUVBJUIzJUEwJTIwJUVDJTgyJUFDJUVDJUE3JTg0fGVufDB8fDB8fHww',
+    src: 'https://placehold.co/1152x648',
     altText: 'Spring Event',
     caption: '',
     header: '',
     key: '1'
   },
   {
-    src: 'https://tbc.imgdl.xcache.kinxcdn.com/cdn001/20200113/735269982_0114_6.jpg',
+    src: 'https://placehold.co/1152x648',
     altText: 'New Arrivals',
     caption: '',
     header: '',
     key: '2'
   },
 ];
+
+const productDummy = {
+  id: 1, name: 'Minimal Cotton Shirt', price: 45000, 
+  imageUrl: 'https://placehold.co/600x400',
+  colors: ['#000000', '#FFFFFF', '#87CEEB']
+};
 
 const Main = () => {
   const navigate = useNavigate();
@@ -46,7 +52,7 @@ const Main = () => {
     // 더미 데이터 세팅
     const dummyProduct = {
       id: 1, name: 'Minimal Cotton Shirt', price: 45000, 
-      imageUrl: 'https://plus.unsplash.com/premium_photo-1750311650758-9dce26d169e9?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8JUVBJUI0JTkxJUVBJUIzJUEwJTIwJUVDJTgyJUFDJUVDJUE3JTg0fGVufDB8fDB8fHww',
+      imageUrl: 'https://placehold.co/600x400',
       colors: ['#000000', '#FFFFFF', '#87CEEB']
     };
 
@@ -55,13 +61,15 @@ const Main = () => {
     setAgeBestProducts(Array(4).fill(dummyProduct));
     
     setStylings(Array(4).fill({
-      id: 1, title: 'Daily Look', imageUrl: 'https://plus.unsplash.com/premium_photo-1750311650758-9dce26d169e9?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8JUVBJUI0JTkxJUVBJUIzJUEwJTIwJUVDJTgyJUFDJUVDJUE3JTg0fGVufDB8fDB8fHww', username: 'fashion_king'
+      id: 1, title: 'Daily Look', 
+      imageUrl: 'https://placehold.co/400x600', 
+      username: 'fashion_king'
     }));
 
     setReviews(Array(3).fill({
-      id: 1, productName: 'Wide Slacks', productImageUrl: 'https://plus.unsplash.com/premium_photo-1750311650758-9dce26d169e9?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8JUVBJUI0JTkxJUVBJUIzJUEwJTIwJUVDJTgyJUFDJUVDJUE3JTg0fGVufDB8fDB8fHww',
+      id: 1, productName: 'Wide Slacks', productImageUrl: 'https://placehold.co/400x600',
       content: '재질이 너무 좋고 핏이 딱 떨어져요. 배송도 빠릅니다.', rating: 5, date: '2023.12.01',
-      userProfileUrl: 'https://plus.unsplash.com/premium_photo-1750311650758-9dce26d169e9?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8JUVBJUI0JTkxJUVBJUIzJUEwJTIwJUVDJTgyJUFDJUVDJUE3JTg0fGVufDB8fDB8fHww', userNickname: 'user123'
+      userProfileUrl: 'https://placehold.co/240x240', userNickname: 'user123'
     }));
 
   }, []);
@@ -104,7 +112,7 @@ const Main = () => {
         {/* 2. 특가 상품 리스트 */}
         <section className="main-section">
           <div className="section-title">
-            <span>SPECIAL OFFERS</span>
+            <span>특가 상품</span>
             <Link to="/products/sale" className="view-all-link">전체보기 +</Link>
           </div>
           <Row>
@@ -115,7 +123,7 @@ const Main = () => {
         {/* 3. 신상품 리스트 */}
         <section className="main-section pt-0">
           <div className="section-title">
-            <span>NEW ARRIVALS</span>
+            <span>신상품</span>
             <Link to="/products/new" className="view-all-link">전체보기 +</Link>
           </div>
           <Row>
@@ -152,7 +160,7 @@ const Main = () => {
         {/* 5. 스타일링 게시판 미리보기 */}
         <section className="main-section">
           <div className="section-title">
-            <span>COMMUNITY STYLING</span>
+            <span>인기 스타일링</span>
             <Link to="/community/styling" className="view-all-link">스타일링 전체보기 +</Link>
           </div>
           <Row>
@@ -173,7 +181,7 @@ const Main = () => {
         {/* 6. 상품 리뷰 리스트 */}
         <section className="main-section pt-0">
            <div className="section-title">
-            <span>RECENT REVIEWS</span>
+            <span>최신 리뷰</span>
             <Link to="/reviews" className="view-all-link">리뷰 전체보기 +</Link>
           </div>
           <Row>

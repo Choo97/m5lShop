@@ -1,6 +1,9 @@
 package com.kosta.shop.entity;
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -8,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.kosta.shop.entity.convertor.RrnConverter;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -36,6 +41,13 @@ public class User extends BaseTimeEntity{
 	private String nickname;
 	@Column(length = 20)
 	private String phone;
+	@Column(columnDefinition = "VARCHAR(255) COMMENT '회원 주민등록번호'")
+	@Convert(converter = RrnConverter.class) // ★ 이 한 줄이면 끝!
+    private String rrn; 
+	@Column
+    private LocalDate birthDate; 
+	@Column(length = 20)
+	private String gender;
 	@Column(length = 10)
 	private String zipcode;
 	@Column(length = 100)
@@ -57,6 +69,8 @@ public class User extends BaseTimeEntity{
 	public String getRoles() {
         return this.role != null ? this.role.name() : "";
     }
+	
+	
 	
 }
 
