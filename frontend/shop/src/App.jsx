@@ -12,6 +12,7 @@ import Footer from './component/Footer';
 import Signup from './component/Signup';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import OAuth2RedirectHandler from './component/OAuth2RedirectHandler'; // 컴포넌트 이름은 자유
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Main />} />
         <Route path='/noticeWrite' element={<NoticeWrite />} />
+        <Route path="/token" element={<OAuth2RedirectHandler />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
       </Routes>

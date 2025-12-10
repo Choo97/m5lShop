@@ -36,7 +36,7 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
 			oAuth2UserInfo = new KakaoUserInfo(oAuth2User.getAttributes(), 
 					oAuth2User.getAttribute("properties")); 
 		} else {
-			System.out.println("카카오 네이버만 지워");
+			System.out.println("카카오 네이버만 지원");
 			return null;	
 		}
 		
@@ -50,9 +50,12 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
 						.provider(oAuth2UserInfo.getProvider())
 						.providerId(oAuth2UserInfo.getProviderId())
 						.profileImage(oAuth2UserInfo.getProfileImage())
+						.nickname(oAuth2UserInfo.getName())
 						.role(Role.ROLE_USER)
+						.password("SOCIAL_LOGIN")
 						.build();
 		} else { //정보 변경
+		
 			user = ouser.get();
 			user.setEmail(oAuth2UserInfo.getEmail());
 			user.setUsername(oAuth2UserInfo.getName());

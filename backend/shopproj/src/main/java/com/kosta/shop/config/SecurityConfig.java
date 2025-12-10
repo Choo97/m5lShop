@@ -50,7 +50,7 @@ public class SecurityConfig {
 		
 		//소셜 로그인
 		http.oauth2Login()
-			.authorizationEndpoint().baseUri("/oauth2/autorization")  //
+			.authorizationEndpoint().baseUri("/oauth2/authorization")  //
 			.and()
 			.redirectionEndpoint().baseUri("/social/*")
 			.and().userInfoEndpoint().userService(principalOAuth2UserService) // 카카오나 네이버로 사용자 정보를 받아 인증처리
