@@ -4,6 +4,8 @@ import { useSetAtom } from 'jotai';
 import { userAtom } from '../atoms';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { baseUrl } from '../config'; // http://localhost:8090
+
 
 const OAuth2RedirectHandler = () => {
   const navigate = useNavigate();
@@ -22,8 +24,15 @@ const OAuth2RedirectHandler = () => {
         
         // 3. "Bearer " 문자열 제거 (필요한 경우)
         // 백엔드에서 "Bearer "를 붙여서 줬다면 제거, 안 붙였다면 그대로 사용
-        const accessToken = tokens.access_token.replace("Bearer ", "");
-        const refreshToken = tokens.refresh_token.replace("Bearer ", "");
+        let accessToken = tokens.access_token;
+        if (accessToken && accessToken.startsWith("Bearer ")) {
+          accessToken = accessToken.replace("Bearer ", "");
+        }
+        
+        let refreshToken = tokens.refresh_token;
+        if (refreshToken && refreshToken.startsWith("Bearer ")) {
+          refreshToken = refreshToken.replace("Bearer ", "");
+        }
 
         // 4. 로컬 스토리지에 저장
         localStorage.setItem('accessToken', accessToken);
@@ -31,7 +40,7 @@ const OAuth2RedirectHandler = () => {
 
         // 5. 사용자 정보 가져오기 (토큰으로 백엔드 요청)
         // (백엔드에 내 정보 조회 API가 /api/user/me 라고 가정)
-        axios.get('/api/user/me', {
+        axios.get(`${ baseUrl }/api/user/me`, {
           headers: { Authorization: `Bearer ${accessToken}` }
         })
         .then((res) => {
@@ -62,7 +71,7 @@ const OAuth2RedirectHandler = () => {
         navigate('/login');
       }
     } else {
-      toast.error("잘못된 접근입니다.");
+      toast.error("잘못된 접근입니다. (토큰이 없습니다.)");
       navigate('/login');
     }
   }, [searchParams, navigate, setUser]);

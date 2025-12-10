@@ -68,6 +68,11 @@ const Login = () => {
     }
   };
 
+  const handleSocialLogin = (provider) => {
+    // 백엔드의 OAuth2 시작 엔드포인트로 이동 (리다이렉트)
+    window.location.href = `${baseUrl}/oauth2/authorization/${provider}`;
+  };
+
   return (
     <div className="login-container">
       {/* 장식용 도트 (상단 우측) */}
@@ -122,12 +127,12 @@ const Login = () => {
 
         <div className="social-btn-container">
           {/* 가지고 계신 네이버 이미지 버튼 */}
-          <button className="social-img-btn" onClick={() => alert('네이버 로그인 준비중')}>
+          <button className="social-img-btn" onClick={() => handleSocialLogin('naver')}>
              <img src={naverLoginImg} alt="Naver Login" style={{ backgroundColor: '#03C75A' }} /> 
           </button>
           
           {/* 가지고 계신 카카오 이미지 버튼 */}
-          <button className="social-img-btn" onClick={() => alert('카카오 로그인 준비중')}>
+          <button className="social-img-btn" onClick={() => handleSocialLogin('kakao')}>
              <img src={kakaoLoginImg} alt="Kakao Login" style={{ backgroundColor: '#FEE500' }} />
           </button>
         </div>
