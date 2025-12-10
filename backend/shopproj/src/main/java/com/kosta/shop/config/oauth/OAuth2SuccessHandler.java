@@ -25,15 +25,18 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 	private JwtToken jwtToken = new JwtToken();
 	
 	@Value("${react-token-uri}")
-	private String  reactTokenUri;
+	private String reactTokenUri;
 	
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
 		
 		PrincipalDetails principalDetails = (PrincipalDetails)authentication.getPrincipal();
-		String accessToken = jwtToken.makeAccessToken(principalDetails.getUsername());
-		String refreshToken = jwtToken.makeRefreshToken(principalDetails.getUsername());
+		
+	    String email = principalDetails.getUser().getEmail(); 
+		
+		String accessToken = jwtToken.makeAccessToken(email);
+		String refreshToken = jwtToken.makeRefreshToken(email);
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String,String> map = new HashMap<>();
