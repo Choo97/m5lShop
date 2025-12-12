@@ -5,5 +5,8 @@ import java.util.List;
 import com.kosta.shop.dto.ProductResponseDto;
 
 public interface ProductService {
-	List<ProductResponseDto> getBestProductsByAge(int age);
+	public List<ProductResponseDto> getBestProductsByAge(int age);
+	
+    public List<ProductResponseDto> getProductList(String category, String subCategory);
+
 }

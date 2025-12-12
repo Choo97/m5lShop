@@ -10,9 +10,13 @@ import org.springframework.data.repository.query.Param;
 
 import com.kosta.shop.entity.Product;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long>, ProductRepositoryCustom {
 
-    // ... 기존 메서드들 ...
+	// 1. 신상품 (최신순 8개)
+    List<Product> findTop8ByIsNewTrueOrderByCreatedAtDesc();
+
+    // 2. 특가상품 (최신순 8개)
+    List<Product> findTop8ByIsSaleTrueOrderByCreatedAtDesc();
 
     /**
      * 연령대별 인기상품 조회 쿼리
@@ -27,4 +31,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findBestProductsByAge(@Param("startDate") LocalDate startDate, 
                                         @Param("endDate") LocalDate endDate, 
                                         Pageable pageable);
+    
+    List<Product> findTop8ByIsBestTrueOrderByCreatedAtDesc();
+
+
 }

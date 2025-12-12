@@ -43,4 +43,14 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
     }
 
+	@Override
+	public List<ProductResponseDto> getProductList(String category, String subCategory) {
+		// QueryDSL로 만든 동적 쿼리 메소드 호출
+        List<Product> products = productRepository.searchProducts(category, subCategory);
+
+        return products.stream()
+                .map(ProductResponseDto::from)
+                .collect(Collectors.toList());
+    }
+
 }
