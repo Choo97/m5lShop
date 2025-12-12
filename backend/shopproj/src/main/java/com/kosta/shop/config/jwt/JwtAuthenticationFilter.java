@@ -69,7 +69,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		userInfo.put("detailAddress", user.getDetailAddress());
 		userInfo.put("roles", user.getRoles());
 		
-		
 		response.getWriter().write(objectMapper.writeValueAsString(userInfo));
 	}
 	
