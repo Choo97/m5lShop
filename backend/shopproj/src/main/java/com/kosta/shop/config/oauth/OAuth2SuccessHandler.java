@@ -19,7 +19,10 @@ import com.kosta.shop.auth.PrincipalDetails;
 import com.kosta.shop.config.jwt.JwtProperties;
 import com.kosta.shop.config.jwt.JwtToken;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component
+@Slf4j
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 	
 	private JwtToken jwtToken = new JwtToken();
@@ -44,7 +47,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 		map.put("refresh_token", JwtProperties.TOKEN_PREFIX+refreshToken);
 		
 		String token = objectMapper.writeValueAsString(map);
-		System.out.println(token);
+		
+		log.debug("JwtToken {}", token);
 		
 		String targetUrl = UriComponentsBuilder.fromUriString(reactTokenUri)
 							.queryParam("token", token)

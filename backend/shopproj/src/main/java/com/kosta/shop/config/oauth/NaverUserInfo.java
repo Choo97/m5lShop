@@ -35,4 +35,42 @@ public class NaverUserInfo implements OAuth2UserInfo {
 		return (String)attributes.get("profile_image");
 	}
 
+	@Override
+	public String getNickname() {
+		return (String)attributes.get("nickname");
+	}
+
+	@Override
+	public String getGender() {
+		return (String)attributes.get("gender");
+	}
+
+	@Override
+	public String getAgeRange() {
+		return (String)attributes.get("age");
+	}
+
+	@Override
+	public String getBirthYear() {
+		return (String)attributes.get("birthyear");
+	}
+	
+	@Override
+	public String getBirthDay() {
+		// TODO Auto-generated method stub
+		return (String)attributes.get("birthday");
+	}
+
+	@Override
+	public String getMobile() {
+		// TODO Auto-generated method stub
+		return (String)attributes.get("mobile");
+	}
+
+	@Override
+	public String getShippingAddress() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
