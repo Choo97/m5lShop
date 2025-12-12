@@ -43,7 +43,9 @@ public class User extends BaseTimeEntity{
 	private String phone;
 	@Column(columnDefinition = "VARCHAR(255) COMMENT '회원 주민등록번호'")
 	@Convert(converter = RrnConverter.class) // ★ 이 한 줄이면 끝!
-    private String rrn; 
+    private String rrn;
+	@Column(length = 20)
+	private String ageRange;
 	@Column
     private LocalDate birthDate; 
 	@Column(length = 20)
