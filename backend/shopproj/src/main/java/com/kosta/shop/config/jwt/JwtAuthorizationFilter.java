@@ -23,7 +23,10 @@ import com.kosta.shop.auth.PrincipalDetails;
 import com.kosta.shop.entity.User;
 import com.kosta.shop.repository.UserRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 //인가 : 로그인 처리가 되어야만 하는 처리가 들어왔을때 실행
+@Slf4j
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 	private UserRepository userRepository;
@@ -43,9 +46,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 			return;
 		}
 		
-		
 		String authentication = request.getHeader(JwtProperties.HEADER_STRING);
-		System.out.println(authentication);
+		
+		log.debug(authentication);
 		if(authentication == null || !authentication.startsWith(JwtProperties.TOKEN_PREFIX)) {
 			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "로그인 필요");
 			return;
@@ -69,7 +72,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 									.verify(accessToken)
 									.getClaim("sub")
 									.asString();
-			System.out.println("Username from Token: " + username);
+			log.debug("Username from Token: " + username);
 			if(username == null || username.isEmpty()) {
 				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "로그인 필요");
 				return;

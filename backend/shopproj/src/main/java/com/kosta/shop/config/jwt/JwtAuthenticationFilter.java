@@ -18,6 +18,9 @@ import com.kosta.shop.auth.PrincipalDetails;
 import com.kosta.shop.entity.User;
 import com.kosta.shop.repository.UserRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 	private UserRepository userRepository;
 	
@@ -52,7 +55,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		//map에 있는 token을 json 문자열로 변환
 		ObjectMapper objectMapper = new ObjectMapper();
 		String token =  objectMapper.writeValueAsString(map);
-		System.out.println(token);
+		
+		log.debug("token {}", token);
 		
 		response.addHeader(JwtProperties.HEADER_STRING, token);
 		response.setContentType("application/json; charset=utf-8");
