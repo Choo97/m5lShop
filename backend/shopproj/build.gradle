@@ -70,6 +70,10 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+tasks.named('bootRun') {
+    systemProperty 'file.encoding', 'UTF-8'
+}
+
 // ===================================================
 // ★ QueryDSL 빌드 옵션 (Gradle 8.x 호환 방식) ★
 // ===================================================

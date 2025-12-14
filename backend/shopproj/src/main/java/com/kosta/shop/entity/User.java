@@ -14,14 +14,14 @@ import javax.persistence.Table;
 
 import com.kosta.shop.entity.convertor.RrnConverter;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
+@EqualsAndHashCode(callSuper=false) // ★ 이 줄을 추가하세요!
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -71,8 +71,6 @@ public class User extends BaseTimeEntity{
 	public String getRoles() {
         return this.role != null ? this.role.name() : "";
     }
-	
-	
-	
+		
 }
 

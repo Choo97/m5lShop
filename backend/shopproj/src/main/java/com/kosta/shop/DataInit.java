@@ -1,15 +1,17 @@
 package com.kosta.shop;
 
-import com.kosta.shop.entity.Product;
-import com.kosta.shop.entity.ProductImage;
-import com.kosta.shop.repository.ProductRepository;
-import lombok.RequiredArgsConstructor;
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
+import com.kosta.shop.entity.Product;
+import com.kosta.shop.entity.ProductImage;
+import com.kosta.shop.repository.ProductRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor

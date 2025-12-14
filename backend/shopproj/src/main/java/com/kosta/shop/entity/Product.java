@@ -17,6 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +25,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Table(name = "products")
+@Builder
 public class Product extends BaseTimeEntity{
 
     @Id
@@ -56,28 +59,14 @@ public class Product extends BaseTimeEntity{
     private int stockQuantity; // 재고
     
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default 
     private List<ProductImage> productImages = new ArrayList<>();
-
 
     // 색상 정보 (별도 테이블로 자동 생성됨)
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "product_colors", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "color_hex")
+    @Builder.Default 
     private List<String> colors = new ArrayList<>();
 
-    @Builder
-    public Product(String name, int price, int salePrice, String description, String imageUrl, String category, String subCategory, boolean isNew, boolean isBest, boolean isSale, int stockQuantity, List<String> colors) {
-        this.name = name;
-        this.price = price;
-        this.salePrice = salePrice;
-        this.description = description;
-        this.imageUrl = imageUrl;
-        this.category = category;
-        this.subCategory = subCategory;
-        this.isNew = isNew;
-        this.isBest = isBest;
-        this.isSale = isSale;
-        this.stockQuantity = stockQuantity;
-        this.colors = colors;
-    }
 }

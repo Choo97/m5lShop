@@ -6,26 +6,26 @@ import Login from './component/Login'
 import Join from './component/Join'
 import NoticeWrite from './component/NoticeWrite'
 import HeaderNavbar from './component/Header'
-import TestComponent from './component/TestComponent';
 import Main from './component/Main';
 import Footer from './component/Footer';
 import Signup from './component/Signup';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import OAuth2RedirectHandler from './component/OAuth2RedirectHandler'; // 컴포넌트 이름은 자유
+import ProductList from './component/ProductList';
 
 function App() {
 
   return (
     <>
       <HeaderNavbar />
-      {/* <TestComponent/> */}
       <Routes>
         <Route path='/' element={<Main />} />
-        <Route path='/noticeWrite' element={<NoticeWrite />} />
         <Route path="/token" element={<OAuth2RedirectHandler />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path='/noticeWrite' element={<NoticeWrite />} />
+        <Route path='/products' element={<ProductList />} />
       </Routes>
       <Footer />
       <ToastContainer 

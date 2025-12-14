@@ -31,6 +31,8 @@ logs/
 # 로컬 설정파일 (DB 비밀번호 등) - 보안상 중요!
 application-secret.yml
 application-secret.properties
+application-home.properties
+application-laptop.properties
 
 kakaoOauthExam.txt
 # application.properties (만약 비밀번호가 들어있다면)
