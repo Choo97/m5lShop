@@ -13,6 +13,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import OAuth2RedirectHandler from './component/OAuth2RedirectHandler'; // 컴포넌트 이름은 자유
 import ProductList from './component/ProductList';
+import ProductDetail from './component/ProductDetail';
 
 function App() {
 
@@ -26,6 +27,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path='/noticeWrite' element={<NoticeWrite />} />
         <Route path='/products' element={<ProductList />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
       </Routes>
       <Footer />
       <ToastContainer 

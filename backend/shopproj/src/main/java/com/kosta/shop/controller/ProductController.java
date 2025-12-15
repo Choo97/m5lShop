@@ -1,8 +1,11 @@
 package com.kosta.shop.controller;
 
+import com.kosta.shop.dto.ProductDetailResponseDto;
 import com.kosta.shop.dto.ProductResponseDto;
 import com.kosta.shop.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
+@Slf4j
 public class ProductController {
 
     private final ProductService productService;
@@ -22,7 +26,12 @@ public class ProductController {
             @RequestParam(required = false) String type
     ) {
         List<ProductResponseDto> list = productService.getProductList(category, subCategory, type);
-        
+        log.debug("list", list);
         return ResponseEntity.ok(list);
+    }
+    
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDetailResponseDto> getProductDetail(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getProductDetail(id));
     }
 }

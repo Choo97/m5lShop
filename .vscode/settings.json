@@ -1,4 +1,22 @@
 {
-    "java.compile.nullAnalysis.mode": "automatic",
-    "java.configuration.updateBuildConfiguration": "interactive"
+  // ============================================
+  // 1. 기본 설정 (주로 프론트엔드/웹 기준)
+  // ============================================
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.tabSize": 2, // 웹(HTML, JS, React)은 2칸 추천
+
+  // ============================================
+  // 2. 자바(Java) 전용 설정 (백엔드만 다르게 적용!)
+  // ============================================
+  "[java]": {
+    "editor.defaultFormatter": "redhat.java", // 자바는 프리티어 말고 자바 전용 포맷터 사용
+    "editor.tabSize": 4 // 자바는 4칸이 국룰
+  },
+
+  // ============================================
+  // 3. 자바 빌드/컴파일 설정 (합쳐도 상관없음)
+  // ============================================
+  "java.compile.nullAnalysis.mode": "automatic",
+  "java.configuration.updateBuildConfiguration": "interactive"
 }

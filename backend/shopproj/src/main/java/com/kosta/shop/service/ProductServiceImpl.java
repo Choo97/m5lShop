@@ -4,10 +4,14 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.kosta.shop.dto.ProductDetailResponseDto;
 import com.kosta.shop.dto.ProductResponseDto;
 import com.kosta.shop.entity.Product;
 import com.kosta.shop.repository.ProductRepository;
@@ -51,6 +55,15 @@ public class ProductServiceImpl implements ProductService {
         return products.stream()
                 .map(ProductResponseDto::from)
                 .collect(Collectors.toList());
+    }
+
+	@Override
+    @Transactional(readOnly = true)
+    public ProductDetailResponseDto getProductDetail(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("상품을 찾을 수 없습니다."));
+        
+        return ProductDetailResponseDto.from(product);
     }
 
 }
