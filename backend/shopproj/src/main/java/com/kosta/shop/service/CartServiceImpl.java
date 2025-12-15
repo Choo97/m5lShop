@@ -1,5 +1,15 @@
 package com.kosta.shop.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityNotFoundException;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+import com.kosta.shop.dto.CartDetailDto;
 import com.kosta.shop.dto.CartItemDto;
 import com.kosta.shop.entity.Cart;
 import com.kosta.shop.entity.CartItem;
@@ -9,11 +19,8 @@ import com.kosta.shop.repository.CartItemRepository;
 import com.kosta.shop.repository.CartRepository;
 import com.kosta.shop.repository.ProductRepository;
 import com.kosta.shop.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -59,5 +66,49 @@ public class CartServiceImpl implements CartService { // ★ 인터페이스 구
             cartItemRepository.save(cartItem);
             return cartItem.getId();
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CartDetailDto> getCartList(String email) {
+        List<CartDetailDto> cartDetailDtoList = new ArrayList<>();
+
+        User user = userRepository.findByEmail(email).orElse(null);
+        if(user == null) return cartDetailDtoList; // 유저 없으면 빈 리스트
+
+        Cart cart = cartRepository.findByUserId(user.getId());
+        if(cart == null) return cartDetailDtoList; // 장바구니 없으면 빈 리스트
+
+        return cartItemRepository.findCartDetailDtoList(cart.getId());
+    }
+
+    // ★ 2. 본인 확인 (수정/삭제 전 체크)
+    @Override
+    @Transactional(readOnly = true)
+    public boolean validateCartItem(Long cartItemId, String email) {
+        User user = userRepository.findByEmail(email).orElse(null);
+        CartItem cartItem = cartItemRepository.findById(cartItemId).orElse(null);
+
+        if(user != null && cartItem != null) {
+            User savedUser = cartItem.getCart().getUser();
+            return StringUtils.pathEquals(user.getEmail(), savedUser.getEmail());
+        }
+        return false;
+    }
+
+    // ★ 3. 수량 변경
+    @Override
+    public void updateCartItemCount(Long cartItemId, int count) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(() -> new EntityNotFoundException("장바구니 아이템이 없습니다."));
+        cartItem.updateCount(count); // Entity의 메소드 호출 (더티 체킹)
+    }
+
+    // ★ 4. 삭제
+    @Override
+    public void deleteCartItem(Long cartItemId) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(() -> new EntityNotFoundException("장바구니 아이템이 없습니다."));
+        cartItemRepository.delete(cartItem);
     }
 }
