@@ -28,6 +28,7 @@ function App() {
         <Route path='/noticeWrite' element={<NoticeWrite />} />
         <Route path='/products' element={<ProductList />} />
         <Route path="/product/:id" element={<ProductDetail />} />
+        
       </Routes>
       <Footer />
       <ToastContainer 

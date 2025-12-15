@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
@@ -58,7 +59,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
 	@Override
-    @Transactional(readOnly = true)
     public ProductDetailResponseDto getProductDetail(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("상품을 찾을 수 없습니다."));

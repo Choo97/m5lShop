@@ -1,23 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Col, Button, Badge } from 'reactstrap';
+import { Container, Row, Col, Button } from 'reactstrap';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { baseUrl } from '../config';
 import { toast } from 'react-toastify';
+import axios from 'axios';
+import { useAtomValue } from 'jotai';
+import { userAtom } from '../atoms';
+import { baseUrl, myAxios } from '../config'; 
 import '../App.css';
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  
+  // ★ 전역 상태에서 유저 정보 가져오기
+  const user = useAtomValue(userAtom); 
+  
   const [product, setProduct] = useState(null);
   const [mainImg, setMainImg] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
+  const [count, setCount] = useState(1); 
 
+  // 상품 상세 정보 가져오기 (로그인 불필요)
   useEffect(() => {
     axios.get(`${baseUrl}/api/products/${id}`)
       .then(res => {
         setProduct(res.data);
-        // 첫 번째 이미지를 메인으로 설정
         if (res.data.productImages && res.data.productImages.length > 0) {
           setMainImg(res.data.productImages[0]);
         }
@@ -29,13 +36,40 @@ const ProductDetail = () => {
       });
   }, [id, navigate]);
 
-  const handleAddToCart = () => {
-    // (추후 구현) 장바구니 API 호출
-    if (!selectedColor && product.colors.length > 0) {
+  // 장바구니 담기 핸들러
+  const handleAddToCart = async () => {
+    // 1. 로그인 체크 (atoms.jsx에 정의된 isLogined 사용)
+    if (!user.isLogined) {
+      if(window.confirm("로그인이 필요한 서비스입니다. 로그인 하시겠습니까?")) {
+        navigate('/login');
+      }
+      return;
+    }
+
+    // 2. 옵션 선택 체크
+    if (product.colors && product.colors.length > 0 && !selectedColor) {
       toast.warning("색상을 선택해주세요.");
       return;
     }
-    toast.success("장바구니에 담겼습니다!");
+
+    // 3. 서버로 전송할 데이터 준비
+    const cartItemDto = {
+      productId: product.id,
+      count: count
+    };
+
+    try {
+      // ★ myAxios를 사용하여 토큰과 함께 요청 전송
+      await myAxios.post('/api/cart', cartItemDto);
+      
+      if(window.confirm("장바구니에 담겼습니다. 장바구니로 이동하시겠습니까?")) {
+        navigate('/cart');
+      }
+    } catch (error) {
+      console.error(error);
+      const msg = error.response?.data || "장바구니 담기에 실패했습니다.";
+      toast.error(msg);
+    }
   };
 
   if (!product) return <div className="text-center py-5">Loading...</div>;
@@ -96,6 +130,16 @@ const ProductDetail = () => {
                   />
                 ))}
               </div>
+            </div>
+
+            {/* 수량 선택 */}
+            <div className="mb-4 d-flex align-items-center">
+               <span className="fw-bold me-3">Quantity</span>
+               <div className="d-flex align-items-center border rounded">
+                 <button className="btn btn-light btn-sm border-0" onClick={() => setCount(prev => Math.max(1, prev - 1))}>-</button>
+                 <span className="px-3">{count}</span>
+                 <button className="btn btn-light btn-sm border-0" onClick={() => setCount(prev => prev + 1)}>+</button>
+               </div>
             </div>
 
             {/* 버튼 */}
