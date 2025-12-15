@@ -1,42 +1,61 @@
 import axios from "axios";
+
 export const baseUrl = "http://localhost:8090";
 export const reactUrl = "http://localhost:5173";
 
-export const myAxios = (token, setToken) => {
-    let instance = axios.create({
-        baseURL : baseUrl,
-        timeout:5000,
-    })
+// 1. Axios 인스턴스 생성 (함수가 아님!)
+export const myAxios = axios.create({
+    baseURL: baseUrl,
+    timeout: 10000,
+});
 
-    instance.interceptors.response.use(  
-        (response) => {  //응답이 올때마다 헤더에 토큰 유무 체크하여 토큰 갱신
-            console.log(response)
-            if(response.headers.authorization) {
-                setToken(response.headers.authorization)
-            }
-            return response;
+// 2. 요청 인터셉터 (Request Interceptor)
+// 요청을 보내기 직전에 실행됩니다.
+myAxios.interceptors.request.use(
+    (config) => {
+        // 저장된 토큰을 가져옵니다.
+        const token = localStorage.getItem('accessToken');
+        
+        if (token) {
+            // 백엔드가 "Bearer " 접두사를 기대하므로 붙여서 보냅니다.
+            config.headers.Authorization = `Bearer ${token}`;
+            
+            // 만약 Refresh Token도 헤더로 보내야 한다면 여기서 추가
+            // const refreshToken = localStorage.getItem('refreshToken');
+            // if (refreshToken) {
+            //     config.headers.RefreshToken = `Bearer ${refreshToken}`;
+            // }
         }
-        ,
-        (error) => {  //error  발생시 처리
-            console.log(error)
-            if(error.response && error.response.status) {
-                switch(error.response.status) {
-                    case 401:   //401, 403 은 로그인 다시 시도하게 하
-                    case 403:
-                        window.location.href= `${reactUrl}/login`; break;
-                    default:
-                        return Promise.reject(error)
-                }
-            }
-            return Promise.reject(error);
-        }
-    )
-
-    //토큰이 있으면 헤더에 토큰을 삽입하여 요청
-    token && instance.interceptors.request.use((config)=> {
-        config.headers.Authorization = token;
         return config;
-    })
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
 
-    return instance;
-}
+// 3. 응답 인터셉터 (Response Interceptor)
+// 응답을 받은 직후에 실행됩니다.
+myAxios.interceptors.response.use(
+    (response) => {
+        // 백엔드에서 헤더에 새로운 토큰을 실어 보냈다면 갱신 (Refresh Logic)
+        const newAccessToken = response.headers['authorization'];
+        if (newAccessToken) {
+            // "Bearer " 제거 후 저장
+            const pureToken = newAccessToken.replace("Bearer ", "");
+            localStorage.setItem('accessToken', pureToken);
+            console.log("토큰이 갱신되었습니다.");
+        }
+        return response;
+    },
+    (error) => {
+        console.error("Axios Error:", error);
+        
+        if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+            // 인증 에러 발생 시 로그인 페이지로 강제 이동
+            alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+            localStorage.removeItem('accessToken'); // 잘못된 토큰 삭제
+            // window.location.href = '/login';
+        }
+        return Promise.reject(error);
+    }
+);

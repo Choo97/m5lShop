@@ -77,7 +77,7 @@ const Main = () => {
   // 연령대 변경 시 데이터 다시 로드
   useEffect(() => {
     // axios.get(`/api/main/products/best?age=${selectedAge}`)...
-    console.log(`Fetching best products for age: ${selectedAge}`);
+    // console.log(`Fetching best products for age: ${selectedAge}`);
   }, [selectedAge]);
 
 
