@@ -69,7 +69,6 @@ public class CartServiceImpl implements CartService { // ★ 인터페이스 구
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<CartDetailDto> getCartList(String email) {
         List<CartDetailDto> cartDetailDtoList = new ArrayList<>();
 
@@ -84,7 +83,6 @@ public class CartServiceImpl implements CartService { // ★ 인터페이스 구
 
     // ★ 2. 본인 확인 (수정/삭제 전 체크)
     @Override
-    @Transactional(readOnly = true)
     public boolean validateCartItem(Long cartItemId, String email) {
         User user = userRepository.findByEmail(email).orElse(null);
         CartItem cartItem = cartItemRepository.findById(cartItemId).orElse(null);
@@ -98,6 +96,7 @@ public class CartServiceImpl implements CartService { // ★ 인터페이스 구
 
     // ★ 3. 수량 변경
     @Override
+    @Transactional
     public void updateCartItemCount(Long cartItemId, int count) {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new EntityNotFoundException("장바구니 아이템이 없습니다."));
@@ -106,6 +105,7 @@ public class CartServiceImpl implements CartService { // ★ 인터페이스 구
 
     // ★ 4. 삭제
     @Override
+    @Transactional
     public void deleteCartItem(Long cartItemId) {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new EntityNotFoundException("장바구니 아이템이 없습니다."));
