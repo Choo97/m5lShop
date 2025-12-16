@@ -27,7 +27,8 @@ public class CartItemRepositoryImpl implements CartItemRepositoryCustom {
                         product.name,      // productName
                         product.price,     // price
                         cartItem.count,    // count
-                        productImage.imgUrl // imgUrl
+                        productImage.imgUrl, // imgUrl
+                        cartItem.color
                 ))
                 .from(cartItem)
                 .join(cartItem.product, product) // CartItem -> Product 조인

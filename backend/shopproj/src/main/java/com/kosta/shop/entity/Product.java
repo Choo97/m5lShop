@@ -69,4 +69,19 @@ public class Product extends BaseTimeEntity{
     @Builder.Default 
     private List<String> colors = new ArrayList<>();
 
+ // 재고 증가 (주문 취소 시)
+    public void addStock(int quantity){
+        this.stockQuantity += quantity;
+    }
+
+    // 재고 감소 (주문 시)
+    public void removeStock(int quantity){
+        int restStock = this.stockQuantity - quantity;
+        if(restStock < 0){
+            // 사용자 정의 예외를 만들면 좋지만, 일단 RuntimeException 사용
+            throw new RuntimeException("상품의 재고가 부족합니다. (현재 재고: " + this.stockQuantity + ")");
+        }
+        this.stockQuantity = restStock;
+    }
+    
 }

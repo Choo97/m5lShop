@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface CartItemRepository extends JpaRepository<CartItem, Long>, CartItemRepositoryCustom {
     
-    // 특정 장바구니에 특정 상품이 이미 있는지 확인
-    CartItem findByCartIdAndProductId(Long cartId, Long productId);
+    // 특정 장바구니 상품ID + 색상까지 같아야 장바구니에 담김
+    CartItem findByCartIdAndProductIdAndColor(Long cartId, Long productId, String color);
 
 }

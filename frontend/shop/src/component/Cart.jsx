@@ -26,7 +26,7 @@ const Cart = () => {
       .catch(err => {
         console.error(err);
         // 401이면 config.js에서 처리하겠지만, 혹시 모르니
-        if(err.response?.status === 401) navigate('/login');
+        if (err.response?.status === 401) navigate('/login');
       });
   };
 
@@ -38,12 +38,12 @@ const Cart = () => {
 
   // 2. 수량 변경 핸들러
   const handleCountChange = (cartItemId, newCount) => {
-    if(newCount < 1) return;
+    if (newCount < 1) return;
 
     myAxios.patch(`/api/cart/${cartItemId}?count=${newCount}`)
       .then(() => {
         // UI 즉시 업데이트 (API 재호출 대신)
-        const newItems = cartItems.map(item => 
+        const newItems = cartItems.map(item =>
           item.cartItemId === cartItemId ? { ...item, count: newCount } : item
         );
         setCartItems(newItems);
@@ -54,7 +54,7 @@ const Cart = () => {
 
   // 3. 삭제 핸들러
   const handleDelete = (cartItemId) => {
-    if(!window.confirm("정말 삭제하시겠습니까?")) return;
+    if (!window.confirm("정말 삭제하시겠습니까?")) return;
 
     myAxios.delete(`/api/cart/${cartItemId}`)
       .then(() => {
@@ -67,16 +67,16 @@ const Cart = () => {
   return (
     <Container className="py-5">
       <h2 className="fw-bold mb-4 text-center">SHOPPING CART</h2>
-      
+
       {cartItems.length > 0 ? (
         <>
           <Table className="align-middle text-center" responsive>
             <thead className="table-light">
               <tr>
-                <th style={{width: '50%'}}>Product</th>
-                <th style={{width: '15%'}}>Price</th>
-                <th style={{width: '20%'}}>Quantity</th>
-                <th style={{width: '15%'}}>Total</th>
+                <th style={{ width: '50%' }}>Product</th>
+                <th style={{ width: '15%' }}>Price</th>
+                <th style={{ width: '20%' }}>Quantity</th>
+                <th style={{ width: '15%' }}>Total</th>
                 <th></th>
               </tr>
             </thead>
@@ -85,7 +85,16 @@ const Cart = () => {
                 <tr key={item.cartItemId}>
                   <td className="text-start">
                     <div className="d-flex align-items-center">
-                      <img src={item.imgUrl} alt={item.name} style={{width: '80px', height: '100px', objectFit: 'cover', marginRight: '15px'}} />
+                      <img src={item.imgUrl} alt={item.name} style={{ width: '80px', height: '100px', objectFit: 'cover', marginRight: '15px' }} />
+                      <div>
+                        <span className="fw-bold d-block">{item.name}</span>
+                        {item.color && (
+                          <span className="text-muted small">
+                            Color: <span style={{ display: 'inline-block', width: '10px', height: '10px', backgroundColor: item.color, borderRadius: '50%', marginRight: '5px' }}></span>
+                            {item.color}
+                          </span>
+                        )}
+                      </div>
                       <span className="fw-bold">{item.name}</span>
                     </div>
                   </td>
@@ -99,7 +108,7 @@ const Cart = () => {
                   </td>
                   <td className="fw-bold">{(item.price * item.count).toLocaleString()}원</td>
                   <td>
-                    <span onClick={() => handleDelete(item.cartItemId)} style={{cursor: 'pointer', color: '#999'}}>
+                    <span onClick={() => handleDelete(item.cartItemId)} style={{ cursor: 'pointer', color: '#999' }}>
                       <FaTrashAlt />
                     </span>
                   </td>

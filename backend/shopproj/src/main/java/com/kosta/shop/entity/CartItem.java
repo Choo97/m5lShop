@@ -28,15 +28,19 @@ public class CartItem extends BaseTimeEntity {
 
     // 몇 개 담았는지
     private int count;
+    
+    // 색상 정보 저장
+    private String color; 
 
-    // ★ 장바구니 아이템 생성 메서드
-    public static CartItem createCartItem(Cart cart, Product product, int count) {
+    // 장바구니 아이템 생성 메서드
+    public static CartItem createCartItem(Cart cart, Product product, int count, String color) {
         return CartItem.builder()
                 .cart(cart)
                 .product(product)
                 .count(count)
+                .color(color) // 색상 저장
                 .build();
-    }
+    }    
 
     // ★ 수량 증가 메서드 (이미 담긴 상품을 또 담았을 때)
     public void addCount(int count) {

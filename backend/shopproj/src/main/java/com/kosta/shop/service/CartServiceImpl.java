@@ -54,15 +54,24 @@ public class CartServiceImpl implements CartService { // ★ 인터페이스 구
         }
 
         // 5. 해당 상품이 장바구니에 이미 있는지 확인
-        CartItem savedCartItem = cartItemRepository.findByCartIdAndProductId(cart.getId(), product.getId());
+        CartItem savedCartItem = cartItemRepository.findByCartIdAndProductIdAndColor(
+                cart.getId(), 
+                product.getId(), 
+                cartItemDto.getColor() // 색상 조건 추가
+        );
 
         if (savedCartItem != null) {
-            // 6-A. 이미 있다면 수량만 증가
+            // 이미 같은 색상의 상품이 있으면 수량 증가
             savedCartItem.addCount(cartItemDto.getCount());
             return savedCartItem.getId();
         } else {
-            // 6-B. 없다면 새로 생성해서 저장
-            CartItem cartItem = CartItem.createCartItem(cart, product, cartItemDto.getCount());
+            // 없으면 새로 생성 (색상 정보 포함)
+            CartItem cartItem = CartItem.createCartItem(
+                    cart, 
+                    product, 
+                    cartItemDto.getCount(), 
+                    cartItemDto.getColor() // ★ 색상 전달
+            );
             cartItemRepository.save(cartItem);
             return cartItem.getId();
         }

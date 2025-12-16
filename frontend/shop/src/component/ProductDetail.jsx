@@ -55,7 +55,8 @@ const ProductDetail = () => {
     // 3. 서버로 전송할 데이터 준비
     const cartItemDto = {
       productId: product.id,
-      count: count
+      count: count,
+      color: selectedColor
     };
 
     try {
