@@ -57,6 +57,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 									.getClaim("sub")
 									.asString();
 			
+		    log.debug("Email from Token: " + email); // 로그 확인용
+
+			
 			if(email != null) {
 				Optional<User> ouser = userRepository.findByEmail(email);
 				

@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 
 import com.kosta.shop.auth.PrincipalDetails;
 import com.kosta.shop.entity.Role;
+import com.kosta.shop.entity.SocialAccount;
 import com.kosta.shop.entity.User;
+import com.kosta.shop.repository.SocialAccountRepository;
 import com.kosta.shop.repository.UserRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,9 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private SocialAccountRepository socialAccountRepository;
 	
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -62,6 +67,7 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
 		Optional<User> ouser = userRepository.findByEmail(oAuth2UserInfo.getEmail());
 		
 		User user = null;
+		
 		if(ouser.isEmpty()) { 
 			user = User.builder()
 						.username(oAuth2UserInfo.getName())
@@ -77,16 +83,29 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
 						.role(Role.ROLE_USER)
 						.password("SOCIAL_LOGIN")
 						.build();
+			
+			userRepository.save(user);
 		} else {
 			user = ouser.get();
-			
-			user.setProvider(oAuth2UserInfo.getProvider());
-			user.setProviderId(oAuth2UserInfo.getProviderId());
-			user.setUsername(oAuth2UserInfo.getName());
-			user.setProfileImage(oAuth2UserInfo.getProfileImage());
 		}
 		
-		userRepository.save(user);
+		// 2. 소셜 계정 연동 확인 및 저장 (Account Linking)
+        Optional<SocialAccount> socialAccount = 
+            socialAccountRepository.findByProviderAndProviderId(
+                oAuth2UserInfo.getProvider(), 
+                oAuth2UserInfo.getProviderId()
+            );
+
+        // 연동된 적이 없으면 새로 저장 (예: 네이버 가입자가 카카오로 로그인 시)
+        if (socialAccount.isEmpty()) {
+            SocialAccount newAccount = SocialAccount.builder()
+                    .user(user)
+                    .provider(oAuth2UserInfo.getProvider())
+                    .providerId(oAuth2UserInfo.getProviderId())
+                    .build();
+            socialAccountRepository.save(newAccount);
+        }
+		
 		return new PrincipalDetails(user, oAuth2User.getAttributes());
 	}
 }

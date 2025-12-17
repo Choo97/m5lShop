@@ -15,6 +15,7 @@ import ProductList from './component/ProductList';
 import ProductDetail from './component/ProductDetail';
 import Cart from './component/Cart';
 import OrderHist from './component/OrderHist';
+import MyPage from './component/MyPage';
 
 function App() {
 
@@ -31,6 +32,7 @@ function App() {
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/orders" element={<OrderHist />} />
+        <Route path="/mypage" element={<MyPage />} />
 
 
       </Routes>
