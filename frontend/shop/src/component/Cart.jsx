@@ -4,13 +4,75 @@ import { useNavigate } from 'react-router-dom';
 import { myAxios } from '../config';
 import { toast } from 'react-toastify';
 import { FaTrashAlt } from 'react-icons/fa';
+import * as Portone from "@portone/browser-sdk/v2";
+import { useAtomValue } from 'jotai';
+import { userAtom } from '../atoms';
 import '../App.css';
 
 const Cart = () => {
   const navigate = useNavigate();
+  const user = useAtomValue(userAtom);
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
+  const requestPay = async () => {
+    if (cartItems.length === 0) {
+      toast.warning("장바구니가 비어있습니다.");
+      return;
+    }
+
+    // 결제 고유 ID 생성 (UUID 권장, 여기서는 간단히 타임스탬프+랜덤)
+    // 실제로는 crypto.randomUUID() 등을 사용하는 것이 좋습니다.
+    const paymentId = `payment-${crypto.randomUUID()}`;
+
+    const orderName = cartItems.length > 1
+      ? `${cartItems[0].name} 외 ${cartItems.length - 1}건`
+      : cartItems[0].name;
+
+    try {
+      // 1. 포트원 결제 요청 (await 사용)
+      const response = await Portone.requestPayment({
+        storeId: "store-c5c07007-20e7-4348-a427-0cbbe7ddefe8", // ★ 포트원 콘솔에서 복사한 Store ID
+        channelKey: "channel-key-3194df70-0bdf-4881-96d8-c4618579a9cc", // ★ 포트원 콘솔에서 복사한 Channel Key (카카오페이 등)
+        paymentId: paymentId,
+        orderName: orderName,
+        totalAmount: 100, // 테스트용으로 100원 고정 원래는 totalAmount
+        currency: "CURRENCY_KRW",
+        payMethod: "EASY_PAY", // 카드: CARD, 실시간 계좌이체: TRANSFER, 가상계좌: VIRTUAL_ACCOUNT, 휴대폰 소액결제: MOBILE, 간편결제: EASY_PAY, 상품권: GIFT_CERTIFICATE
+        customer: {
+          fullName: user.name,
+          phoneNumber: user.phone || "010-0000-0000",
+          email: user.email,
+          address: {
+            addressLine1: user.address || "서울",
+            addressLine2: user.detailAddress || "관악구 관악로11길 54-3 로즈빌3"
+          },
+          zipcode: user.zipcode || "08832"
+        }
+      });
+
+      // 2. 결제 결과 처리
+      if (response.code != null) {
+        // 에러 발생 시 (code가 있으면 에러임)
+        return toast.error(`결제 실패: ${response.message}`);
+      }
+
+      // 3. 결제 성공 시 -> 백엔드에 주문 데이터 전송
+      // (response.paymentId 등을 백엔드로 보내서 검증하는 것이 정석이지만, 일단 주문 저장부터 구현)
+      const orderDtoList = cartItems.map(item => ({
+        cartItemId: item.cartItemId,
+      }));
+
+      const notified = await myAxios.post('/api/order/cart', orderDtoList);
+
+      toast.success("주문이 완료되었습니다!");
+      navigate('/orders'); // 주문 내역 페이지(아직 안 만듦)로 이동
+
+    } catch (error) {
+      console.error(error);
+      toast.error("결제 처리 중 오류가 발생했습니다.");
+    }
+  };
   // 1. 장바구니 목록 불러오기
   useEffect(() => {
     fetchCartItems();
@@ -116,10 +178,11 @@ const Cart = () => {
               ))}
             </tbody>
           </Table>
-
           <div className="d-flex justify-content-end align-items-center mt-4 p-4 bg-light rounded">
             <h4 className="m-0 me-4">TOTAL: <span className="fw-bold text-danger">{totalPrice.toLocaleString()}원</span></h4>
-            <Button color="dark" size="lg" onClick={() => toast.info("주문 기능 준비중입니다.")}>ORDER NOW</Button>
+            <Button color="dark" size="lg" onClick={requestPay}>
+              ORDER NOW
+            </Button>
           </div>
         </>
       ) : (

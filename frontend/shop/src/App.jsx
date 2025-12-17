@@ -3,7 +3,6 @@ import 'bootstrap/dist/css/bootstrap.css'
 import { Routes, Route } from 'react-router-dom'
 import './App.css'
 import Login from './component/Login'
-import Join from './component/Join'
 import NoticeWrite from './component/NoticeWrite'
 import HeaderNavbar from './component/Header'
 import Main from './component/Main';
@@ -15,6 +14,7 @@ import OAuth2RedirectHandler from './component/OAuth2RedirectHandler'; // 컴포
 import ProductList from './component/ProductList';
 import ProductDetail from './component/ProductDetail';
 import Cart from './component/Cart';
+import OrderHist from './component/OrderHist';
 
 function App() {
 
@@ -30,6 +30,8 @@ function App() {
         <Route path='/products' element={<ProductList />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/orders" element={<OrderHist />} />
+
 
       </Routes>
       <Footer />

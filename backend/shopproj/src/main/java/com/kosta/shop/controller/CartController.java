@@ -24,10 +24,12 @@ import com.kosta.shop.dto.CartItemDto;
 import com.kosta.shop.service.CartService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/cart")
 @RequiredArgsConstructor
+@Slf4j
 public class CartController {
 
     private final CartService cartService;
@@ -62,6 +64,7 @@ public class CartController {
     public ResponseEntity<List<CartDetailDto>> orderHist(@AuthenticationPrincipal PrincipalDetails principal) {
         // ★ 한 줄로 깔끔하게 해결
         List<CartDetailDto> cartDetailDtoList = cartService.getCartList(principal.getUser().getEmail());
+        log.debug(Integer.toString(cartDetailDtoList.size()));
         return new ResponseEntity<>(cartDetailDtoList, HttpStatus.OK);
     }
 

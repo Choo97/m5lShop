@@ -12,7 +12,7 @@ import {
   Row,
   Col
 } from 'reactstrap';
-import { FaShoppingBag, FaHeart, FaUser, FaSignOutAlt } from 'react-icons/fa';
+import { FaShoppingBag, FaHeart, FaUser, FaSignOutAlt, FaSuitcaseRolling } from 'react-icons/fa';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { userAtom, initUser } from '../atoms';
@@ -114,6 +114,7 @@ const HeaderNavbar = () => {
               )}
               <div className="icon-btn" onClick={() => handleAuthNavigation('/cart')} title="장바구니"><FaShoppingBag /></div>
               <div className="icon-btn" onClick={() => handleAuthNavigation('/wishlist')} title="찜목록"><FaHeart /></div>
+              <div className="icon-btn" onClick={() => handleAuthNavigation('/orders')} title="주문 내역"><FaSuitcaseRolling /></div>
               <div className="icon-btn" onClick={() => handleAuthNavigation('/mypage')} title={user.isLogined ? "마이페이지" : "로그인"}><FaUser /></div>
               {user.isLogined && (
                 <div className="icon-btn" onClick={handleLogout} title="로그아웃" style={{ marginLeft: '1.5rem', color: '#888' }}><FaSignOutAlt /></div>
