@@ -1,26 +1,40 @@
 package com.kosta.shop.service;
 
-import com.kosta.shop.dto.CartOrderDto;
-import com.kosta.shop.entity.*;
-import com.kosta.shop.repository.*;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.kosta.shop.dto.CartOrderDto;
+import com.kosta.shop.dto.OrderHistDto;
+import com.kosta.shop.dto.OrderItemDto;
+import com.kosta.shop.entity.CartItem;
+import com.kosta.shop.entity.Order;
+import com.kosta.shop.entity.OrderItem;
+import com.kosta.shop.entity.ProductImage;
+import com.kosta.shop.entity.User;
+import com.kosta.shop.repository.CartItemRepository;
+import com.kosta.shop.repository.OrderRepository;
+import com.kosta.shop.repository.ProductImageRepository;
+import com.kosta.shop.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
+
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final CartItemRepository cartItemRepository;
+    private final ProductImageRepository productImageRepository;
 
     @Override
+    @Transactional
     public Long orders(List<CartOrderDto> cartOrderDtoList, String email) {
         
         // 1. 로그인한 유저 조회
@@ -55,5 +69,27 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return order.getId();
+    }
+    
+    @Override
+    public List<OrderHistDto> getOrderList(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("회원이 존재하지 않습니다."));
+        List<Order> orders = orderRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
+        
+        List<OrderHistDto> orderHistDtos = new ArrayList<>();
+        
+        for (Order order : orders) {
+            OrderHistDto orderHistDto = new OrderHistDto(order);
+            List<OrderItem> orderItems = order.getOrderItems();
+            for (OrderItem orderItem : orderItems) {
+                ProductImage productImage = productImageRepository.findByProductIdAndIsRepImgTrue(orderItem.getProduct().getId());
+                String imgUrl = (productImage != null) ? productImage.getImgUrl() : "";
+
+                OrderItemDto orderItemDto = new OrderItemDto(orderItem, imgUrl);
+                orderHistDto.addOrderItemDto(orderItemDto);
+            }
+            orderHistDtos.add(orderHistDto);
+        }
+        return orderHistDtos;
     }
 }

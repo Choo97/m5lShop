@@ -1,15 +1,22 @@
 package com.kosta.shop.controller;
 
-import com.kosta.shop.auth.PrincipalDetails;
-import com.kosta.shop.dto.CartOrderDto;
-import com.kosta.shop.service.OrderService;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.kosta.shop.auth.PrincipalDetails;
+import com.kosta.shop.dto.CartOrderDto;
+import com.kosta.shop.dto.OrderHistDto;
+import com.kosta.shop.service.OrderService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/order")
@@ -36,5 +43,11 @@ public class OrderController {
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+    
+    @GetMapping
+    public ResponseEntity<List<OrderHistDto>> getOrderList(@AuthenticationPrincipal PrincipalDetails principal) {
+        List<OrderHistDto> orderHistDtoList = orderService.getOrderList(principal.getUser().getEmail());
+        return new ResponseEntity<>(orderHistDtoList, HttpStatus.OK);
     }
 }
