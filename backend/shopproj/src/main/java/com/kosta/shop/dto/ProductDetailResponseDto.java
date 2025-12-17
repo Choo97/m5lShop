@@ -34,6 +34,7 @@ public class ProductDetailResponseDto {
     
     // ★ 상세 페이지용: 모든 이미지 리스트
     private List<String> productImages; 
+    private List<String> detailImages;  // 하단 상세설명용 (isDetailImg == true)
 
     public static ProductDetailResponseDto from(Product product) {
         int rate = 0;
@@ -41,8 +42,15 @@ public class ProductDetailResponseDto {
             rate = (int) ((product.getPrice() - product.getSalePrice()) / (double) product.getPrice() * 100);
         }
 
-        // 이미지 엔티티 리스트 -> URL 문자열 리스트로 변환
-        List<String> images = product.getProductImages().stream()
+     // 1. 상단 갤러리 이미지 (상세 이미지가 아닌 것들)
+        List<String> galleryImages = product.getProductImages().stream()
+                .filter(img -> !img.isDetailImg()) 
+                .map(ProductImage::getImgUrl)
+                .collect(Collectors.toList());
+
+        // 2. 하단 상세 설명 이미지 (상세 이미지인 것들)
+        List<String> descImages = product.getProductImages().stream()
+                .filter(ProductImage::isDetailImg)
                 .map(ProductImage::getImgUrl)
                 .collect(Collectors.toList());
 
@@ -60,7 +68,8 @@ public class ProductDetailResponseDto {
                 .isBest(product.isBest())
                 .isSale(product.isSale())
                 .colors(product.getColors())
-                .productImages(images) // 전체 이미지 담기
+                .productImages(galleryImages) // 분리해서 저장
+                .detailImages(descImages)     // 분리해서 저장
                 .build();
     }
 }

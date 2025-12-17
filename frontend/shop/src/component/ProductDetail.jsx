@@ -5,20 +5,21 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useAtomValue } from 'jotai';
 import { userAtom } from '../atoms';
-import { baseUrl, myAxios } from '../config'; 
+import { baseUrl, myAxios } from '../config';
+import ProductReviews from './ProductReviews';
 import '../App.css';
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  
+
   // ★ 전역 상태에서 유저 정보 가져오기
-  const user = useAtomValue(userAtom); 
-  
+  const user = useAtomValue(userAtom);
+
   const [product, setProduct] = useState(null);
   const [mainImg, setMainImg] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
-  const [count, setCount] = useState(1); 
+  const [count, setCount] = useState(1);
 
   // 상품 상세 정보 가져오기 (로그인 불필요)
   useEffect(() => {
@@ -40,7 +41,7 @@ const ProductDetail = () => {
   const handleAddToCart = async () => {
     // 1. 로그인 체크 (atoms.jsx에 정의된 isLogined 사용)
     if (!user.isLogined) {
-      if(window.confirm("로그인이 필요한 서비스입니다. 로그인 하시겠습니까?")) {
+      if (window.confirm("로그인이 필요한 서비스입니다. 로그인 하시겠습니까?")) {
         navigate('/login');
       }
       return;
@@ -62,8 +63,8 @@ const ProductDetail = () => {
     try {
       // ★ myAxios를 사용하여 토큰과 함께 요청 전송
       await myAxios.post('/api/cart', cartItemDto);
-      
-      if(window.confirm("장바구니에 담겼습니다. 장바구니로 이동하시겠습니까?")) {
+
+      if (window.confirm("장바구니에 담겼습니다. 장바구니로 이동하시겠습니까?")) {
         navigate('/cart');
       }
     } catch (error) {
@@ -85,10 +86,10 @@ const ProductDetail = () => {
           </div>
           <div className="d-flex gap-2 overflow-auto">
             {product.productImages.map((img, idx) => (
-              <img 
-                key={idx} 
-                src={img} 
-                alt={`Thumb ${idx}`} 
+              <img
+                key={idx}
+                src={img}
+                alt={`Thumb ${idx}`}
                 style={{ width: '80px', height: '100px', objectFit: 'cover', cursor: 'pointer', border: mainImg === img ? '2px solid #333' : '1px solid #ddd' }}
                 onClick={() => setMainImg(img)}
               />
@@ -119,11 +120,11 @@ const ProductDetail = () => {
               <p className="fw-bold mb-2">Color</p>
               <div className="d-flex gap-2">
                 {product.colors.map((color, idx) => (
-                  <div 
+                  <div
                     key={idx}
                     onClick={() => setSelectedColor(color)}
-                    style={{ 
-                      width: '30px', height: '30px', borderRadius: '50%', backgroundColor: color, 
+                    style={{
+                      width: '30px', height: '30px', borderRadius: '50%', backgroundColor: color,
                       cursor: 'pointer', border: selectedColor === color ? '3px solid #333' : '1px solid #ddd',
                       boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
                     }}
@@ -135,12 +136,12 @@ const ProductDetail = () => {
 
             {/* 수량 선택 */}
             <div className="mb-4 d-flex align-items-center">
-               <span className="fw-bold me-3">Quantity</span>
-               <div className="d-flex align-items-center border rounded">
-                 <button className="btn btn-light btn-sm border-0" onClick={() => setCount(prev => Math.max(1, prev - 1))}>-</button>
-                 <span className="px-3">{count}</span>
-                 <button className="btn btn-light btn-sm border-0" onClick={() => setCount(prev => prev + 1)}>+</button>
-               </div>
+              <span className="fw-bold me-3">Quantity</span>
+              <div className="d-flex align-items-center border rounded">
+                <button className="btn btn-light btn-sm border-0" onClick={() => setCount(prev => Math.max(1, prev - 1))}>-</button>
+                <span className="px-3">{count}</span>
+                <button className="btn btn-light btn-sm border-0" onClick={() => setCount(prev => prev + 1)}>+</button>
+              </div>
             </div>
 
             {/* 버튼 */}
@@ -161,6 +162,43 @@ const ProductDetail = () => {
               </p>
             </div>
           </div>
+        </Col>
+      </Row>
+
+      {/* ★ 하단 상세 정보 영역 (추가됨) */}
+      <Row className="mt-5">
+        <Col>
+          <div className="text-center">
+            <h4 className="fw-bold mb-4 py-3 border-bottom border-top">DETAIL VIEW</h4>
+
+            {/* 1. 텍스트 설명 */}
+            <p className="mb-5" style={{ whiteSpace: 'pre-line', lineHeight: '1.8', color: '#555', fontSize: '1.05rem' }}>
+              {product.description}
+            </p>
+
+            {/* 2. 상세 이미지 리스트 (세로로 쭉 나열) */}
+            <div className="detail-images-container">
+              {product.detailImages && product.detailImages.map((img, idx) => (
+                <img
+                  key={idx}
+                  src={img}
+                  alt={`Detail ${idx}`}
+                  className="img-fluid mb-0 d-block mx-auto"
+                  style={{ maxWidth: '100%' }}
+                />
+              ))}
+            </div>
+
+            {/* 상세 이미지가 없을 경우 안내 */}
+            {(!product.detailImages || product.detailImages.length === 0) && (
+              <div className="p-5 text-muted bg-light">상세 이미지가 없습니다.</div>
+            )}
+          </div>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <ProductReviews product={product} />
         </Col>
       </Row>
     </Container>

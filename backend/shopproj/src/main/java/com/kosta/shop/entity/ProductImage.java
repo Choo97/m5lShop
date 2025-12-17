@@ -32,6 +32,8 @@ public class ProductImage extends BaseTimeEntity {
 
     private boolean isRepImg; // 대표 이미지 여부 (true면 썸네일)
 
+    private boolean isDetailImg;  // 상세 설명 이미지 여부 (true면 상세설명이미지, 아니면 상단 이미지)
+
     // 어떤 상품의 이미지인지 연결
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
@@ -42,11 +44,12 @@ public class ProductImage extends BaseTimeEntity {
     }
 
     @Builder
-    public ProductImage(String imgName, String oriImgName, String imgUrl, boolean isRepImg, Product product) {
+    public ProductImage(String imgName, String oriImgName, String imgUrl, boolean isRepImg, boolean isDetailImg, Product product) {
         this.imgName = imgName;
         this.oriImgName = oriImgName;
         this.imgUrl = imgUrl;
         this.isRepImg = isRepImg;
+        this.isDetailImg = isDetailImg;
         this.product = product;
     }
 }

@@ -34,3 +34,24 @@ body {
 .Toastify__toast-icon svg {
   fill: #4DD0E1; 
 }
+
+/* 리뷰 모달 스타일 */
+.review-modal-content {
+  border: none;
+  border-radius: 0; /* 각진 스타일 */
+  overflow: hidden;
+}
+
+/* 캐러셀 이미지 비율 유지 및 중앙 정렬 */
+.carousel-item img {
+  max-height: 600px;
+  width: auto;
+  margin: 0 auto;
+  display: block;
+  object-fit: contain; /* 이미지가 잘리지 않고 다 보이게 */
+}
+
+/* 캐러셀 화살표 위치 조정 (선택사항) */
+.carousel-control-prev, .carousel-control-next {
+  width: 10%;
+}
