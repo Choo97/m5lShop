@@ -80,6 +80,9 @@ public class User extends BaseTimeEntity{
         this.detailAddress = detailAddress;
         this.gender = gender;
     }
-		
+	
+	public void updateProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
 }
 
