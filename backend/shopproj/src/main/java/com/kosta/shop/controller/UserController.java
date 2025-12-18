@@ -1,5 +1,7 @@
 package com.kosta.shop.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,5 +39,11 @@ public class UserController {
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+    
+    @GetMapping("/social")
+    public ResponseEntity<Map<String, Boolean>> getSocialStatus(@AuthenticationPrincipal PrincipalDetails principal) {
+        Map<String, Boolean> status = userService.getSocialStatus(principal.getUser().getEmail());
+        return ResponseEntity.ok(status);
     }
 }

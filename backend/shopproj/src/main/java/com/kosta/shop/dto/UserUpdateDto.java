@@ -10,4 +10,5 @@ public class UserUpdateDto {
     private String zipcode;
     private String address;
     private String detailAddress;
-}
+    private String gender; 
+    }

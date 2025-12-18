@@ -72,12 +72,13 @@ public class User extends BaseTimeEntity{
         return this.role != null ? this.role.name() : "";
     }
 
-	public void updateInfo(String nickname, String phone, String zipcode, String address, String detailAddress) {
+	public void updateInfo(String nickname, String phone, String zipcode, String address, String detailAddress, String gender) {
         this.nickname = nickname;
         this.phone = phone;
         this.zipcode = zipcode;
         this.address = address;
         this.detailAddress = detailAddress;
+        this.gender = gender;
     }
 		
 }

@@ -42,7 +42,8 @@ public class NaverUserInfo implements OAuth2UserInfo {
 
 	@Override
 	public String getGender() {
-		return (String)attributes.get("gender");
+		String gender = (String)attributes.get("gender");
+		return gender.equals("M") ? "남자" : "여자" ;
 	}
 
 	@Override

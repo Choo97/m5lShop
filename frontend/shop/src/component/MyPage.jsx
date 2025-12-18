@@ -5,11 +5,14 @@ import { myAxios } from '../config';
 import { toast } from 'react-toastify';
 import { useSetAtom } from 'jotai';
 import { userAtom } from '../atoms';
+import { RiKakaoTalkFill } from 'react-icons/ri'; 
+import { SiNaver } from 'react-icons/si';
 
 const MyPage = () => {
   const setUser = useSetAtom(userAtom);
   const scriptUrl = 'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
   const openPostcode = useDaumPostcodePopup(scriptUrl);
+const [socialStatus, setSocialStatus] = useState({ kakao: false, naver: false });
 
   const [formData, setFormData] = useState({
     nickname: '',
@@ -24,17 +27,24 @@ const MyPage = () => {
   useEffect(() => {
     myAxios.get('/api/user/me')
       .then(res => {
-        const { nickname, email, phone, zipcode, address, detailAddress } = res.data;
+        const { nickname, email, phone, gender, zipcode, address, detailAddress } = res.data;
         setFormData({ 
             nickname: nickname || '', 
             email: email || '', 
             phone: phone || '', 
+            gender: gender || '남자', 
             zipcode: zipcode || '', 
             address: address || '', 
             detailAddress: detailAddress || '' 
         });
       })
       .catch(err => console.error(err));
+
+myAxios.get('/api/user/social')
+      .then(res => {
+        console.log("소셜 연동 상태:", res.data),
+        setSocialStatus(res.data)})
+      .catch(err => console.error("소셜 정보 로드 실패", err));
   }, []);
 
   const handleChange = (e) => {
@@ -82,7 +92,35 @@ const MyPage = () => {
           <Label>전화번호</Label>
           <Input type="text" name="phone" value={formData.phone} onChange={handleChange} placeholder="010-0000-0000" />
         </FormGroup>
-        
+        <FormGroup>
+          <Label className="d-block">성별</Label>
+          <div className="d-flex gap-4 mt-2">
+            <FormGroup check>
+              <Label check>
+                <Input 
+                  type="radio" 
+                  name="gender" 
+                  value="남자" 
+                  checked={formData.gender === '남자'} 
+                  onChange={handleChange} 
+                />{' '}
+                남성
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input 
+                  type="radio" 
+                  name="gender" 
+                  value="여자" 
+                  checked={formData.gender === '여자'} 
+                  onChange={handleChange} 
+                />{' '}
+                여성
+              </Label>
+            </FormGroup>
+          </div>
+        </FormGroup>
         <FormGroup>
           <Label>주소</Label>
           <div className="d-flex gap-2 mb-2">
@@ -92,7 +130,50 @@ const MyPage = () => {
           <Input type="text" value={formData.address} readOnly className="mb-2" />
           <Input type="text" name="detailAddress" value={formData.detailAddress} onChange={handleChange} placeholder="상세주소" />
         </FormGroup>
+<FormGroup>
+          <Label>소셜 계정 연동</Label>
+          <div className="d-flex gap-3 mt-2">
+            
+            {/* 카카오 아이콘 */}
+            <div className="text-center">
+              <div 
+                className="d-flex align-items-center justify-content-center rounded-circle mb-1"
+                style={{ 
+                  width: '50px', height: '50px', 
+                  backgroundColor: socialStatus.kakao ? '#FEE500' : '#f0f0f0', // 연동되면 노란색, 아니면 회색
+                  color: socialStatus.kakao ? '#000' : '#ccc',
+                  fontSize: '1.5rem',
+                  transition: '0.3s'
+                }}
+              >
+                <RiKakaoTalkFill />
+              </div>
+              <small className={socialStatus.kakao ? "fw-bold text-dark" : "text-muted"}>
+                {socialStatus.kakao ? "연동됨" : "미연동"}
+              </small>
+            </div>
 
+            {/* 네이버 아이콘 */}
+            <div className="text-center">
+              <div 
+                className="d-flex align-items-center justify-content-center rounded-circle mb-1"
+                style={{ 
+                  width: '50px', height: '50px', 
+                  backgroundColor: socialStatus.naver ? '#03C75A' : '#f0f0f0', // 연동되면 초록색
+                  color: 'white',
+                  fontSize: '1.2rem',
+                  transition: '0.3s'
+                }}
+              >
+                <SiNaver />
+              </div>
+              <small className={socialStatus.naver ? "fw-bold text-dark" : "text-muted"}>
+                {socialStatus.naver ? "연동됨" : "미연동"}
+              </small>
+            </div>
+
+          </div>
+        </FormGroup>
         <Button color="dark" size="lg" block className="mt-4 w-100" onClick={handleUpdate}>
           정보 수정
         </Button>
