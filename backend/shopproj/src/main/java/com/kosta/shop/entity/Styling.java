@@ -59,4 +59,9 @@ public class Styling extends BaseTimeEntity {
                 .build();
         this.stylingProducts.add(stylingProduct);
     }
+
+	public void increaseViewCount() {
+		this.viewCount++;
+		
+	}
 }

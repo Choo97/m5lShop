@@ -6,6 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface StylingService {
-    Page<StylingDto.Response> getStylingList(Pageable pageable);
-    public void createStyling(StylingDto.Request request, MultipartFile file, String email) throws Exception; 
+	Page<StylingDto.Response> getStylingList(Pageable pageable);
+
+	public void createStyling(StylingDto.Request request, MultipartFile file, String email) throws Exception;
+
+	StylingDto.Response getStylingDetail(Long id); // 추가
+
 }

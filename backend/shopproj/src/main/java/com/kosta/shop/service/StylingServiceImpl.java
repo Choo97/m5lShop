@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class StylingServiceImpl implements StylingService {
 
     @Value("${uploadPath}")
@@ -33,6 +33,7 @@ public class StylingServiceImpl implements StylingService {
     private final FileService fileService; // 이미 만들어둔 파일 서비스
 
     @Override
+    @Transactional
     public void createStyling(StylingDto.Request request, MultipartFile file, String email) throws Exception {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("회원 없음"));
@@ -62,9 +63,19 @@ public class StylingServiceImpl implements StylingService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Page<StylingDto.Response> getStylingList(Pageable pageable) {
         return stylingRepository.findAllByOrderByCreatedAtDesc(pageable)
                 .map(StylingDto.Response::from);
+    }
+    
+    @Override
+    @Transactional // 조회수 변경(Update)이 일어나므로 readOnly=false
+    public StylingDto.Response getStylingDetail(Long id) {
+        Styling styling = stylingRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다."));
+        
+        styling.increaseViewCount(); // 조회수 증가 (Entity에 메소드 필요)
+        
+        return StylingDto.Response.from(styling);
     }
 }

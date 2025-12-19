@@ -177,6 +177,7 @@ const MyPage = () => {
                   value="남자"
                   checked={formData.gender === '남자'}
                   onChange={handleChange}
+                  disabled
                 />{' '}
                 남성
               </Label>
@@ -189,6 +190,7 @@ const MyPage = () => {
                   value="여자"
                   checked={formData.gender === '여자'}
                   onChange={handleChange}
+                  disabled
                 />{' '}
                 여성
               </Label>

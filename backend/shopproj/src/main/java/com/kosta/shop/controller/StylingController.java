@@ -44,4 +44,9 @@ public class StylingController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+    
+    @GetMapping("/{id}")
+    public ResponseEntity<StylingDto.Response> getDetail(@PathVariable Long id) {
+        return ResponseEntity.ok(stylingService.getStylingDetail(id));
+    }
 }

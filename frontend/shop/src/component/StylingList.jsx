@@ -48,7 +48,10 @@ const StylingList = () => {
       <Row>
         {stylings.map((style) => (
           <Col md={4} sm={6} key={style.id} className="mb-4">
-            <Card className="border-0 shadow-sm styling-card">
+            <Card className="border-0 shadow-sm styling-card"
+                onClick={() => navigate(`/community/styling/${style.id}`)} // ★ 클릭 시 상세 이동
+                style={{ cursor: 'pointer' }}
+            >
               <div className="position-relative overflow-hidden" style={{ borderRadius: '8px' }}>
                 <CardImg 
                   top 

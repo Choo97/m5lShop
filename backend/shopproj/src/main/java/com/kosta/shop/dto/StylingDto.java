@@ -26,7 +26,8 @@ public class StylingDto {
         private String nickname;
         private String profileImage;
         private String date;
-        
+        private int viewCount; 
+
         // ★ 추가: 태그된 상품 정보 (간단하게)
         private List<TagResponse> tags;
 
@@ -46,6 +47,7 @@ public class StylingDto {
                     .nickname(styling.getUser().getNickname())
                     .profileImage(styling.getUser().getProfileImage())
                     .date(styling.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                    .viewCount(styling.getViewCount()) 
                     .tags(tagList) // ★ 태그 리스트 포함
                     .build();
         }

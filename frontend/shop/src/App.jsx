@@ -18,6 +18,7 @@ import OrderHist from './component/OrderHist';
 import MyPage from './component/MyPage';
 import StylingList from './component/StylingList';
 import StylingWrite from './component/StylingWrite';
+import StylingDetail from './component/StylingDetail';
 
 function App() {
 
@@ -37,7 +38,7 @@ function App() {
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/community/styling" element={<StylingList />} />
         <Route path="/community/styling/write" element={<StylingWrite />} />
-
+        <Route path="/community/styling/:id" element={<StylingDetail />} />
       </Routes>
       <Footer />
       <ToastContainer
