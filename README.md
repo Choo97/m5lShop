@@ -46,3 +46,7 @@ cd /Documents/react-workspace/shopProject/backend/shopproj
 java build path > source > add folder
 -- build/generated/querydsl 체크 후 apply / close.
 그 후 위 과정 실행.
+
+# 구현중인 기능
+
+리뷰 작성하기(주문 내역페이지에서) 및 리뷰보기(상세페이지에서)
