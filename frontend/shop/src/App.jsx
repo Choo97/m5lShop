@@ -16,6 +16,8 @@ import ProductDetail from './component/ProductDetail';
 import Cart from './component/Cart';
 import OrderHist from './component/OrderHist';
 import MyPage from './component/MyPage';
+import StylingList from './component/StylingList';
+import StylingWrite from './component/StylingWrite';
 
 function App() {
 
@@ -33,22 +35,23 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/orders" element={<OrderHist />} />
         <Route path="/mypage" element={<MyPage />} />
-
+        <Route path="/community/styling" element={<StylingList />} />
+        <Route path="/community/styling/write" element={<StylingWrite />} />
 
       </Routes>
       <Footer />
-      <ToastContainer 
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </>
   )
 }

@@ -24,6 +24,13 @@
 
 # 개발 주의사항
 
+## 엔티티 생성시 Q파일 자동으로 빌드 기능
+
+터미널 실행 후 백엔드 프로잭트에서'./gradlew compileJava -t'  다음 명령어 실행
+eclipse - window - Show view - terminal - 터미널아이콘 클릭
+cd /Documents/react-workspace/shopProject/backend/shopproj
+./gradlew compileJava -t
+
 # 백엔드
 
 엔티티 변경시
