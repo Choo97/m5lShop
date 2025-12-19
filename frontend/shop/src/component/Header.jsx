@@ -1,16 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  Navbar,
-  Nav,
-  NavItem,
-  NavLink,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  Container,
-  Row,
-  Col
+  Navbar, Nav, NavItem, NavLink, UncontrolledDropdown,
+  DropdownToggle, DropdownMenu, DropdownItem,
+  Container, Row, Col, Input, InputGroup
 } from 'reactstrap';
 import { FaShoppingBag, FaHeart, FaUser, FaSignOutAlt, FaSuitcaseRolling } from 'react-icons/fa';
 import { useNavigate, Link } from 'react-router-dom';
@@ -19,11 +11,26 @@ import { userAtom, initUser } from '../atoms';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
 import './Header.css';
+import { FaSearch } from 'react-icons/fa'; // 돋보기 아이콘
 import { toast } from 'react-toastify'; 
 
 const HeaderNavbar = () => {
   const navigate = useNavigate();
   const [user, setUser] = useAtom(userAtom);
+  const [keyword, setKeyword] = useState('');
+
+  const handleSearch = (e) => {
+    // 한글 입력 중(조합 중)이면 이벤트 무시 (엔터 키 중복 실행 방지)
+    if (e.nativeEvent.isComposing) return;
+
+    if (e.key === 'Enter') {
+      if (keyword.trim() === '') return;
+      navigate(`/products?keyword=${keyword}`);
+      setKeyword('');
+      // 입력창 포커스 해제 (선택사항)
+      e.target.blur();
+    }
+  };
 
   // 1. 상품 카테고리 데이터 (code 추가: 쿼리 파라미터용)
   const productCategories = [
@@ -100,12 +107,28 @@ const HeaderNavbar = () => {
 
           {/* --- Row 1: 로고 & 유저 아이콘 --- */}
           <Row className="align-items-center mb-3">
-            <Col xs="4">
+            <Col xs="3">
               <Link to="/" className="logo-text">
                 MINIMAL SHOP
               </Link>
             </Col>
-
+            <Col xs="5" className="d-none d-md-block"> 
+              <div className="position-relative w-75 mx-auto">
+                <Input 
+                  placeholder="SEARCH" 
+                  className="border-0 border-bottom rounded-0 bg-transparent ps-0" 
+                  style={{ boxShadow: 'none' }}
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  onKeyDown={handleSearch}
+                />
+                <FaSearch 
+                  className="position-absolute end-0 top-50 translate-middle-y text-muted" 
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => keyword.trim() && navigate(`/products?keyword=${keyword}`)}
+                />
+              </div>
+            </Col>
             <Col xs="8" className="d-flex justify-content-end align-items-center">
               {user.isLogined && (
                 <span className="me-3 d-none d-md-block" style={{ fontSize: '0.9rem', color: '#555' }}>

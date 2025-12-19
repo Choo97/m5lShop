@@ -23,10 +23,10 @@ public class ProductController {
     public ResponseEntity<List<ProductResponseDto>> getProducts(
             @RequestParam(required = false) String category,      // required=false: 파라미터가 없어도 됨
             @RequestParam(required = false, name = "sub") String subCategory, // URL엔 sub, 코드엔 subCategory
-            @RequestParam(required = false) String type
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String keyword // ★ 추가
     ) {
-        List<ProductResponseDto> list = productService.getProductList(category, subCategory, type);
-        log.debug("list", list);
+        List<ProductResponseDto> list = productService.getProductList(category, subCategory, type, keyword);
         return ResponseEntity.ok(list);
     }
     

@@ -6,6 +6,6 @@ import com.kosta.shop.entity.Product;
 
 public interface ProductRepositoryCustom {
 
-    List<Product> searchProducts(String category, String subCategory, String type);
+    List<Product> searchProducts(String category, String subCategory, String type, String keyword);
 
 }

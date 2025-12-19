@@ -49,9 +49,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
 	@Override
-	public List<ProductResponseDto> getProductList(String category, String subCategory, String type) {
+	public List<ProductResponseDto> getProductList(String category, String subCategory, String type, String keyword) {
 		// QueryDSL로 만든 동적 쿼리 메소드 호출
-        List<Product> products = productRepository.searchProducts(category, subCategory, type);
+        List<Product> products = productRepository.searchProducts(category, subCategory, type, keyword);
 
         return products.stream()
                 .map(ProductResponseDto::from)

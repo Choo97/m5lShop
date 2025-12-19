@@ -20,17 +20,24 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 	    
     @Override
-    public List<Product> searchProducts(String category, String subCategory, String type) { // type 추가
+    public List<Product> searchProducts(String category, String subCategory, String type, String keyword) { // type 추가
         return queryFactory
                 .selectFrom(product)
                 .where(
                         eqCategory(category),
                         eqSubCategory(subCategory),
-                        eqType(type) // type 조건 함수 추가
+                        eqType(type), // type 조건 함수 추가
+                        containKeyword(keyword)
                 )
                 .orderBy(product.createdAt.desc())
                 .fetch();
     }
+    
+    private BooleanExpression containKeyword(String keyword) {
+        if (!StringUtils.hasText(keyword)) return null;
+        return product.name.containsIgnoreCase(keyword); // 대소문자 무시하고 검색
+    }
+    
 	private BooleanExpression eqCategory(String category) {
         // category가 null이거나 빈 문자열이면 null 반환 -> Where 절에서 자동 제외됨
         if (!StringUtils.hasText(category)) {

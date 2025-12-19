@@ -8,7 +8,7 @@ import com.kosta.shop.dto.ProductResponseDto;
 public interface ProductService {
 	public List<ProductResponseDto> getBestProductsByAge(int age);
 	
-    public List<ProductResponseDto> getProductList(String category, String subCategory, String type);
+    public List<ProductResponseDto> getProductList(String category, String subCategory, String type, String keyword);
 
     public ProductDetailResponseDto getProductDetail(Long id);
 

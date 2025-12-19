@@ -15,6 +15,7 @@ const ProductList = () => {
   const category = searchParams.get('category'); // ex) outer, top
   const sub = searchParams.get('sub');           // ex) coat, hoodie
   const type = searchParams.get('type');         // ex) new, best, sale
+  const keyword = searchParams.get('keyword'); 
 
   useEffect(() => {
     setLoading(true);
@@ -22,9 +23,7 @@ const ProductList = () => {
     // URL 예시: /api/products?category=outer&sub=coat
     axios.get(`${baseUrl}/api/products`, {
       params: { 
-        category: category, 
-        sub: sub,
-        type: type // 백엔드 컨트롤러에 type 처리 로직이 필요함
+        category, sub, type, keyword // 백엔드 컨트롤러에 type 처리 로직이 필요함
       }
     })
     .then(res => {
@@ -36,10 +35,11 @@ const ProductList = () => {
       console.error("상품 로드 실패", err);
       setLoading(false);
     });
-  }, [category, sub, type]); // 쿼리 파라미터가 바뀔 때마다 다시 실행
+  }, [category, sub, type, keyword]); // 쿼리 파라미터가 바뀔 때마다 다시 실행
 
   // 제목 텍스트 결정 로직
   const getTitle = () => {
+    if (keyword) return `SEARCH: "${keyword}"`; // 검색어 표시
     if (type) return type.toUpperCase();
     if (sub) return sub.toUpperCase();
     if (category) return category.toUpperCase();
