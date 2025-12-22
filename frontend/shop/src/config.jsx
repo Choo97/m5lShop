@@ -1,7 +1,15 @@
 import axios from "axios";
 
-export const baseUrl = "http://localhost:8090";
-export const reactUrl = "http://localhost:5173";
+const SERVER_IP = "http://16.184.56.172"; 
+
+// 2. 환경(개발 vs 배포)에 따라 자동으로 주소 선택
+export const baseUrl = import.meta.env.PROD
+  ? `${SERVER_IP}:8090`   // 배포 시: AWS 백엔드
+  : "http://localhost:8090";   // 개발 시: 내 컴퓨터 백엔드
+
+export const reactUrl = import.meta.env.PROD
+  ? `${SERVER_IP}:5173`   // 배포 시: AWS 프론트엔드
+  : "http://localhost:5173";   // 개발 시: 내 컴퓨터 프론트엔드
 
 // 1. Axios 인스턴스 생성 (함수가 아님!)
 export const myAxios = axios.create({

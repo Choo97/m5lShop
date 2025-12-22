@@ -4,7 +4,7 @@ import { useSetAtom } from 'jotai';
 import { userAtom } from '../atoms';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import { baseUrl } from '../config'; // http://localhost:8090
+import { baseUrl } from '../config';
 
 
 const OAuth2RedirectHandler = () => {

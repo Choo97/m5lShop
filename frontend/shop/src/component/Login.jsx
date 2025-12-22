@@ -7,7 +7,7 @@ import { userAtom } from '../atoms'; // 경로는 실제 구조에 맞게 수정
 import '../App.css';
 import './Login.css';
 import { toast } from 'react-toastify';
-import { baseUrl } from '../config'; // http://localhost:8090
+import { baseUrl } from '../config';
 
 // 소셜 로그인 이미지 (가지고 계신 파일 경로로 수정하세요)
 import naverLoginImg from '../images/naver_LoginImage.png'; // 예시 경로
