@@ -1,13 +1,18 @@
 package com.kosta.shop.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.kosta.shop.dto.WishDetailDto;
 import com.kosta.shop.entity.Product;
+import com.kosta.shop.entity.ProductImage;
 import com.kosta.shop.entity.User;
 import com.kosta.shop.entity.Wish;
+import com.kosta.shop.repository.ProductImageRepository;
 import com.kosta.shop.repository.ProductRepository;
 import com.kosta.shop.repository.UserRepository;
 import com.kosta.shop.repository.WishRepository;
@@ -16,14 +21,16 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class WishService {
 
     private final WishRepository wishRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final ProductImageRepository productImageRepository;
 
     // 찜 토글 (true: 찜 됨, false: 찜 취소됨)
+    @Transactional
     public boolean toggleWish(String email, Long productId) {
         User user = userRepository.findByEmail(email).orElseThrow();
         Product product = productRepository.findById(productId).orElseThrow();
@@ -40,9 +47,36 @@ public class WishService {
     }
     
     // 내가 찜한 상품인지 확인
-    @Transactional(readOnly = true)
     public boolean isWished(String email, Long productId) {
         User user = userRepository.findByEmail(email).orElseThrow();
         return wishRepository.findByUserIdAndProductId(user.getId(), productId).isPresent();
+    }
+
+    public List<WishDetailDto> getWishList(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow();
+        List<Wish> wishes = wishRepository.findAllByUserOrderByCreatedAtDesc(user);
+        
+        List<WishDetailDto> wishDtos = new ArrayList<>();
+        
+        for (Wish wish : wishes) {
+            // 대표 이미지 찾기
+            ProductImage img = productImageRepository.findByProductIdAndIsRepImgTrue(wish.getProduct().getId());
+            String imgUrl = (img != null) ? img.getImgUrl() : "";
+
+            WishDetailDto dto = WishDetailDto.builder()
+                    .wishId(wish.getId())
+                    .productId(wish.getProduct().getId())
+                    .name(wish.getProduct().getName())
+                    .price(wish.getProduct().getPrice())
+                    .imgUrl(imgUrl)
+                    .build();
+            
+            wishDtos.add(dto);
+        }
+        return wishDtos;
+    }
+    
+    public void deleteWish(Long wishId) {
+        wishRepository.deleteById(wishId);
     }
 }

@@ -1,7 +1,10 @@
 package com.kosta.shop.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kosta.shop.auth.PrincipalDetails;
+import com.kosta.shop.dto.WishDetailDto;
 import com.kosta.shop.service.WishService;
 
 import lombok.RequiredArgsConstructor;
@@ -39,5 +43,18 @@ public class WishController {
         if(principal == null) return ResponseEntity.ok(false);
         boolean result = wishService.isWished(principal.getUser().getEmail(), productId);
         return ResponseEntity.ok(result);
+    }
+    
+    @GetMapping
+    public ResponseEntity<List<WishDetailDto>> getWishList(@AuthenticationPrincipal PrincipalDetails principal) {
+        List<WishDetailDto> wishList = wishService.getWishList(principal.getUser().getEmail());
+        return ResponseEntity.ok(wishList);
+    }
+    
+    // ★ 2. 찜 삭제 (X버튼 눌렀을 때)
+    @DeleteMapping("/{wishId}")
+    public ResponseEntity<String> deleteWish(@PathVariable Long wishId) {
+        wishService.deleteWish(wishId);
+        return ResponseEntity.ok("삭제되었습니다.");
     }
 }

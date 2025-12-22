@@ -1,5 +1,6 @@
 package com.kosta.shop.repository;
 
+import com.kosta.shop.entity.User;
 import com.kosta.shop.entity.Wish;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
@@ -11,4 +12,6 @@ public interface WishRepository extends JpaRepository<Wish, Long> {
     
     // 유저의 찜 목록 조회
     List<Wish> findByUserIdOrderByCreatedAtDesc(Long userId);
+
+    List<Wish> findAllByUserOrderByCreatedAtDesc(User user);
 }
