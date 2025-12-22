@@ -19,6 +19,11 @@ const ProductReviews = ({ product }) => {
     }
   }, [product]);
 
+  const getImageUrl = (path) => {
+    if (!path) return "https://placehold.co/50";
+    return path.startsWith('http') ? path : `${baseUrl}${path}`;
+  };
+
   // 모달 열기 함수
   const openModal = (review) => {
     setSelectedReview(review);
@@ -38,7 +43,7 @@ const ProductReviews = ({ product }) => {
   };
 
   const carouselItems = selectedReview?.imgUrls.map((url, idx) => ({
-    src: url,
+    src: getImageUrl(url),
     altText: `Review Image ${idx}`,
     key: idx,
     caption: '' // 캡션 없음
@@ -70,7 +75,7 @@ const ProductReviews = ({ product }) => {
                   onClick={() => openModal(review)}
                 >
                   <img 
-                    src={review.imgUrls[0]} 
+                    src={getImageUrl(review.imgUrls[0])} 
                     alt="Thumb" 
                     style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #ddd' }}
                   />
@@ -111,7 +116,7 @@ const ProductReviews = ({ product }) => {
                 
                 {/* 1. 상품 간단 정보 */}
                 <div className="d-flex align-items-center mb-4 pb-3 border-bottom">
-                  <img src={product.imageUrl} alt="prod" style={{ width: '50px', height: '60px', objectFit: 'cover', marginRight: '10px', borderRadius:'4px' }} />
+                  <img src={getImageUrl(product.imageUrl)} alt="prod" style={{ width: '50px', height: '60px', objectFit: 'cover', marginRight: '10px', borderRadius:'4px' }} />
                   <div>
                     <div className="small text-muted">{product.category.toUpperCase()}</div>
                     <div className="fw-bold text-truncate" style={{ maxWidth: '200px' }}>{product.name}</div>

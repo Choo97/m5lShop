@@ -36,7 +36,7 @@ public class ReviewController {
     @PostMapping
     public ResponseEntity<String> createReview(
             @RequestPart(value = "data") ReviewDto reviewDto,
-            @RequestPart(value = "file", required = false) List<MultipartFile> files,
+            @RequestPart(value = "files", required = false) List<MultipartFile> files,
             @AuthenticationPrincipal PrincipalDetails principal
     ) {
         try {

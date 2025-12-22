@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useAtomValue } from 'jotai';
 import { userAtom } from '../atoms';
 import { baseUrl, myAxios } from '../config';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import ProductReviews from './ProductReviews';
 import '../App.css';
 
@@ -13,13 +14,13 @@ const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // ★ 전역 상태에서 유저 정보 가져오기
   const user = useAtomValue(userAtom);
 
   const [product, setProduct] = useState(null);
   const [mainImg, setMainImg] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [count, setCount] = useState(1);
+  const [isWished, setIsWished] = useState(false);
 
   // 상품 상세 정보 가져오기 (로그인 불필요)
   useEffect(() => {
@@ -36,6 +37,30 @@ const ProductDetail = () => {
         navigate('/products');
       });
   }, [id, navigate]);
+
+  useEffect(() => {
+    if (user.isLogined && id) {
+      myAxios.get(`/api/wish/${id}`)
+        .then(res => setIsWished(res.data))
+        .catch(e => console.error(e));
+    }
+  }, [user, id]);
+
+  const handleWish = async () => {
+    if (!user.isLogined) {
+      // alert("로그인이 필요합니다.");
+      toast.info("로그인이 필요한 서비스입니다.");
+      return;
+    }
+    try {
+      const res = await myAxios.post(`/api/wish/${product.id}`);
+      setIsWished(res.data); // true/false 반환됨
+      if (res.data) toast.success("찜 목록에 추가되었습니다.");
+      else toast.info("찜 목록에서 삭제되었습니다.");
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   // 장바구니 담기 핸들러
   const handleAddToCart = async () => {
@@ -149,8 +174,15 @@ const ProductDetail = () => {
               <Button color="dark" size="lg" className="flex-grow-1" onClick={handleAddToCart} disabled={product.isSoldOut}>
                 {product.isSoldOut ? "SOLD OUT" : "ADD TO CART"}
               </Button>
-              <Button outline color="dark" size="lg" className="flex-grow-1">
-                WISH LIST
+              <Button 
+                outline={!isWished} // 찜 안했으면 외곽선만, 했으면 채워짐
+                color="danger" 
+                size="lg" 
+                className="flex-grow-1"
+                onClick={handleWish}
+              >
+                {isWished ? <FaHeart className="me-2" /> : <FaRegHeart className="me-2" />}
+                찜
               </Button>
             </div>
 
