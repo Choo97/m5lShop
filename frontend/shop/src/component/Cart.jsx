@@ -23,7 +23,9 @@ const Cart = () => {
 
     // 결제 고유 ID 생성 (UUID 권장, 여기서는 간단히 타임스탬프+랜덤)
     // 실제로는 crypto.randomUUID() 등을 사용하는 것이 좋습니다.
-    const paymentId = `payment-${crypto.randomUUID()}`;
+    // 도메인을 연결하고 **SSL 인증서(HTTPS)**를 적용하면 crypto.randomUUID() 사용 가능
+    // const paymentId = `payment-${crypto.randomUUID()}`;
+    const paymentId = `payment-${new Date().getTime()}-${Math.random().toString(36).slice(2)}`;
 
     const orderName = cartItems.length > 1
       ? `${cartItems[0].name} 외 ${cartItems.length - 1}건`
