@@ -12,4 +12,9 @@ public interface ProductService {
 
     public ProductDetailResponseDto getProductDetail(Long id);
 
+    public List<ProductResponseDto> getMainNewProducts();
+    
+    public List<ProductResponseDto> getMainSaleProducts();
+    
+    public List<ProductResponseDto> getMainBestProductsByAge(int age);
 }

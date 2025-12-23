@@ -32,6 +32,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
                                         @Param("endDate") LocalDate endDate, 
                                         Pageable pageable);
     
+    // 4. (주문 데이터 없을 때용) 일반 인기상품 8개
     List<Product> findTop8ByIsBestTrueOrderByCreatedAtDesc();
 
 

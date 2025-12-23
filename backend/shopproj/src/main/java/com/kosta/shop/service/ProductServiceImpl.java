@@ -66,4 +66,42 @@ public class ProductServiceImpl implements ProductService {
         return ProductDetailResponseDto.from(product);
     }
 
+	@Override
+    public List<ProductResponseDto> getMainNewProducts() {
+        return productRepository.findTop8ByIsNewTrueOrderByCreatedAtDesc().stream()
+                .map(ProductResponseDto::from)
+                .collect(Collectors.toList());
+    }
+
+	@Override
+    public List<ProductResponseDto> getMainSaleProducts() {
+        return productRepository.findTop8ByIsSaleTrueOrderByCreatedAtDesc().stream()
+                .map(ProductResponseDto::from)
+                .collect(Collectors.toList());
+    }
+
+	@Override
+    public List<ProductResponseDto> getMainBestProductsByAge(int age) {
+        // 나이로 생년월일 범위 계산 (한국 나이 기준 단순 계산)
+        int currentYear = LocalDate.now().getYear();
+        int endYear = currentYear - age + 1; 
+        int startYear = endYear - 9;         
+
+        LocalDate startDate = LocalDate.of(startYear, 1, 1);
+        LocalDate endDate = LocalDate.of(endYear, 12, 31);
+
+        // 상위 8개만 조회
+        Pageable limit = PageRequest.of(0, 8);
+        List<Product> products = productRepository.findBestProductsByAge(startDate, endDate, limit);
+
+        // 데이터가 없으면 일반 Best 상품으로 대체 (Fallback)
+        if (products.isEmpty()) {
+            products = productRepository.findTop8ByIsBestTrueOrderByCreatedAtDesc();
+        }
+
+        return products.stream()
+                .map(ProductResponseDto::from)
+                .collect(Collectors.toList());
+    }
+
 }
