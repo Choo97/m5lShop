@@ -22,6 +22,7 @@ const MyPage = () => {
     nickname: '',
     email: '', // 읽기 전용
     phone: '',
+    gender: '남자',
     zipcode: '',
     address: '',
     detailAddress: ''

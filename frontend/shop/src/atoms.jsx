@@ -4,8 +4,11 @@ export const initUser = {
     id:'',
     name:'',
     email:'',
-    address:'',
     nickname:'',
+    phone:'',
+    zipcode:'',
+    address:'',
+    detailAddress:'',
     role:'GUEST',
     profileImage:'',
     isLogined: false

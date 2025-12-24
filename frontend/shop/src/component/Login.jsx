@@ -49,6 +49,9 @@ const Login = () => {
             email : data.email,
             address : data.address || '',
             nickname : data.nickname,
+            phone : data.phone || '',
+            zipcode : data.zipcode || '',
+            detailAddress : data.detailAddress || '',
             role : data.role || 'GUEST',
             profileImage : data.profileImage || '',
             isLoggedIn: true 
