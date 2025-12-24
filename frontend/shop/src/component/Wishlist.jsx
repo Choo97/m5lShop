@@ -40,7 +40,7 @@ const Wishlist = () => {
 
   return (
     <Container className="py-5">
-      <h2 className="fw-bold mb-4 text-center">WISH LIST</h2>
+      <h2 className="fw-bold mb-4 text-center">찜 목록</h2>
 
       {wishes.length > 0 ? (
         <Row>
@@ -78,7 +78,7 @@ const Wishlist = () => {
                         navigate(`/product/${item.productId}`);
                     }}
                   >
-                    <FaShoppingCart className="me-2"/> GO TO PRODUCT
+                    <FaShoppingCart className="me-2"/> 상품 이동
                   </Button>
                 </CardBody>
               </Card>

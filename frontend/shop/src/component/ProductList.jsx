@@ -5,6 +5,43 @@ import axios from 'axios';
 import { baseUrl } from '../config';
 import '../App.css';
 
+const categoryNameMap = {
+  // 대분류
+  'outer': '아우터',
+  'top': '상의',
+  'bottom': '하의',
+  'shoes': '신발',
+
+  // 중분류 - 아우터
+  'coat': '코트',
+  'blazer': '블레이저',
+  'jacket': '자켓',
+  'padding': '패딩',
+  'cardigan': '가디건',
+
+  // 중분류 - 상의
+  'long-sleeve': '긴팔 티셔츠',
+  'short-sleeve': '반팔 티셔츠',
+  'sweatshirt': '맨투맨',
+  'hoodie': '후드',
+
+  // 중분류 - 하의
+  'jeans': '청바지',
+  'slacks': '슬랙스',
+  'cotton': '면바지',
+  'shorts': '반바지',
+
+  // 타입 (특가, 신상 등)
+  'new': '신상품',
+  'best': '인기상품',
+  'sale': '할인상품'
+};
+
+const getKrName = (key) => {
+  if (!key) return "";
+  return categoryNameMap[key] || key.toUpperCase();
+};
+
 const ProductList = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -15,44 +52,62 @@ const ProductList = () => {
   const category = searchParams.get('category'); // ex) outer, top
   const sub = searchParams.get('sub');           // ex) coat, hoodie
   const type = searchParams.get('type');         // ex) new, best, sale
-  const keyword = searchParams.get('keyword'); 
+  const keyword = searchParams.get('keyword');
 
   useEffect(() => {
     setLoading(true);
     // API 호출: 이전에 만든 QueryDSL 기반의 컨트롤러를 호출합니다.
     // URL 예시: /api/products?category=outer&sub=coat
     axios.get(`${baseUrl}/api/products`, {
-      params: { 
+      params: {
         category, sub, type, keyword // 백엔드 컨트롤러에 type 처리 로직이 필요함
       }
     })
-    .then(res => {
-    console.log("상품 로드 성공", res.data);
-      setProducts(res.data);
-      setLoading(false);
-    })
-    .catch(err => {
-      console.error("상품 로드 실패", err);
-      setLoading(false);
-    });
+      .then(res => {
+        console.log("상품 로드 성공", res.data);
+        setProducts(res.data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("상품 로드 실패", err);
+        setLoading(false);
+      });
   }, [category, sub, type, keyword]); // 쿼리 파라미터가 바뀔 때마다 다시 실행
 
   // 제목 텍스트 결정 로직
   const getTitle = () => {
-    if (keyword) return `SEARCH: "${keyword}"`; // 검색어 표시
-    if (type) return type.toUpperCase();
-    if (sub) return sub.toUpperCase();
-    if (category) return category.toUpperCase();
-    return "ALL PRODUCTS";
+    if (keyword) return `검색 결과: "${keyword}"`;
+    if (type) return getKrName(type);
+    if (sub) return getKrName(sub);
+    if (category) return getKrName(category);
+    return "전체 상품";
   };
 
   return (
     <Container className="py-5">
       {/* 상단 경로 (Breadcrumb) */}
       <Breadcrumb className="mb-4 small">
-        <BreadcrumbItem><Link to="/" className="text-decoration-none text-muted">HOME</Link></BreadcrumbItem>
-        {category && <BreadcrumbItem active>{category.toUpperCase()}</BreadcrumbItem>}
-        {sub && <BreadcrumbItem active>{sub.toUpperCase()}</BreadcrumbItem>}
+        <BreadcrumbItem><Link to="/" className="text-decoration-none text-muted">메인</Link></BreadcrumbItem>
+        {/* 대분류가 있을 때 */}
+        {category && (
+          <BreadcrumbItem active={!sub}>
+            {/* sub가 있으면 링크로, 없으면 텍스트로 */}
+            {sub ? (
+              <Link to={`/products?category=${category}`} className="text-decoration-none text-muted">
+                {getKrName(category)}
+              </Link>
+            ) : (
+              getKrName(category)
+            )}
+          </BreadcrumbItem>
+        )}
+
+        {/* 중분류가 있을 때 */}
+        {sub && (
+          <BreadcrumbItem active>
+            {getKrName(sub)}
+          </BreadcrumbItem>
+        )}
       </Breadcrumb>
 
       {/* 페이지 제목 및 상품 개수 */}
@@ -67,16 +122,16 @@ const ProductList = () => {
         <Row>
           {products.map((product) => (
             <Col lg={3} md={4} sm={6} xs={6} key={product.id} className="mb-5">
-              <div 
-                className="product-card" 
+              <div
+                className="product-card"
                 onClick={() => navigate(`/product/${product.id}`)}
                 style={{ cursor: 'pointer' }}
               >
                 <div className="img-wrapper mb-3" style={{ position: 'relative', overflow: 'hidden', borderRadius: '4px' }}>
-                  <img 
-                    src={product.imageUrl} 
-                    alt={product.name} 
-                    className="product-img w-100" 
+                  <img
+                    src={product.imageUrl}
+                    alt={product.name}
+                    className="product-img w-100"
                     style={{ height: '350px', objectFit: 'cover', transition: '0.3s' }}
                   />
                   {product.discountRate > 0 && (
@@ -86,11 +141,11 @@ const ProductList = () => {
                   )}
                   {product.isSoldOut && (
                     <div className="sold-out-overlay" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(255,255,255,0.6)', display: 'flex', alignItems: 'center', justifyCenter: 'center', fontWeight: 'bold' }}>
-                      SOLD OUT
+                      재고 소진
                     </div>
                   )}
                 </div>
-                
+
                 <div className="product-info">
                   <div className="mb-1">
                     {product.colors && product.colors.map((color, idx) => (

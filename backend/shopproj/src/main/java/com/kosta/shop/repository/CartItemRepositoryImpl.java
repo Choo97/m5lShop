@@ -24,6 +24,7 @@ public class CartItemRepositoryImpl implements CartItemRepositoryCustom {
                 .select(Projections.constructor(
                         CartDetailDto.class,
                         cartItem.id,       // cartItemId
+                        product.id,
                         product.name,      // productName
                         product.price,     // price
                         cartItem.count,    // count

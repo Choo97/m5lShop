@@ -12,7 +12,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
 import './Header.css';
 import { FaSearch } from 'react-icons/fa'; // 돋보기 아이콘
-import { toast } from 'react-toastify'; 
+import { toast } from 'react-toastify';
 
 const HeaderNavbar = () => {
   const navigate = useNavigate();
@@ -35,38 +35,38 @@ const HeaderNavbar = () => {
   // 1. 상품 카테고리 데이터 (code 추가: 쿼리 파라미터용)
   const productCategories = [
     {
-      label: 'OUTER',
+      label: '아우터',
       code: 'outer',
       subItems: [
-        { name: 'Coat', code: 'coat' },
-        { name: 'Blazer', code: 'blazer' },
-        { name: 'Jacket', code: 'jacket' },
-        { name: 'Padding', code: 'padding' },
-        { name: 'Cardigan', code: 'cardigan' },
+        { name: '코트', code: 'coat' },
+        { name: '블레이저', code: 'blazer' },
+        { name: '자켓', code: 'jacket' },
+        { name: '패딩', code: 'padding' },
+        { name: '가디건', code: 'cardigan' },
       ]
     },
     {
-      label: 'TOP',
+      label: '상의',
       code: 'top',
       subItems: [
-        { name: 'Long Sleeve', code: 'long-sleeve' },
-        { name: 'Short Sleeve', code: 'short-sleeve' },
-        { name: 'Sweatshirt', code: 'sweatshirt' },
-        { name: 'Hoodie', code: 'hoodie' },
+        { name: '긴팔 티셔츠', code: 'long-sleeve' },
+        { name: '반팔 티셔츠', code: 'short-sleeve' },
+        { name: '맨투맨', code: 'sweatshirt' },
+        { name: '후드', code: 'hoodie' },
       ]
     },
     {
-      label: 'BOTTOM',
+      label: '하의',
       code: 'bottom',
       subItems: [
-        { name: 'Jeans', code: 'jeans' },
-        { name: 'Slacks', code: 'slacks' },
-        { name: 'Cotton', code: 'cotton' },
-        { name: 'Shorts', code: 'shorts' },
+        { name: '청바지', code: 'jeans' },
+        { name: '슬랙스', code: 'slacks' },
+        { name: '면바지', code: 'cotton' },
+        { name: '반바지', code: 'shorts' },
       ]
     },
     {
-      label: 'SHOES',
+      label: '신발',
       code: 'shoes',
       subItems: []
     }
@@ -74,7 +74,7 @@ const HeaderNavbar = () => {
 
   // 2. 커뮤니티 메뉴 데이터
   const communityItems = [
-    { name: '스타일링', path: '/community/styling', needAuth: false },
+    { name: '스타일', path: '/community/styling', needAuth: false },
     { name: '공지사항', path: '/community/notice', needAuth: false },
     { name: '리뷰', path: '/community/reviews', needAuth: false },
     { name: '1:1 문의', path: '/community/inquiry', needAuth: true }, // 로그인 필요
@@ -106,33 +106,33 @@ const HeaderNavbar = () => {
         <Container fluid>
 
           {/* --- Row 1: 로고 & 유저 아이콘 --- */}
-          <Row className="align-items-center mb-3">
-            <Col xs="3">
+          <Row className="align-items-center mb-2 mb-3">
+            <Col xs={6} md={2}>
               <Link to="/" className="logo-text">
                 MINIMAL SHOP
               </Link>
             </Col>
-            <Col xs="5" className="d-none d-md-block"> 
-              <div className="position-relative w-75 mx-auto">
-                <Input 
-                  placeholder="SEARCH" 
-                  className="border-0 border-bottom rounded-0 bg-transparent ps-0" 
+            <Col md={5} className="d-none d-md-block">
+              <div className="position-relative w-100">
+                <Input
+                  placeholder="검색어를 입력하세요"
+                  className="border-0 border-bottom rounded-0 bg-transparent ps-0"
                   style={{ boxShadow: 'none' }}
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
                   onKeyDown={handleSearch}
                 />
-                <FaSearch 
-                  className="position-absolute end-0 top-50 translate-middle-y text-muted" 
+                <FaSearch
+                  className="position-absolute end-0 top-50 translate-middle-y text-muted"
                   style={{ cursor: 'pointer' }}
                   onClick={() => keyword.trim() && navigate(`/products?keyword=${keyword}`)}
                 />
               </div>
             </Col>
-            <Col xs="8" className="d-flex justify-content-end align-items-center">
+            <Col xs={6} md={4} className="d-flex justify-content-end align-items-center">
               {user.isLogined && (
-                <span className="me-3 d-none d-md-block" style={{ fontSize: '0.9rem', color: '#555' }}>
-                  Hello, <b>{user.nickname}</b>
+                <span className="me-3 d-none d-lg-block" style={{ fontSize: '0.9rem', color: '#555' }}>
+                  <b>{user.nickname}, 님</b>
                 </span>
               )}
               <div className="icon-btn" onClick={() => handleAuthNavigation('/cart')} title="장바구니"><FaShoppingBag /></div>
@@ -145,6 +145,26 @@ const HeaderNavbar = () => {
             </Col>
           </Row>
 
+          {/* === [Row 1.5] 모바일 전용 검색창 (★ 모바일에서만 보임: d-md-none) === */}
+          <Row className="mb-3 d-md-none">
+            <Col xs={12}>
+              <div className="position-relative w-100 bg-light rounded px-2">
+                <Input 
+                  placeholder="검색어를 입력하세요" 
+                  className="border-0 bg-transparent" 
+                  style={{ boxShadow: 'none' }}
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  onKeyDown={handleSearch}
+                />
+                <FaSearch 
+                  className="position-absolute end-0 top-50 translate-middle-y text-muted me-3" 
+                  onClick={() => keyword.trim() && navigate(`/products?keyword=${keyword}`)}
+                />
+              </div>
+            </Col>
+          </Row>
+
           {/* --- Row 2: 네비게이션 (상품 & 커뮤니티) --- */}
           <Row>
             <Col>
@@ -152,13 +172,13 @@ const HeaderNavbar = () => {
 
                 {/* 1. 고정 메뉴 (NEW, BEST, SALE) - 쿼리 파라미터 적용 */}
                 <NavItem>
-                  <NavLink onClick={() => navigate('/products?type=new')} className="nav-link-custom fw-bold">NEW</NavLink>
+                  <NavLink onClick={() => navigate('/products?type=new')} className="nav-link-custom fw-bold">신상품</NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink onClick={() => navigate('/products?type=best')} className="nav-link-custom fw-bold">BEST</NavLink>
+                  <NavLink onClick={() => navigate('/products?type=best')} className="nav-link-custom fw-bold">인기상품</NavLink>
                 </NavItem>
                 <NavItem className="me-4">
-                  <NavLink onClick={() => navigate('/products?type=sale')} className="nav-link-custom fw-bold text-danger">SALE</NavLink>
+                  <NavLink onClick={() => navigate('/products?type=sale')} className="nav-link-custom fw-bold text-danger">할인상품</NavLink>
                 </NavItem>
 
                 <div className="d-none d-md-block" style={{ width: '1px', height: '15px', background: '#ddd', marginRight: '1.5rem' }}></div>
@@ -173,7 +193,7 @@ const HeaderNavbar = () => {
                       <DropdownMenu>
                         {/* 대분류 클릭 시: /products?category=outer */}
                         <DropdownItem header onClick={() => navigate(`/products?category=${cat.code}`)}>
-                          All {cat.label}
+                          전체 {cat.label}
                         </DropdownItem>
                         <DropdownItem divider />
                         {/* 중분류 클릭 시: /products?category=outer&sub=coat */}
@@ -199,7 +219,7 @@ const HeaderNavbar = () => {
                 {/* 3. 커뮤니티 (새로 추가됨) */}
                 <UncontrolledDropdown nav inNavbar className="ms-2">
                   <DropdownToggle nav caret className="nav-link-custom">
-                    COMMUNITY
+                    게시판
                   </DropdownToggle>
                   <DropdownMenu>
                     {communityItems.map((item) => (

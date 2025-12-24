@@ -24,6 +24,7 @@ public class MainController {
     // 특가상품 (GET /api/main/sale)
     @GetMapping("/sale")
     public ResponseEntity<List<ProductResponseDto>> getSaleProducts() {
+    	
         return ResponseEntity.ok(productService.getMainSaleProducts());
     }
 

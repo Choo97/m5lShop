@@ -3,7 +3,7 @@ import { Container, Form, FormGroup, Label, Input, Button, Row, Col } from 'reac
 import { useDaumPostcodePopup } from 'react-daum-postcode';
 import { myAxios } from '../config';
 import { toast } from 'react-toastify';
-import { useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { userAtom } from '../atoms';
 import { RiKakaoTalkFill } from 'react-icons/ri';
 import { SiNaver } from 'react-icons/si';
@@ -108,7 +108,8 @@ const MyPage = () => {
       toast.success("정보가 수정되었습니다.");
 
       // 전역 상태(Atom)도 업데이트 (선택사항)
-      // setUser(prev => ({ ...prev, nickname: formData.nickname })); 
+      setUser(prev => ({ ...prev, nickname: formData.nickname })); 
+      
     } catch (error) {
       toast.error("수정 실패");
     }

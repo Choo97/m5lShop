@@ -161,7 +161,7 @@ const ProductDetail = () => {
 
             {/* 수량 선택 */}
             <div className="mb-4 d-flex align-items-center">
-              <span className="fw-bold me-3">Quantity</span>
+              <span className="fw-bold me-3">개수</span>
               <div className="d-flex align-items-center border rounded">
                 <button className="btn btn-light btn-sm border-0" onClick={() => setCount(prev => Math.max(1, prev - 1))}>-</button>
                 <span className="px-3">{count}</span>
@@ -172,7 +172,7 @@ const ProductDetail = () => {
             {/* 버튼 */}
             <div className="d-grid gap-2 d-md-flex mb-5">
               <Button color="dark" size="lg" className="flex-grow-1" onClick={handleAddToCart} disabled={product.isSoldOut}>
-                {product.isSoldOut ? "SOLD OUT" : "ADD TO CART"}
+                {product.isSoldOut ? "품절" : "장바구니 담기"}
               </Button>
               <Button 
                 outline={!isWished} // 찜 안했으면 외곽선만, 했으면 채워짐
@@ -188,7 +188,7 @@ const ProductDetail = () => {
 
             {/* 상세 설명 */}
             <div className="bg-light p-4 rounded">
-              <h5 className="fw-bold mb-3">Product Info</h5>
+              <h5 className="fw-bold mb-3">상품 정보</h5>
               <p style={{ whiteSpace: 'pre-line', lineHeight: '1.6', color: '#555' }}>
                 {product.description}
               </p>
@@ -201,12 +201,12 @@ const ProductDetail = () => {
       <Row className="mt-5">
         <Col>
           <div className="text-center">
-            <h4 className="fw-bold mb-4 py-3 border-bottom border-top">DETAIL VIEW</h4>
+            <h4 className="fw-bold mb-4 py-3 border-bottom border-top">상세 정보</h4>
 
             {/* 1. 텍스트 설명 */}
-            <p className="mb-5" style={{ whiteSpace: 'pre-line', lineHeight: '1.8', color: '#555', fontSize: '1.05rem' }}>
+            {/* <p className="mb-5" style={{ whiteSpace: 'pre-line', lineHeight: '1.8', color: '#555', fontSize: '1.05rem' }}>
               {product.description}
-            </p>
+            </p> */}
 
             {/* 2. 상세 이미지 리스트 (세로로 쭉 나열) */}
             <div className="detail-images-container">

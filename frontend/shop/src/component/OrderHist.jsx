@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Card, CardHeader, CardBody, Row, Col, Badge, Button } from 'reactstrap';
 import { myAxios } from '../config';
-import ReviewWriteModal from './ReviewWriteModal'; // 모달 컴포넌트
+import ReviewWriteModal from './ReviewWriteModal'; 
+import { useNavigate } from 'react-router-dom'; 
 import '../App.css';
 
 const OrderHist = () => {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   
-  // ★ 모달 상태 관리 (기존 코드에서 사용 안 하던 변수들 활용)
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
@@ -27,15 +28,22 @@ const OrderHist = () => {
     setModalOpen(true);
   };
 
-  // ★ 모달 닫기 핸들러
   const closeModal = () => {
     setModalOpen(false);
     setSelectedItem(null);
   };
 
+  const handleProductClick = (productId) => {
+    if (productId) {
+      navigate(`/product/${productId}`);
+    } else {
+      console.error("존재하지 않는 상품 ID입니다.");
+    }
+  };
+
   return (
     <Container className="py-5">
-      <h2 className="fw-bold mb-4 text-center">ORDER HISTORY</h2>
+      <h2 className="fw-bold mb-4 text-center">주문 내역</h2>
       
       {orders.map(order => (
         <Card key={order.orderId} className="mb-4 shadow-sm border-0">
@@ -48,11 +56,11 @@ const OrderHist = () => {
           <CardBody>
             {order.orderItemDtoList.map(item => (
               <Row key={item.id} className="mb-3 align-items-center">
-                <Col xs={3} md={2}>
+                <Col xs={3} md={2} onClick={() => handleProductClick(item.productId)} style={{ cursor: 'pointer' }}>
                   <img src={item.imgUrl} alt={item.itemNm} className="img-fluid rounded" />
                 </Col>
-                <Col>
-                  <h6 className="fw-bold">{item.itemNm}</h6>
+                <Col style={{ cursor: 'pointer'}} onClick={() => handleProductClick(item.productId)}>
+                  <h6 className="fw-bold text-decoration-underline-hover">{item.itemNm}</h6>
                   <p className="text-muted mb-0">
                     {item.orderPrice.toLocaleString()}원 / {item.count}개
                   </p>
@@ -65,9 +73,12 @@ const OrderHist = () => {
                       outline 
                       color="dark" 
                       size="sm" 
-                      onClick={() => handleReviewClick(item)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleReviewClick(item);
+                      }}
                     >
-                      리뷰 쓰기
+                      리뷰 작성
                     </Button>
                   )}
                 </Col>

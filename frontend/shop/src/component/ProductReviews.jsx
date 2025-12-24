@@ -51,7 +51,7 @@ const ProductReviews = ({ product }) => {
 
   return (
     <div className="mt-5 pt-5 border-top">
-      <h4 className="fw-bold mb-4">REVIEWS ({reviews.length})</h4>
+      <h4 className="fw-bold mb-4">리뷰</h4>
       
       {/* 리뷰 리스트 (기존과 동일) */}
       {reviews.length > 0 ? (

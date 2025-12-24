@@ -128,19 +128,23 @@ const Cart = () => {
       .catch(err => toast.error("삭제 실패"));
   };
 
+  const handleProductClick = (productId) => {
+    navigate(`/product/${productId}`);
+  };
+
   return (
     <Container className="py-5">
-      <h2 className="fw-bold mb-4 text-center">SHOPPING CART</h2>
+      <h2 className="fw-bold mb-4 text-center">장바구니</h2>
 
       {cartItems.length > 0 ? (
         <>
           <Table className="align-middle text-center" responsive>
             <thead className="table-light">
               <tr>
-                <th style={{ width: '50%' }}>Product</th>
-                <th style={{ width: '15%' }}>Price</th>
-                <th style={{ width: '20%' }}>Quantity</th>
-                <th style={{ width: '15%' }}>Total</th>
+                <th style={{ width: '50%' }}>상품</th>
+                <th style={{ width: '15%' }}>가격</th>
+                <th style={{ width: '20%' }}>개수</th>
+                <th style={{ width: '15%' }}>총합</th>
                 <th></th>
               </tr>
             </thead>
@@ -148,10 +152,12 @@ const Cart = () => {
               {cartItems.map(item => (
                 <tr key={item.cartItemId}>
                   <td className="text-start">
-                    <div className="d-flex align-items-center">
+                    <div className="d-flex align-items-center product-link"
+                      onClick={() => handleProductClick(item.productId)}
+                      style={{ cursor: 'pointer' }} >
                       <img src={item.imgUrl} alt={item.name} style={{ width: '80px', height: '100px', objectFit: 'cover', marginRight: '15px' }} />
                       <div>
-                        <span className="fw-bold d-block">{item.name}</span>
+                        {/* <span className="fw-bold d-block text-truncate" style={{ maxWidth: '200px' }}>{item.name}</span> */}
                         {item.color && (
                           <span className="text-muted small">
                             Color: <span style={{ display: 'inline-block', width: '10px', height: '10px', backgroundColor: item.color, borderRadius: '50%', marginRight: '5px' }}></span>
@@ -181,16 +187,16 @@ const Cart = () => {
             </tbody>
           </Table>
           <div className="d-flex justify-content-end align-items-center mt-4 p-4 bg-light rounded">
-            <h4 className="m-0 me-4">TOTAL: <span className="fw-bold text-danger">{totalPrice.toLocaleString()}원</span></h4>
+            <h4 className="m-0 me-4">총합: <span className="fw-bold text-danger">{totalPrice.toLocaleString()}원</span></h4>
             <Button color="dark" size="lg" onClick={requestPay}>
-              ORDER NOW
+              주문
             </Button>
           </div>
         </>
       ) : (
         <div className="text-center py-5">
           <p className="text-muted mb-4">장바구니가 비어있습니다.</p>
-          <Button color="dark" onClick={() => navigate('/products')}>GO SHOPPING</Button>
+          <Button color="dark" onClick={() => navigate('/products')}>장보기</Button>
         </div>
       )}
     </Container>
