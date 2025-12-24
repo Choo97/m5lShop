@@ -16,7 +16,9 @@ const StylingList = () => {
   useEffect(() => {
     // API 호출
     axios.get(`${baseUrl}/api/styling`)
-      .then(res => setStylings(res.data.content)) // Page 객체이므로 .content
+      .then(res => {
+        // res.data.content.forEach(style => style.imageUrl = getImageUrl(style.imageUrl)); // 여기서 변환해주면 더 좋음
+        setStylings(res.data.content)}) // Page 객체이므로 .content
       .catch(err => console.error(err));
   }, []);
 

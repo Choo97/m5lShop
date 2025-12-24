@@ -78,11 +78,14 @@ const Main = () => {
     // setNewProducts(Array(4).fill(dummyProduct));
     // setAgeBestProducts(Array(4).fill(dummyProduct));
 
-    setStylings(Array(4).fill({
-      id: 1, title: 'Daily Look',
-      imageUrl: 'https://placehold.co/400x600',
-      username: 'fashion_king'
-    }));
+    // (3) ★ 스타일링 게시글 가져오기 (수정됨)
+    // size=4 파라미터를 주어 4개만 가져오도록 요청 (Controller에 Pageable 적용되어 있음)
+    axios.get(`${baseUrl}/api/styling?size=4`)
+      .then(res => {
+        // Spring Data JPA의 Page 객체는 .content 안에 리스트가 있습니다.
+        setStylings(res.data.content); 
+      })
+      .catch(err => console.error("Styling Load Error:", err));
 
     setReviews(Array(3).fill({
       id: 1, productName: 'Wide Slacks', productImageUrl: 'https://placehold.co/400x600',
@@ -209,12 +212,12 @@ const Main = () => {
           </div>
           <Row>
             {stylings.map((s, idx) => (
-              <Col md={3} sm={6} key={idx} className="mb-4">
-                <div className="position-relative overflow-hidden rounded" style={{ cursor: 'pointer' }} onClick={() => navigate(`/community/styling`)}>
+              <Col md={3} sm={6} key={s.id || idx} className="mb-4">
+                <div className="position-relative overflow-hidden rounded" style={{ cursor: 'pointer' }} onClick={() => navigate(s.id ? `/community/styling/${s.id}` : `/community/styling`)}>
                   <img src={getImageUrl(s.imageUrl)} alt={s.title} style={{ width: '100%', height: '300px', objectFit: 'cover', transition: 'transform 0.3s' }} className="hover-scale" />
                   <div className="mt-2 d-flex justify-content-between">
-                    <span className="fw-bold text-truncate">{s.title}</span>
-                    <span className="text-muted small">@{s.username}</span>
+                    <span className="fw-bold text-truncate" style={{ maxWidth: '70%' }}>{s.content}</span>
+                    <span className="text-muted small">@{s.nickname}</span>
                   </div>
                 </div>
               </Col>
