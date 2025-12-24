@@ -21,7 +21,13 @@ const ProductReviews = ({ product }) => {
 
   const getImageUrl = (path) => {
     if (!path) return "https://placehold.co/50";
-    return path.startsWith('http') ? path : `${baseUrl}${path}`;
+    
+    // http로 시작하면(외부 이미지) 그대로 반환
+    if (path.startsWith('http')) return path;
+    
+    // ★ 핵심: 한글 깨짐 방지를 위해 encodeURI()로 감싸줍니다.
+    // 예: /images/코트.jpg -> /images/%EC%BD%94%ED%8A%B8.jpg 로 변환됨
+    return `${baseUrl}${encodeURI(path)}`;
   };
 
   // 모달 열기 함수

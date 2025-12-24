@@ -3,8 +3,8 @@ import { Container, Row, Col, UncontrolledCarousel, Button } from 'reactstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FaStar } from 'react-icons/fa';
-import adImage1 from '../images/빌보드에_소셜_거리_광고_Large.jpg';
-import adImage2 from '../images/보도_게시물에_실물_광고판_Large.jpg';
+import banner1 from '../assets/광고배너1.jpg';
+import banner2 from '../assets/광고배너2.jpg';
 import '../App.css';
 import './Main.css';
 import { baseUrl } from '../config';
@@ -12,14 +12,14 @@ import { baseUrl } from '../config';
 // 캐러셀 더미 데이터 (광고)
 const carouselItems = [
   {
-    src: 'https://placehold.co/1152x648',
+    src: banner1,
     altText: 'Spring Event',
     caption: '',
     header: '',
     key: '1'
   },
   {
-    src: 'https://placehold.co/1152x648',
+    src: banner2,
     altText: 'New Arrivals',
     caption: '',
     header: '',
@@ -42,8 +42,13 @@ const Main = () => {
 
   const getImageUrl = (path) => {
     if (!path) return "https://placehold.co/600x400";
-    // http로 시작하면(외부 이미지) 그대로, 아니면 백엔드 주소 붙이기
-    return path.startsWith('http') ? path : `${baseUrl}${path}`;
+    
+    // http로 시작하면(외부 이미지) 그대로 반환
+    if (path.startsWith('http')) return path;
+    
+    // ★ 핵심: 한글 깨짐 방지를 위해 encodeURI()로 감싸줍니다.
+    // 예: /images/코트.jpg -> /images/%EC%BD%94%ED%8A%B8.jpg 로 변환됨
+    return `${baseUrl}${encodeURI(path)}`;
   };
 
   // 데이터 로딩 (Mock Data 사용 예시)

@@ -101,19 +101,25 @@ const ProductDetail = () => {
 
   if (!product) return <div className="text-center py-5">Loading...</div>;
 
+  const getImageUrl = (path) => {
+    if (!path) return "https://placehold.co/600x600";
+    if (path.startsWith('http')) return path;
+    return `${baseUrl}${encodeURI(path)}`; // config.js의 baseUrl 사용
+  };
+
   return (
     <Container className="py-5">
       <Row>
         {/* 왼쪽: 이미지 영역 */}
         <Col md={6} className="mb-4">
           <div className="mb-3">
-            <img src={mainImg} alt="Main" className="w-100" style={{ objectFit: 'cover', maxHeight: '600px' }} />
+            <img src={getImageUrl(mainImg)} alt="Main" className="w-100" style={{ objectFit: 'cover', maxHeight: '600px' }} />
           </div>
           <div className="d-flex gap-2 overflow-auto">
             {product.productImages.map((img, idx) => (
               <img
                 key={idx}
-                src={img}
+                src={getImageUrl(img)}
                 alt={`Thumb ${idx}`}
                 style={{ width: '80px', height: '100px', objectFit: 'cover', cursor: 'pointer', border: mainImg === img ? '2px solid #333' : '1px solid #ddd' }}
                 onClick={() => setMainImg(img)}
@@ -174,10 +180,10 @@ const ProductDetail = () => {
               <Button color="dark" size="lg" className="flex-grow-1" onClick={handleAddToCart} disabled={product.isSoldOut}>
                 {product.isSoldOut ? "품절" : "장바구니 담기"}
               </Button>
-              <Button 
+              <Button
                 outline={!isWished} // 찜 안했으면 외곽선만, 했으면 채워짐
-                color="danger" 
-                size="lg" 
+                color="danger"
+                size="lg"
                 className="flex-grow-1"
                 onClick={handleWish}
               >
@@ -213,7 +219,7 @@ const ProductDetail = () => {
               {product.detailImages && product.detailImages.map((img, idx) => (
                 <img
                   key={idx}
-                  src={img}
+                  src={getImageUrl(img)}
                   alt={`Detail ${idx}`}
                   className="img-fluid mb-0 d-block mx-auto"
                   style={{ maxWidth: '100%' }}

@@ -83,6 +83,13 @@ const ProductList = () => {
     return "전체 상품";
   };
 
+  const getImageUrl = (path) => {
+    if (!path) return "https://placehold.co/600x400";
+    // http로 시작하면 그대로 반환, 아니면 baseUrl 붙이기 + 한글 인코딩
+    if (path.startsWith('http')) return path;
+    return `${baseUrl}${encodeURI(path)}`;
+  };
+
   return (
     <Container className="py-5">
       {/* 상단 경로 (Breadcrumb) */}
@@ -108,6 +115,10 @@ const ProductList = () => {
             {getKrName(sub)}
           </BreadcrumbItem>
         )}
+
+        {!category && !sub && type && (
+           <BreadcrumbItem active>{getKrName(type)}</BreadcrumbItem>
+        )}
       </Breadcrumb>
 
       {/* 페이지 제목 및 상품 개수 */}
@@ -129,7 +140,7 @@ const ProductList = () => {
               >
                 <div className="img-wrapper mb-3" style={{ position: 'relative', overflow: 'hidden', borderRadius: '4px' }}>
                   <img
-                    src={product.imageUrl}
+                    src={getImageUrl(product.imageUrl)}
                     alt={product.name}
                     className="product-img w-100"
                     style={{ height: '350px', objectFit: 'cover', transition: '0.3s' }}
@@ -141,7 +152,7 @@ const ProductList = () => {
                   )}
                   {product.isSoldOut && (
                     <div className="sold-out-overlay" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(255,255,255,0.6)', display: 'flex', alignItems: 'center', justifyCenter: 'center', fontWeight: 'bold' }}>
-                      재고 소진
+                      품절
                     </div>
                   )}
                 </div>

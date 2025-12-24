@@ -29,9 +29,14 @@ const MyPage = () => {
   });
 
   const getImageUrl = (path) => {
-    if (!path) return null;
-    // 이미 http로 시작하면(소셜 이미지) 그대로 쓰고, 아니면 baseUrl을 붙임
-    return path.startsWith('http') ? path : `${baseUrl}${path}`;
+    if (!path) return "https://placehold.co/200";
+    
+    // http로 시작하면(외부 이미지) 그대로 반환
+    if (path.startsWith('http')) return path;
+    
+    // ★ 핵심: 한글 깨짐 방지를 위해 encodeURI()로 감싸줍니다.
+    // 예: /images/코트.jpg -> /images/%EC%BD%94%ED%8A%B8.jpg 로 변환됨
+    return `${baseUrl}${encodeURI(path)}`;
   };
 
   // 1. 내 정보 불러오기
