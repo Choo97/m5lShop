@@ -52,6 +52,11 @@ const OAuth2RedirectHandler = () => {
             nickname: userData.nickname,
             email: userData.email,
             role: userData.role,
+            phone: userData.phone || '',
+            zipcode: userData.zipcode || '',
+            address: userData.address || '',
+            detailAddress: userData.detailAddress || '',
+            name: userData.name,
             profileImage: userData.profileImage,
             isLogined: true
           });
