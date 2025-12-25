@@ -28,6 +28,7 @@ dependencies {
     // 2. 개발 툴 & 톰캣
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
     
     // 3. DB & JSP
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
