@@ -12,8 +12,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.kosta.shop.dto.StylingDto;
 import com.kosta.shop.entity.Product;
 import com.kosta.shop.entity.Styling;
+import com.kosta.shop.entity.StylingComment;
 import com.kosta.shop.entity.User;
 import com.kosta.shop.repository.ProductRepository;
+import com.kosta.shop.repository.StylingCommentRepository;
 import com.kosta.shop.repository.StylingRepository;
 import com.kosta.shop.repository.UserRepository;
 
@@ -30,8 +32,36 @@ public class StylingServiceImpl implements StylingService {
     private final StylingRepository stylingRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final StylingCommentRepository stylingCommentRepository; // 주입 필요
     private final FileService fileService; // 이미 만들어둔 파일 서비스
 
+ // ★ 댓글 등록
+    @Override
+    @Transactional
+    public void addComment(Long stylingId, String content, String email) {
+        User user = userRepository.findByEmail(email).orElseThrow();
+        Styling styling = stylingRepository.findById(stylingId).orElseThrow();
+
+        StylingComment comment = StylingComment.builder()
+                .content(content)
+                .styling(styling)
+                .user(user)
+                .build();
+        
+        styling.addComment(comment); // 리스트에도 추가
+        stylingCommentRepository.save(comment);
+    }
+
+    // ★ 댓글 삭제
+    @Override
+    public void deleteComment(Long commentId, String email) {
+        StylingComment comment = stylingCommentRepository.findById(commentId).orElseThrow();
+        if (!comment.getUser().getEmail().equals(email)) {
+            throw new RuntimeException("삭제 권한이 없습니다.");
+        }
+        stylingCommentRepository.delete(comment);
+    }
+    
     @Override
     @Transactional
     public void createStyling(StylingDto.Request request, MultipartFile file, String email) throws Exception {
@@ -70,12 +100,12 @@ public class StylingServiceImpl implements StylingService {
     
     @Override
     @Transactional // 조회수 변경(Update)이 일어나므로 readOnly=false
-    public StylingDto.Response getStylingDetail(Long id) {
+    public StylingDto.Response getStylingDetail(Long id, String email) {
         Styling styling = stylingRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다."));
         
         styling.increaseViewCount(); // 조회수 증가 (Entity에 메소드 필요)
         
-        return StylingDto.Response.from(styling);
+        return StylingDto.Response.from(styling, email);
     }
 }

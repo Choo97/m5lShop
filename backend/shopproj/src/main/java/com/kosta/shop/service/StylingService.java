@@ -10,6 +10,10 @@ public interface StylingService {
 
 	public void createStyling(StylingDto.Request request, MultipartFile file, String email) throws Exception;
 
-	StylingDto.Response getStylingDetail(Long id); // 추가
+	StylingDto.Response getStylingDetail(Long id, String email); // 추가
+
+	void deleteComment(Long commentId, String email);
+
+	void addComment(Long stylingId, String content, String email);
 
 }

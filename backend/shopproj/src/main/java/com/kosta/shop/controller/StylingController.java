@@ -45,8 +45,34 @@ public class StylingController {
         }
     }
     
+ // 상세 조회 (수정)
     @GetMapping("/{id}")
-    public ResponseEntity<StylingDto.Response> getDetail(@PathVariable Long id) {
-        return ResponseEntity.ok(stylingService.getStylingDetail(id));
+    public ResponseEntity<StylingDto.Response> getDetail(
+            @PathVariable Long id, 
+            @AuthenticationPrincipal PrincipalDetails principal // 로그인 정보 받기
+    ) {
+        String email = (principal != null) ? principal.getUser().getEmail() : null;
+        return ResponseEntity.ok(stylingService.getStylingDetail(id, email));
+    }
+
+    // ★ 댓글 등록
+    @PostMapping("/{id}/comment")
+    public ResponseEntity<String> addComment(
+            @PathVariable Long id,
+            @RequestBody StylingDto.CommentRequest req,
+            @AuthenticationPrincipal PrincipalDetails principal
+    ) {
+        stylingService.addComment(id, req.getContent(), principal.getUser().getEmail());
+        return ResponseEntity.ok("댓글이 등록되었습니다.");
+    }
+
+    // ★ 댓글 삭제
+    @DeleteMapping("/comment/{commentId}")
+    public ResponseEntity<String> deleteComment(
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal PrincipalDetails principal
+    ) {
+        stylingService.deleteComment(commentId, principal.getUser().getEmail());
+        return ResponseEntity.ok("댓글이 삭제되었습니다.");
     }
 }

@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import lombok.AccessLevel;
@@ -44,6 +45,15 @@ public class Styling extends BaseTimeEntity {
     @OneToMany(mappedBy = "styling", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StylingProduct> stylingProducts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "styling", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("createdAt ASC") // 댓글은 작성순 정렬
+    private List<StylingComment> comments = new ArrayList<>();
+
+    // 연관관계 편의 메서드
+    public void addComment(StylingComment comment) {
+        this.comments.add(comment);
+    }
+    
     @Builder
     public Styling(String content, String imageUrl, User user) {
         this.content = content;
