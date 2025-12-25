@@ -1,26 +1,28 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Container, Form, FormGroup, Label, Input, Button, Row, Col } from 'reactstrap';
+import { Container, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { useDaumPostcodePopup } from 'react-daum-postcode';
-import { myAxios } from '../config';
+import { myAxios, baseUrl } from '../config';
 import { toast } from 'react-toastify';
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom } from 'jotai'; // useAtom 사용 (읽기+쓰기)
 import { userAtom } from '../atoms';
 import { RiKakaoTalkFill } from 'react-icons/ri';
 import { SiNaver } from 'react-icons/si';
 import { FaUserCircle, FaCamera } from 'react-icons/fa';
-import { baseUrl } from '../config';
 
 const MyPage = () => {
-  const setUser = useSetAtom(userAtom);
+  // 전역 상태 읽기/쓰기 모두 필요하므로 useAtom 사용
+  const [user, setUser] = useAtom(userAtom);
+  
   const scriptUrl = 'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
   const openPostcode = useDaumPostcodePopup(scriptUrl);
+  
+  const fileInputRef = useRef(null);
+  const [profileImg, setProfileImg] = useState('');
   const [socialStatus, setSocialStatus] = useState({ kakao: false, naver: false });
-  const fileInputRef = useRef(null); // 파일 인풋 제어용 Ref
-  const [profileImg, setProfileImg] = useState(''); // 프로필 이미지 상태
 
   const [formData, setFormData] = useState({
     nickname: '',
-    email: '', // 읽기 전용
+    email: '',
     phone: '',
     gender: '남자',
     zipcode: '',
@@ -28,19 +30,18 @@ const MyPage = () => {
     detailAddress: ''
   });
 
+  // 이미지 URL 처리 헬퍼 함수
   const getImageUrl = (path) => {
-    if (!path) return "https://placehold.co/200";
-    
-    // http로 시작하면(외부 이미지) 그대로 반환
+    if (!path) return null;
     if (path.startsWith('http')) return path;
-    
-    // ★ 핵심: 한글 깨짐 방지를 위해 encodeURI()로 감싸줍니다.
-    // 예: /images/코트.jpg -> /images/%EC%BD%94%ED%8A%B8.jpg 로 변환됨
     return `${baseUrl}${encodeURI(path)}`;
   };
 
-  // 1. 내 정보 불러오기
+  // 1. 내 정보 및 소셜 연동 상태 불러오기
   useEffect(() => {
+    // PrivateRoute가 지켜주므로 로그인 체크 없이 바로 호출
+    
+    // (1) 회원 정보
     myAxios.get('/api/user/me')
       .then(res => {
         const { nickname, email, phone, gender, zipcode, address, detailAddress, profileImage } = res.data;
@@ -55,13 +56,13 @@ const MyPage = () => {
         });
         setProfileImg(profileImage);
       })
-      .catch(err => console.error(err));
+      .catch(err => console.error("내 정보 로드 실패:", err));
 
+    // (2) 소셜 연동 정보
     myAxios.get('/api/user/social')
-      .then(res => {
-        setSocialStatus(res.data)
-      })
-      .catch(err => console.error("소셜 정보 로드 실패", err));
+      .then(res => setSocialStatus(res.data))
+      .catch(err => console.error("소셜 정보 로드 실패:", err));
+      
   }, []);
 
   const handleChange = (e) => {
@@ -80,26 +81,25 @@ const MyPage = () => {
     setFormData(prev => ({ ...prev, zipcode: data.zonecode, address: fullAddress }));
   };
 
-  // 이미지 클릭 시 파일 선택창 열기
-  const triggerFileInput = () => {
-    fileInputRef.current.click();
-  };
-
+  // 프로필 사진 변경
   const handleProfileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const formData = new FormData();
-    formData.append('file', file);
+    const formDataFile = new FormData();
+    formDataFile.append('file', file);
 
     try {
-      // 파일 업로드 요청
-      const res = await myAxios.post('/api/user/profile', formData, {
+      const res = await myAxios.post('/api/user/profile', formDataFile, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
       // 성공 시 이미지 즉시 변경
       setProfileImg(res.data);
+      
+      // ★ 전역 상태(Atom)의 프로필 이미지도 업데이트 (네비바 즉시 반영)
+      setUser(prev => ({ ...prev, profileImage: res.data }));
+      
       toast.success("프로필 사진이 변경되었습니다.");
     } catch (error) {
       console.error(error);
@@ -107,14 +107,19 @@ const MyPage = () => {
     }
   };
 
-  // 수정 요청
+  // 정보 수정 요청
   const handleUpdate = async () => {
     try {
       await myAxios.patch('/api/user/me', formData);
       toast.success("정보가 수정되었습니다.");
 
-      // 전역 상태(Atom)도 업데이트 (선택사항)
-      setUser(prev => ({ ...prev, nickname: formData.nickname })); 
+      // ★ 전역 상태(Atom) 업데이트 (닉네임 등 즉시 반영)
+      setUser(prev => ({ 
+          ...prev, 
+          nickname: formData.nickname,
+          phone: formData.phone
+          // 필요한 다른 정보도 업데이트 가능
+      })); 
       
     } catch (error) {
       toast.error("수정 실패");
@@ -124,13 +129,14 @@ const MyPage = () => {
   return (
     <Container className="py-5" style={{ maxWidth: '600px' }}>
       <h2 className="fw-bold mb-4 text-center">MY PAGE</h2>
+      
+      {/* 프로필 사진 영역 */}
       <div className="text-center mb-5">
         <div
           className="position-relative d-inline-block"
           style={{ cursor: 'pointer' }}
-          onClick={triggerFileInput}
+          onClick={() => fileInputRef.current.click()}
         >
-          {/* 이미지가 있으면 이미지, 없으면 아이콘 */}
           {profileImg ? (
             <img
               src={getImageUrl(profileImg)}
@@ -142,7 +148,6 @@ const MyPage = () => {
             <FaUserCircle size={120} color="#ddd" />
           )}
 
-          {/* 카메라 아이콘 배지 */}
           <div
             className="position-absolute bottom-0 end-0 bg-white rounded-circle border d-flex align-items-center justify-content-center"
             style={{ width: '35px', height: '35px' }}
@@ -151,7 +156,6 @@ const MyPage = () => {
           </div>
         </div>
 
-        {/* 숨겨진 파일 인풋 */}
         <input
           type="file"
           ref={fileInputRef}
@@ -160,6 +164,7 @@ const MyPage = () => {
           accept="image/*"
         />
       </div>
+
       <Form>
         <FormGroup>
           <Label>이메일</Label>
@@ -173,6 +178,7 @@ const MyPage = () => {
           <Label>전화번호</Label>
           <Input type="text" name="phone" value={formData.phone} onChange={handleChange} placeholder="010-0000-0000" />
         </FormGroup>
+        
         <FormGroup>
           <Label className="d-block">성별</Label>
           <div className="d-flex gap-4 mt-2">
@@ -184,7 +190,7 @@ const MyPage = () => {
                   value="남자"
                   checked={formData.gender === '남자'}
                   onChange={handleChange}
-                  disabled
+                  // disabled // 수정 가능하게 하려면 주석 해제
                 />{' '}
                 남성
               </Label>
@@ -197,13 +203,14 @@ const MyPage = () => {
                   value="여자"
                   checked={formData.gender === '여자'}
                   onChange={handleChange}
-                  disabled
+                  // disabled
                 />{' '}
                 여성
               </Label>
             </FormGroup>
           </div>
         </FormGroup>
+
         <FormGroup>
           <Label>주소</Label>
           <div className="d-flex gap-2 mb-2">
@@ -213,17 +220,17 @@ const MyPage = () => {
           <Input type="text" value={formData.address} readOnly className="mb-2" />
           <Input type="text" name="detailAddress" value={formData.detailAddress} onChange={handleChange} placeholder="상세주소" />
         </FormGroup>
+
         <FormGroup>
           <Label>소셜 계정 연동</Label>
           <div className="d-flex gap-3 mt-2">
-
-            {/* 카카오 아이콘 */}
+            {/* 카카오 */}
             <div className="text-center">
               <div
                 className="d-flex align-items-center justify-content-center rounded-circle mb-1"
                 style={{
                   width: '50px', height: '50px',
-                  backgroundColor: socialStatus.kakao ? '#FEE500' : '#f0f0f0', // 연동되면 노란색, 아니면 회색
+                  backgroundColor: socialStatus.kakao ? '#FEE500' : '#f0f0f0',
                   color: socialStatus.kakao ? '#000' : '#ccc',
                   fontSize: '1.5rem',
                   transition: '0.3s'
@@ -236,13 +243,13 @@ const MyPage = () => {
               </small>
             </div>
 
-            {/* 네이버 아이콘 */}
+            {/* 네이버 */}
             <div className="text-center">
               <div
                 className="d-flex align-items-center justify-content-center rounded-circle mb-1"
                 style={{
                   width: '50px', height: '50px',
-                  backgroundColor: socialStatus.naver ? '#03C75A' : '#f0f0f0', // 연동되면 초록색
+                  backgroundColor: socialStatus.naver ? '#03C75A' : '#f0f0f0',
                   color: 'white',
                   fontSize: '1.2rem',
                   transition: '0.3s'
@@ -254,9 +261,9 @@ const MyPage = () => {
                 {socialStatus.naver ? "연동됨" : "미연동"}
               </small>
             </div>
-
           </div>
         </FormGroup>
+
         <Button color="dark" size="lg" block className="mt-4 w-100" onClick={handleUpdate}>
           정보 수정
         </Button>

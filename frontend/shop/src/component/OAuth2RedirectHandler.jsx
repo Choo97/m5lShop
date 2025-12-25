@@ -6,7 +6,6 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { baseUrl } from '../config';
 
-
 const OAuth2RedirectHandler = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -14,61 +13,59 @@ const OAuth2RedirectHandler = () => {
 
   useEffect(() => {
     // 1. URL 파라미터에서 'token' 가져오기
-    // 예: ?token={"access_token":"Bearer ...", "refresh_token":"..."}
     const tokenString = searchParams.get('token');
 
     if (tokenString) {
       try {
-        // 2. JSON 문자열 파싱
+        // 2. JSON 문자열 파싱 (여기서 tokens 변수가 생성됨)
         const tokens = JSON.parse(tokenString);
-        
-        // 3. "Bearer " 문자열 제거 (필요한 경우)
-        // 백엔드에서 "Bearer "를 붙여서 줬다면 제거, 안 붙였다면 그대로 사용
+
+        // 3. Access Token 추출 및 정제 ("Bearer " 제거)
         let accessToken = tokens.access_token;
         if (accessToken && accessToken.startsWith("Bearer ")) {
           accessToken = accessToken.replace("Bearer ", "");
         }
-        
+
+        // 4. Refresh Token 추출 및 정제
         let refreshToken = tokens.refresh_token;
         if (refreshToken && refreshToken.startsWith("Bearer ")) {
           refreshToken = refreshToken.replace("Bearer ", "");
         }
 
-        // 4. 로컬 스토리지에 저장
-        localStorage.setItem('accessToken', accessToken);
-        // localStorage.setItem('refreshToken', refreshToken); // 필요시 저장
+        // 5. 로컬 스토리지에 둘 다 저장 (★ 중요)
+        if (accessToken) localStorage.setItem('accessToken', accessToken);
+        if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
 
-        // 5. 사용자 정보 가져오기 (토큰으로 백엔드 요청)
-        // (백엔드에 내 정보 조회 API가 /api/user/me 라고 가정)
-        axios.get(`${ baseUrl }/api/user/me`, {
+        // 6. 사용자 정보 가져오기 (토큰으로 백엔드 요청)
+        axios.get(`${baseUrl}/api/user/me`, {
           headers: { Authorization: `Bearer ${accessToken}` }
         })
-        .then((res) => {
-          const userData = res.data;
-          
-          // 6. Jotai 상태 업데이트 (로그인 처리)
-          setUser({
-            id: userData.id,
-            nickname: userData.nickname,
-            email: userData.email,
-            role: userData.role,
-            phone: userData.phone || '',
-            zipcode: userData.zipcode || '',
-            address: userData.address || '',
-            detailAddress: userData.detailAddress || '',
-            name: userData.name,
-            profileImage: userData.profileImage,
-            isLogined: true
-          });
+          .then((res) => {
+            const userData = res.data;
 
-          toast.success("소셜 로그인 성공!");
-          navigate('/'); // 메인 페이지로 이동
-        })
-        .catch((err) => {
-          console.error("유저 정보 로드 실패", err);
-          toast.error("유저 정보를 불러오지 못했습니다.");
-          navigate('/login');
-        });
+            // 7. Jotai 상태 업데이트 (로그인 처리)
+            setUser({
+              id: userData.id,
+              nickname: userData.nickname,
+              email: userData.email,
+              role: userData.role,
+              phone: userData.phone || '',
+              zipcode: userData.zipcode || '',
+              address: userData.address || '',
+              detailAddress: userData.detailAddress || '',
+              name: userData.name,
+              profileImage: userData.profileImage,
+              isLogined: true
+            });
+
+            toast.success("소셜 로그인 성공!");
+            navigate('/'); // 메인 페이지로 이동
+          })
+          .catch((err) => {
+            console.error("유저 정보 로드 실패", err);
+            toast.error("유저 정보를 불러오지 못했습니다.");
+            navigate('/login');
+          });
 
       } catch (e) {
         console.error("토큰 파싱 에러", e);

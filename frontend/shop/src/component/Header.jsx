@@ -93,8 +93,9 @@ const HeaderNavbar = () => {
   // 로그아웃 핸들러
   const handleLogout = () => {
 
-    setUser(initUser);
     localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    setUser(initUser);
     toast.info("로그아웃 되었습니다.");
     navigate('/');
 
