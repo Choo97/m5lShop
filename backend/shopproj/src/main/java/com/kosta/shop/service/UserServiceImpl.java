@@ -6,12 +6,13 @@ import java.util.Map;
 
 import javax.persistence.EntityNotFoundException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kosta.shop.dto.UserJoinDto;
 import com.kosta.shop.dto.UserUpdateDto;
 import com.kosta.shop.entity.SocialAccount;
 import com.kosta.shop.entity.User;
@@ -24,7 +25,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
-	@Value("${uploadPath}") // application.yml의 경로 (C:/shop/item/)
+	
+	@Value("${uploadPath}")
     private String uploadPath;
     
     private final FileService fileService; // 주입 필요
@@ -32,6 +34,8 @@ public class UserServiceImpl implements UserService {
 	private final UserRepository userRepository;
 	
 	private final SocialAccountRepository socialAccountRepository;
+	
+	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Override
 	@Transactional
@@ -95,6 +99,30 @@ public class UserServiceImpl implements UserService {
         }
         
         return imgUrl; // 변경된 이미지 주소 반환
+    }
+
+	@Override
+	public boolean checkEmailDuplicate(String email) {
+        return userRepository.existsByEmail(email);
+	}
+
+	@Override
+	@Transactional
+    public void join(UserJoinDto joinDto) {
+        // 1. 중복 체크 (안전장치)
+        if (userRepository.existsByEmail(joinDto.getEmail())) {
+            throw new RuntimeException("이미 존재하는 이메일입니다.");
+        }
+
+        // 2. 비밀번호 암호화
+        String rawPassword = joinDto.getPassword();
+        String encPassword = bCryptPasswordEncoder.encode(rawPassword);
+
+        // 3. DTO -> Entity 변환 및 저장
+        User user = joinDto.toEntity(encPassword);
+        userRepository.save(user);
+        
+        // (선택사항) 회원가입 시 장바구니 생성 등 추가 로직
     }
 
 }

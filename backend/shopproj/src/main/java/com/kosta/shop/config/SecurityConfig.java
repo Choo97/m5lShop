@@ -56,7 +56,9 @@ public class SecurityConfig {
 				.and().successHandler(oAuth2SuccessHandler); // 인증 성공 후 토큰 만들어 리엑트에 전송
 
 		http.addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository)).authorizeRequests()
-				.antMatchers("/images/**").permitAll().antMatchers("/user/**").authenticated() // 로그인 필요
+				.antMatchers("/images/**", "/api/auth/refresh", "/api/auth/join", "/api/auth/doubleUserId", 
+						"/api/user/login").permitAll() // 모두 허용
+				.antMatchers("/user/**").authenticated() // 로그인 필요
 				.antMatchers("/admin/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
 				.antMatchers("/manager/**").access("hasRole('ROLE_MANAGER')").anyRequest().permitAll();
 
