@@ -2,11 +2,11 @@ import axios from "axios";
 
 // 배포 환경과 로컬 환경 구분
 export const baseUrl = import.meta.env.PROD
-  ? "http://13.124.xxx.xxx:8090" // 본인 EC2 IP
+  ? "http://16.184.56.172/:8090" // 본인 EC2 IP
   : "http://localhost:8090";
 
 export const reactUrl = import.meta.env.PROD
-  ? "http://13.124.xxx.xxx:8090"
+  ? "http://16.184.56.172/:5173"
   : "http://localhost:5173";
 
 export const myAxios = axios.create({
