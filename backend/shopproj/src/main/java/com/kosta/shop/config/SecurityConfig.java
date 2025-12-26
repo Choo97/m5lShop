@@ -57,7 +57,7 @@ public class SecurityConfig {
 
 		http.addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository)).authorizeRequests()
 				.antMatchers("/images/**", "/api/auth/refresh", "/api/auth/join", "/api/auth/login", "/api/auth/doubleUserId", 
-						"/api/user/login").permitAll() // 모두 허용
+						"/api/user/login", "/api/main/**").permitAll() // 모두 허용
 				.antMatchers("/user/**").authenticated() // 로그인 필요
 				.antMatchers("/admin/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
 				.antMatchers("/manager/**").access("hasRole('ROLE_MANAGER')").anyRequest().permitAll();
