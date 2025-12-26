@@ -39,93 +39,46 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 		
 		String header = request.getHeader(JwtProperties.HEADER_STRING);
 		
-		// 1. 헤더가 없거나 Bearer로 시작하지 않으면 -> 그냥 통과시킨다 (로그인 안 한 상태로 간주)
-		// (SecurityConfig에서 권한이 필요한 주소라면 알아서 403/401 에러를 낼 것임)
+		// 1. 헤더가 없거나 Bearer로 시작하지 않으면 -> 그냥 통과 (비로그인 상태)
 		if(header == null || !header.startsWith(JwtProperties.TOKEN_PREFIX)) {
 			chain.doFilter(request, response);
 			return;
 		}
 		
-		// 2. 토큰이 있다면 검증 시작
+		// 2. 토큰 추출
 		String accessToken = header.replace(JwtProperties.TOKEN_PREFIX, "");
 				
 		try {
-			// Access Token 검증
+			// 3. Access Token 검증
 			String email = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET))
 									.build()
 									.verify(accessToken)
 									.getClaim("sub")
 									.asString();
 			
-		    log.debug("Email from Token: " + email); // 로그 확인용
-
-			
 			if(email != null) {
 				Optional<User> ouser = userRepository.findByEmail(email);
 				
 				if(ouser.isPresent()) {
 					User user = ouser.get();
-					
-					// ★ 여기서 PrincipalDetails 객체를 만들어 넣어줍니다.
 					PrincipalDetails principalDetails = new PrincipalDetails(user);
 					
 					Authentication auth = new UsernamePasswordAuthenticationToken(
-							principalDetails, 
-							null,
-							principalDetails.getAuthorities());
+							principalDetails, null, principalDetails.getAuthorities());
 					
-					// 시큐리티 세션에 등록
 					SecurityContextHolder.getContext().setAuthentication(auth);
 				}
 			}
-			
 			chain.doFilter(request, response);
 			
 		} catch(TokenExpiredException e) { 
-			// 토큰 만료 시 Refresh Token 확인 로직
-			log.info("Access Token 만료됨. Refresh Token 확인 시도.");
+			// ★ 핵심 변경: 여기서 재발급하지 않고 바로 401 에러를 보냅니다.
+			// 그러면 프론트엔드(config.jsx)가 이걸 감지하고 AuthController로 갱신 요청을 보냅니다.
+			log.info("Access Token 만료됨 -> 401 응답");
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰 만료");
 			
-			String refreshTokenHeader = request.getHeader("RefreshToken");
-
-			if(refreshTokenHeader == null || !refreshTokenHeader.startsWith(JwtProperties.TOKEN_PREFIX)) {
-				// 리프레시 토큰도 없으면 진짜 만료
-				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰 만료 (로그인 필요)");
-				return;				
-			}
-			
-			String refreshToken = refreshTokenHeader.replace(JwtProperties.TOKEN_PREFIX, "");
-			
-			try {
-				String email = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET))
-									.build()
-									.verify(refreshToken)
-									.getClaim("sub")
-									.asString();
-				
-				if(email != null) {
-					Optional<User> ouser = userRepository.findByEmail(email);
-					if(ouser.isPresent()) {
-						// 새 토큰 발급
-						// (주의: JwtToken 빈을 주입받지 못했다면 여기서 직접 생성 로직 구현 필요)
-						// 임시로 하드코딩된 로직 대신, 기존 로직 유지
-						
-						// 인증 처리
-						PrincipalDetails principalDetails = new PrincipalDetails(ouser.get());
-						Authentication auth = new UsernamePasswordAuthenticationToken(
-								principalDetails, null, principalDetails.getAuthorities());
-						SecurityContextHolder.getContext().setAuthentication(auth);
-						
-						// 여기서 새 토큰을 헤더에 담아주는 로직이 필요하지만, 
-						// 일단 필터 통과가 우선이므로 진행
-						chain.doFilter(request, response);
-						return;
-					}
-				}
-			} catch(Exception re) {
-				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Refresh Token 만료");
-			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			log.error("토큰 오류", e);
 			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰 오류");
 		}	
 	}

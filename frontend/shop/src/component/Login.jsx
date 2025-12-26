@@ -29,43 +29,52 @@ const Login = () => {
     setLoginError(''); // 에러 초기화
 
     try {
-      // 1. 백엔드 로그인 요청
-      const response = await axios.post('/api/auth/login', {
-        email: email,
+      // 1. 로그인 요청 (필터가 가로챔)
+      const response = await axios.post(`${baseUrl}/api/auth/login`, {
+        username: email, // ★ 백엔드 필터가 username/password 키를 찾을 수 있음 (email을 username에 담아 보냄)
         password: password
       });
 
       // 2. 로그인 성공 시 처리
       if (response.status === 200) {
-        const data = response.data;
         
-        // 토큰 저장 (Local Storage 등)
-        localStorage.setItem('accessToken', data.token);
+        // ★ 중요: 필터 방식은 토큰이 '헤더'에 들어있습니다.
+        const jwtToken = response.headers['authorization']; 
         
-        // Jotai 전역 상태 업데이트
+        if (jwtToken) {
+            // "Bearer " 제거 후 저장
+            const accessToken = jwtToken.replace("Bearer ", "");
+            localStorage.setItem('accessToken', accessToken);
+
+            // 리프레시 토큰이 헤더에 같이 왔다면 저장 (헤더 키 확인 필요)
+            const refreshToken = response.headers['refreshtoken']; // 백엔드에서 보낸 키값 확인
+            if(refreshToken) {
+                localStorage.setItem('refreshToken', refreshToken.replace("Bearer ", ""));
+            }
+        }
+
+        // ★ 유저 정보는 '바디(data)'에 들어있습니다.
+        const userData = response.data;
+        
+        // Jotai 업데이트
         setUser({
-            id : data.id,
-            name : data.name,
-            email : data.email,
-            address : data.address || '',
-            nickname : data.nickname,
-            phone : data.phone || '',
-            zipcode : data.zipcode || '',
-            detailAddress : data.detailAddress || '',
-            role : data.role || 'GUEST',
-            profileImage : data.profileImage || '',
-            isLoggedIn: true 
+            id: userData.id, // 백엔드에서 id를 보내주는지 확인 필요 (안 보내주면 /api/user/me 호출해야 함)
+            name: userData.name,
+            email: userData.email,
+            nickname: userData.nickname,
+            role: userData.roles || 'ROLE_USER', // 백엔드 필드명 확인 (role or roles)
+            profileImage: userData.profileImage,
+            // 기타 필요한 필드들...
+            isLogined: true 
         });
 
-        toast.info("로그인 되었습니다.");
-
-        // 메인 페이지로 이동
+        toast.success("로그인 되었습니다.");
         navigate('/');
       }
     } catch (error) {
-      // 3. 로그인 실패 시 처리
+      console.error("Login Error:", error);
       if (error.response && error.response.status === 401) {
-        setLoginError('존재하지 않는 계정입니다. 다시 로그인해 주세요.');
+        setLoginError('아이디 또는 비밀번호가 일치하지 않습니다.');
       } else {
         setLoginError('로그인 중 오류가 발생했습니다.');
       }
@@ -100,6 +109,7 @@ const Login = () => {
           <div className="mb-3">
             <Input
               type="email"
+              name="username"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -112,6 +122,7 @@ const Login = () => {
           <div className="mb-3">
             <Input
               type="password"
+              name="password"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

@@ -10,7 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +31,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	public JwtAuthenticationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
 		super(authenticationManager);
 		this.userRepository = userRepository;
+		
+		setFilterProcessesUrl("/api/auth/login"); 
 	}
 
 	//super의 attemptAuthentication 메소드가 실행되고 성공하면 successfulAuthentication가 호출된다.
@@ -71,5 +75,45 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		
 		response.getWriter().write(objectMapper.writeValueAsString(userInfo));
 	}
+
+	// 로그인 시도 시 실행되는 메소드
+    @Override
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) 
+            throws AuthenticationException {
+        System.out.println("JwtAuthenticationFilter : 로그인 시도중");
+
+        try {
+            // 1. request의 Body(JSON)를 읽어서 Map 또는 DTO로 변환
+            ObjectMapper om = new ObjectMapper();
+            
+            // 프론트엔드가 { "username": "...", "password": "..." } 로 보낸다고 가정
+            // 만약 LoginRequestDto 클래스가 있다면 그걸 써도 됩니다.
+            Map<String, String> userMap = om.readValue(request.getInputStream(), Map.class);
+            
+            String username = userMap.get("username"); // 프론트에서 보낸 email 값
+            String password = userMap.get("password");
+
+            System.out.println("입력된 Username: " + username);
+            System.out.println("입력된 Password: " + password);
+
+            // 2. 인증 토큰 생성 (아직 인증 안 된 상태)
+            UsernamePasswordAuthenticationToken authenticationToken = 
+                    new UsernamePasswordAuthenticationToken(username, password);
+
+            // 3. 실제 인증 처리 (Manager가 UserDetailsService를 호출해서 비밀번호 비교)
+            // 성공하면 authentication 객체 리턴, 실패하면 예외 발생(401)
+            Authentication authentication = 
+                    getAuthenticationManager().authenticate(authenticationToken);
+            
+            return authentication;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        return null; // 실패 시
+    }
+	
+	
 	
 }

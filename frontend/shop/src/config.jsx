@@ -19,7 +19,8 @@ myAxios.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('accessToken');
         if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+            // ★ AccessToken: Bearer 중복 방지 처리
+            config.headers.Authorization = token.startsWith("Bearer ") ? token : `Bearer ${token}`;
         }
         return config;
     },
@@ -40,23 +41,26 @@ myAxios.interceptors.response.use(
             
             if (refreshToken) {
                 try {
+                    // ★ RefreshToken: Bearer 중복 방지 처리
+                    const refreshTokenValue = refreshToken.startsWith("Bearer ") ? refreshToken : `Bearer ${refreshToken}`;
+
                     // 1. 백엔드에 Refresh Token 보내서 새 Access Token 요청
-                    // (이때는 myAxios가 아닌 깡통 axios를 써야 인터셉터가 안 꼬입니다)
                     const res = await axios.post(`${baseUrl}/api/auth/refresh`, {}, {
                         headers: { 
-                            RefreshToken: `Bearer ${refreshToken}` 
+                            RefreshToken: refreshTokenValue // ★ 수정된 값 사용
                         }
                     });
 
-                    // 2. 새 토큰 저장
+                    // 2. 새 토큰 저장 (Bearer 제거하고 순수 토큰만 저장 추천)
                     const newAccessToken = res.data.access_token.replace("Bearer ", "");
                     localStorage.setItem('accessToken', newAccessToken);
                     console.log("토큰 갱신 성공!");
 
                     // 3. 실패했던 원래 요청의 헤더를 새 토큰으로 교체
+                    // (여기서도 Bearer를 붙여서 줌)
                     originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
-                    // 4. 원래 요청 재시도 (사용자는 에러난 줄 모름)
+                    // 4. 원래 요청 재시도
                     return myAxios(originalRequest);
 
                 } catch (refreshError) {
