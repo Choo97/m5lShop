@@ -39,23 +39,33 @@ const Login = () => {
       if (response.status === 200) {
         
         // ★ 중요: 필터 방식은 토큰이 '헤더'에 들어있습니다.
-        const jwtToken = response.headers['authorization']; 
+        // const jwtToken = response.headers['authorization']; 
         
-        if (jwtToken) {
-            // "Bearer " 제거 후 저장
-            const accessToken = jwtToken.replace("Bearer ", "");
-            localStorage.setItem('accessToken', accessToken);
+        // if (jwtToken) {
+        //     // "Bearer " 제거 후 저장
+        //     const accessToken = jwtToken.replace("Bearer ", "");
+        //     localStorage.setItem('accessToken', accessToken);
 
-            // 리프레시 토큰이 헤더에 같이 왔다면 저장 (헤더 키 확인 필요)
-            const refreshToken = response.headers['refreshtoken']; // 백엔드에서 보낸 키값 확인
-            if(refreshToken) {
-                localStorage.setItem('refreshToken', refreshToken.replace("Bearer ", ""));
-            }
-        }
+        //     // 리프레시 토큰이 헤더에 같이 왔다면 저장 (헤더 키 확인 필요)
+        //     const refreshToken = response.headers['refreshtoken']; // 백엔드에서 보낸 키값 확인
+        //     if(refreshToken) {
+        //         localStorage.setItem('refreshToken', refreshToken.replace("Bearer ", ""));
+        //     }
+        // }
 
+        const { access_token, refresh_token, user } = response.data;
         // ★ 유저 정보는 '바디(data)'에 들어있습니다.
-        const userData = response.data;
-        
+        const userData = response.data.userData;
+        console.log("User Data:", userData);
+        // console.log("user: ", user);
+        // 2. 토큰 정제 (Bearer 제거) 및 각각 저장
+        // (값이 없을 수도 있으니 안전하게 처리)
+        const newAccessToken = access_token ? access_token.replace("Bearer ", "") : "";
+        const newRefreshToken = refresh_token ? refresh_token.replace("Bearer ", "") : "";
+
+        // 3. 각각 따로 저장
+        localStorage.setItem('accessToken', newAccessToken);
+        localStorage.setItem('refreshToken', newRefreshToken);
         // Jotai 업데이트
         setUser({
             id: userData.id, // 백엔드에서 id를 보내주는지 확인 필요 (안 보내주면 /api/user/me 호출해야 함)
@@ -64,6 +74,10 @@ const Login = () => {
             nickname: userData.nickname,
             role: userData.roles || 'ROLE_USER', // 백엔드 필드명 확인 (role or roles)
             profileImage: userData.profileImage,
+            phone: userData.phone || '',
+            zipcode: userData.zipcode || '',
+            address: userData.address || '',
+            detailAddress: userData.detailAddress || '',
             // 기타 필요한 필드들...
             isLogined: true 
         });

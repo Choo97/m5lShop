@@ -29,8 +29,15 @@ public class UserController {
 
 	// 현재 로그인한 유저 정보 반환
 	@GetMapping("/me")
-	public User getCurrentUser(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-		return principalDetails.getUser();
+	public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+	    
+	    // 1. 안전장치: 로그인 정보가 없으면 401 에러 리턴
+	    if (principalDetails == null) {
+	        return new ResponseEntity<>("로그인이 필요합니다.", HttpStatus.UNAUTHORIZED);
+	    }
+
+	    // 2. 정상일 때만 유저 정보 리턴
+	    return new ResponseEntity<>(principalDetails.getUser(), HttpStatus.OK);
 	}
 
 	@PatchMapping("/me")

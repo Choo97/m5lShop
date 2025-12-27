@@ -44,6 +44,7 @@ const MyPage = () => {
     // (1) 회원 정보
     myAxios.get('/api/user/me')
       .then(res => {
+        console.log("내 정보:", res.data);
         const { nickname, email, phone, gender, zipcode, address, detailAddress, profileImage } = res.data;
         setFormData({
           nickname: nickname || '',

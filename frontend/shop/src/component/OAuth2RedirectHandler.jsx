@@ -22,14 +22,14 @@ const OAuth2RedirectHandler = () => {
 
         // 3. Access Token 추출 및 정제 ("Bearer " 제거)
         let accessToken = tokens.access_token;
-        if (accessToken && accessToken.startsWith("Bearer ")) {
-          accessToken = accessToken.replace("Bearer ", "");
+        while (accessToken && accessToken.startsWith("Bearer ")) {
+          accessToken = accessToken.replace("Bearer ", "").trim();
         }
 
         // 4. Refresh Token 추출 및 정제
         let refreshToken = tokens.refresh_token;
-        if (refreshToken && refreshToken.startsWith("Bearer ")) {
-          refreshToken = refreshToken.replace("Bearer ", "");
+        while (refreshToken && refreshToken.startsWith("Bearer ")) {
+          refreshToken = refreshToken.replace("Bearer ", "").trim();
         }
 
         // 5. 로컬 스토리지에 둘 다 저장 (★ 중요)

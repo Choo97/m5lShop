@@ -43,6 +43,17 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
 
+    // 1. [복구 로직] 토큰은 있는데, 리액트 상태가 '로그아웃'이라면? -> 로그인 복구!
+    if (token && !user.isLogined) {
+      // (심화: 여기서 토큰을 디코딩해서 닉네임 등을 가져오면 더 좋습니다)
+      // 일단은 강제로 로그인 상태로 만듭니다.
+      setUser(prev => ({ 
+          ...prev, 
+          isLogined: true, 
+          token: token 
+      })); 
+    }
+
     // "로그인 상태라고 되어 있는데(isLogined: true), 토큰이 없다면?"
     if (user.isLogined && !token) {
       setUser(initUser); // ★ 강제 초기화 (세션 스토리지도 비워짐)

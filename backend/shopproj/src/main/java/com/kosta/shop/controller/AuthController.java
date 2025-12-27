@@ -95,6 +95,7 @@ public class AuthController {
 
 	@PostMapping("/join")
 	public ResponseEntity<Boolean> join(@RequestBody UserJoinDto joinDto) {
+		log.info("joinDTO {}: ", joinDto);
 		userService.join(joinDto); // 회원가입 서비스 호출
 		return ResponseEntity.ok(true);
 	}

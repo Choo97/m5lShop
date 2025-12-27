@@ -1,5 +1,7 @@
 package com.kosta.shop.config;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,6 +51,11 @@ public class SecurityConfig {
 				.addFilterAt(new JwtAuthenticationFilter(authenticationManager, userRepository),
 						UsernamePasswordAuthenticationFilter.class);
 
+		http.exceptionHandling()
+        .authenticationEntryPoint((request, response, authException) -> {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+        });
+		
 		// 소셜 로그인
 		http.oauth2Login().authorizationEndpoint().baseUri("/oauth2/authorization") //
 				.and().redirectionEndpoint().baseUri("/social/*").and().userInfoEndpoint()
@@ -56,9 +63,11 @@ public class SecurityConfig {
 				.and().successHandler(oAuth2SuccessHandler); // 인증 성공 후 토큰 만들어 리엑트에 전송
 
 		http.addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository)).authorizeRequests()
-				.antMatchers("/**", "/images/**", "/api/auth/refresh", "/api/auth/join", "/api/auth/login", "/api/auth/doubleUserId", 
-						"/api/user/login", "/api/main/**").permitAll() // 모두 허용
-				.antMatchers("/user/**").authenticated() // 로그인 필요
+				.antMatchers("/images/**", "/api/user/login").permitAll() // 모두 허용
+				.antMatchers("/api/auth/**").permitAll() // ★ 추가
+				.antMatchers("/api/main/**").permitAll()
+			    .antMatchers("/api/styling/**").permitAll() // ★ 추가
+				.antMatchers("/user/**", "/api/user/**").authenticated() // 로그인 필요
 				.antMatchers("/admin/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
 				.antMatchers("/manager/**").access("hasRole('ROLE_MANAGER')").anyRequest().permitAll();
 
