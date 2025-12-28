@@ -132,6 +132,12 @@ const Cart = () => {
     navigate(`/product/${productId}`);
   };
 
+  const getImageUrl = (path) => {
+    if (!path) return "https://placehold.co/100"; // 기본 이미지
+    if (path.startsWith('http')) return path;
+    return `${baseUrl}${encodeURI(path)}`; // 백엔드 주소 + 한글 처리
+  };
+
   return (
     <Container className="py-5">
       <h2 className="fw-bold mb-4 text-center">장바구니</h2>
@@ -155,7 +161,7 @@ const Cart = () => {
                     <div className="d-flex align-items-center product-link"
                       onClick={() => handleProductClick(item.productId)}
                       style={{ cursor: 'pointer' }} >
-                      <img src={item.imgUrl} alt={item.name} style={{ width: '80px', height: '100px', objectFit: 'cover', marginRight: '15px' }} />
+                      <img src={getImageUrl(item.imgUrl)} alt={item.name} style={{ width: '80px', height: '100px', objectFit: 'cover', marginRight: '15px' }} />
                       <div>
                         {/* <span className="fw-bold d-block text-truncate" style={{ maxWidth: '200px' }}>{item.name}</span> */}
                         {item.color && (

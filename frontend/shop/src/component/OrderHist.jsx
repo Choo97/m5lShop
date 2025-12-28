@@ -41,6 +41,12 @@ const OrderHist = () => {
     }
   };
 
+  const getImageUrl = (path) => {
+    if (!path) return "https://placehold.co/100"; // 기본 이미지
+    if (path.startsWith('http')) return path;
+    return `${baseUrl}${encodeURI(path)}`; // 백엔드 주소 + 한글 처리
+  };
+
   return (
     <Container className="py-5">
       <h2 className="fw-bold mb-4 text-center">주문 내역</h2>
@@ -57,7 +63,7 @@ const OrderHist = () => {
             {order.orderItemDtoList.map(item => (
               <Row key={item.id} className="mb-3 align-items-center">
                 <Col xs={3} md={2} onClick={() => handleProductClick(item.productId)} style={{ cursor: 'pointer' }}>
-                  <img src={item.imgUrl} alt={item.itemNm} className="img-fluid rounded" />
+                  <img src={getImageUrl(item.imgUrl)} alt={item.itemNm} className="img-fluid rounded" />
                 </Col>
                 <Col style={{ cursor: 'pointer'}} onClick={() => handleProductClick(item.productId)}>
                   <h6 className="fw-bold text-decoration-underline-hover">{item.itemNm}</h6>
