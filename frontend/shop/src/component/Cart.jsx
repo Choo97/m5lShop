@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Button, Table, Input } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
-import { myAxios } from '../config';
+import { myAxios, baseUrl } from '../config';
 import { toast } from 'react-toastify';
 import { FaTrashAlt } from 'react-icons/fa';
 import * as Portone from "@portone/browser-sdk/v2";

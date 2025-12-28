@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Card, CardHeader, CardBody, Row, Col, Badge, Button } from 'reactstrap';
-import { myAxios } from '../config';
+import { myAxios, baseUrl } from '../config';
 import ReviewWriteModal from './ReviewWriteModal'; 
 import { useNavigate } from 'react-router-dom'; 
 import '../App.css';
