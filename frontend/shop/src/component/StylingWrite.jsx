@@ -3,7 +3,7 @@ import { Container, Form, FormGroup, Label, Input,
   Button, Row, Col, Modal, ModalHeader, ModalBody, 
   ListGroup, ListGroupItem } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
-import { myAxios, baseUrl  } from '../config';
+import { myAxios, baseUrl } from '../config';
 import axios from 'axios'
 import { toast } from 'react-toastify';
 import { FaCamera, FaSearch, FaTimes } from 'react-icons/fa';
@@ -74,10 +74,13 @@ const StylingWrite = () => {
 
     const formData = new FormData();
     // JSON 데이터는 Blob으로 감싸서 보냄
-    const jsonBlob = new Blob([JSON.stringify({ content })], { type: "application/json" });
-    formData.append('data', jsonBlob);
-    formData.append('file', file);
+    const requestData = {
+        content: content,
+        productIds: taggedProducts.map(p => p.id) 
+    };
 
+    formData.append('data', new Blob([JSON.stringify(requestData)], { type: "application/json" }));
+    formData.append('file', file);
     try {
       await myAxios.post('/api/styling', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
@@ -89,6 +92,12 @@ const StylingWrite = () => {
       toast.error("등록 실패");
     }
   };
+
+  const getImageUrl = (path) => {
+        if (!path) return "https://placehold.co/100"; // 기본 이미지
+        if (path.startsWith('http')) return path;
+        return `${baseUrl}${encodeURI(path)}`; // 백엔드 주소 + 한글 처리
+      };
 
   return (
     <Container className="py-5" style={{ maxWidth: '800px' }}>
@@ -138,7 +147,7 @@ const StylingWrite = () => {
                 {taggedProducts.map(p => (
                   <ListGroupItem key={p.id} className="d-flex justify-content-between align-items-center p-2">
                     <div className="d-flex align-items-center">
-                      <img src={p.imageUrl} alt={p.name} style={{width:'40px', height:'50px', objectFit:'cover', marginRight:'10px'}} />
+                      <img src={getImageUrl(p.imageUrl)} alt={p.name} style={{width:'40px', height:'50px', objectFit:'cover', marginRight:'10px'}} />
                       <div>
                         <div className="small fw-bold text-truncate" style={{maxWidth:'150px'}}>{p.name}</div>
                         <div className="small text-muted">{p.price.toLocaleString()}원</div>
@@ -181,7 +190,7 @@ const StylingWrite = () => {
                 {searchResults.map(p => (
                   <ListGroupItem key={p.id} action onClick={() => selectProduct(p)} style={{cursor:'pointer'}}>
                     <div className="d-flex align-items-center">
-                      <img src={p.imageUrl} alt={p.name} style={{width:'40px', height:'50px', objectFit:'cover', marginRight:'10px'}} />
+                      <img src={getImageUrl(p.imageUrl)} alt={p.name} style={{width:'40px', height:'50px', objectFit:'cover', marginRight:'10px'}} />
                       <div>
                         <div className="fw-bold">{p.name}</div>
                         <small>{p.price.toLocaleString()}원</small>

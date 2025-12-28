@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Input, Form, FormGroup, Label } from 'reactstrap';
 import { Rating } from 'react-simple-star-rating';
 import { toast } from 'react-toastify';
-import { myAxios } from '../config';
+import { myAxios, baseUrl } from '../config';
 import { FaCamera, FaTimes } from 'react-icons/fa';
 
 const ReviewWriteModal = ({ isOpen, toggle, orderItem, onSuccess }) => {
@@ -83,12 +83,18 @@ const ReviewWriteModal = ({ isOpen, toggle, orderItem, onSuccess }) => {
     }
   };
 
+  const getImageUrl = (path) => {
+      if (!path) return "https://placehold.co/100"; // 기본 이미지
+      if (path.startsWith('http')) return path;
+      return `${baseUrl}${encodeURI(path)}`; // 백엔드 주소 + 한글 처리
+    };
+
   return (
     <Modal isOpen={isOpen} toggle={toggle} centered size="lg">
       <ModalHeader toggle={toggle}>리뷰 작성</ModalHeader>
       <ModalBody>
         <div className="d-flex align-items-center mb-3">
-          <img src={orderItem?.imgUrl} alt="product" style={{ width: '60px', height: '60px', objectFit: 'cover', marginRight: '15px', borderRadius:'4px' }} />
+          <img src={getImageUrl(orderItem?.imgUrl)} alt="product" style={{ width: '60px', height: '60px', objectFit: 'cover', marginRight: '15px', borderRadius:'4px' }} />
           <div>
             <div className="fw-bold">{orderItem?.itemNm}</div>
             <div className="text-muted small">상품은 어떠셨나요?</div>
