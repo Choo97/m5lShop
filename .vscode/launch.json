@@ -1,0 +1,30 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // 1. 집에서 실행할 때 선택
+      "type": "java",
+      "name": "Spring Boot - 집 (HOME)",
+      "request": "launch",
+      "mainClass": "com.kosta.shop.ShopApplication",
+      "projectName": "shopproj",
+      "vmArgs": "-Dspring.profiles.active=home -Dfile.encoding=UTF-8" 
+    },
+    {
+      // 2. 노트북에서 실행할 때 선택
+      "type": "java",
+      "name": "Spring Boot - 노트북 (LAPTOP)",
+      "request": "launch",
+      "mainClass": "com.kosta.shop.ShopApplication",
+      "projectName": "shopproj",
+      "vmArgs": "-Dspring.profiles.active=laptop -Dfile.encoding=UTF-8"
+    },
+    {
+      // (선택 사항) 현재 열려있는 파일 실행용 (그냥 둬도 됩니다)
+      "type": "java",
+      "name": "Current File",
+      "request": "launch",
+      "mainClass": "${file}"
+    }
+  ]
+}

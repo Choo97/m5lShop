@@ -1,4 +1,5 @@
 plugins {
+    id 'eclipse'
     id 'java'
     id 'war'
     id 'org.springframework.boot' version '2.7.18'
@@ -70,12 +71,37 @@ dependencies {
     
 }
 
+eclipse {
+    jdt {
+        file {
+            withProperties { properties ->
+                // "Annotation Processing 기능 끄기"
+                properties['org.eclipse.jdt.core.compiler.processAnnotations'] = 'disabled'
+            }
+        }
+    }
+    classpath {
+        file {
+            whenMerged { classpath ->
+                // "bin/generated-sources 경로가 보이면 목록에서 제거해라"
+                classpath.entries.removeAll { entry ->
+                    entry.kind == 'src' && entry.path.contains('generated-sources/annotations')
+                }
+            }
+        }
+    }
+}
+
 tasks.named('test') {
     useJUnitPlatform()
 }
 
 tasks.named('bootRun') {
     systemProperty 'file.encoding', 'UTF-8'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }
 
 // ===================================================

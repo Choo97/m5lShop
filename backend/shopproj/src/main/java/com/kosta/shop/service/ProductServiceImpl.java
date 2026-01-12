@@ -6,14 +6,18 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kosta.shop.dto.ProductDetailResponseDto;
+import com.kosta.shop.dto.ProductFormDto;
 import com.kosta.shop.dto.ProductResponseDto;
 import com.kosta.shop.entity.Product;
+import com.kosta.shop.entity.ProductImage;
 import com.kosta.shop.repository.ProductRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +28,11 @@ import lombok.RequiredArgsConstructor;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
+
+    private final FileService fileService;
+
+    @Value("${uploadPath}")
+    private String uploadPath;
     
 	@Override
 	public List<ProductResponseDto> getBestProductsByAge(int age) {
@@ -104,4 +113,65 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional
+    public Long saveProduct(ProductFormDto productFormDto, 
+                            List<MultipartFile> thumbnailFiles, 
+                            List<MultipartFile> detailFiles) throws Exception {
+        
+        // 1. 상품 저장
+        Product product = productFormDto.createProduct();
+        productRepository.save(product);
+
+        // 2. 썸네일 이미지 저장 (여기가 핵심!)
+        // 사용자가 선택한 인덱스(repImgIndex)만 true, 나머지는 false
+        if (thumbnailFiles != null && !thumbnailFiles.isEmpty()) {
+            for (int i = 0; i < thumbnailFiles.size(); i++) {
+                // DTO에서 받은 대표 이미지 인덱스와 현재 순서가 같으면 true
+                boolean isRep = (i == productFormDto.getRepImgIndex());
+                
+                // 헬퍼 메서드 호출 (파일 하나 저장)
+                saveSingleImage(thumbnailFiles.get(i), product, isRep, false);
+            }
+        }
+
+        // 3. 상세 이미지 저장 (전부 isDetailImg=true)
+        if (detailFiles != null && !detailFiles.isEmpty()) {
+            for (MultipartFile file : detailFiles) {
+                saveSingleImage(file, product, false, true);
+            }
+        }
+        return product.getId();
+    }
+
+    private void saveSingleImage(MultipartFile file, Product product, boolean isRep, boolean isDetail) throws Exception {
+        if (file.isEmpty()) return;
+
+        String oriImgName = file.getOriginalFilename();
+        String imgName = fileService.uploadFile(uploadPath, oriImgName, file.getBytes());
+        String imgUrl = "/images/" + imgName;
+
+        ProductImage productImage = ProductImage.builder()
+                .imgName(imgName)
+                .oriImgName(oriImgName)
+                .imgUrl(imgUrl)
+                .isRepImg(isRep)      // 넘겨받은 값 사용
+                .isDetailImg(isDetail)
+                .product(product)
+                .build();
+
+        product.getProductImages().add(productImage);
+    }
+
+    @Override
+    @Transactional
+    public void deleteProduct(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new EntityNotFoundException("상품이 없습니다."));
+
+        // (선택사항) 실제 파일 삭제 로직
+        product.getProductImages().forEach(img -> fileService.deleteFile(uploadPath + "/" + img.getImgName()));
+
+        productRepository.delete(product); // DB 삭제 (Cascade로 이미지 데이터도 자동 삭제됨)
+    }
 }

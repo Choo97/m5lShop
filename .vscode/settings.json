@@ -18,5 +18,5 @@
   // 3. 자바 빌드/컴파일 설정 (합쳐도 상관없음)
   // ============================================
   "java.compile.nullAnalysis.mode": "automatic",
-  "java.configuration.updateBuildConfiguration": "interactive"
+  "java.configuration.updateBuildConfiguration": "automatic"
 }

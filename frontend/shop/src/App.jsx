@@ -1,57 +1,62 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useAtom } from 'jotai';
-import { userAtom, initUser } from './atoms';
-// 공통 레이아웃 (폴더명 component 로 변경)
-import HeaderNavbar from './component/Header';
-import Footer from './component/Footer';
+import React, { useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useAtom } from "jotai";
+import { userAtom, initUser } from "./atoms";
+
+import HeaderNavbar from "./component/Header";
+import Footer from "./component/Footer";
 
 // 인증 관련
-import Login from './component/Login';       // LoginPage -> Login
-import Signup from './component/Signup';     // SignupPage -> Signup
-import OAuth2RedirectHandler from './component/OAuth2RedirectHandler';
+import Login from "./component/Login";
+import Signup from "./component/Signup";
+import OAuth2RedirectHandler from "./component/OAuth2RedirectHandler";
 
 // 메인 및 상품 관련
-import Main from './component/Main';                 // MainPage -> Main
-import ProductList from './component/ProductList';   // ProductListPage -> ProductList
-import ProductDetail from './component/ProductDetail'; // ProductDetailPage -> ProductDetail
+import Main from "./component/Main";
+import ProductList from "./component/ProductList";
+import ProductDetail from "./component/ProductDetail";
 
 // 개인화 서비스 (로그인 필요)
-import Cart from './component/Cart';             // CartPage -> Cart
-import OrderHist from './component/OrderHist';   // OrderHistPage -> OrderHist
-import Wishlist from './component/Wishlist';     // WishlistPage -> Wishlist
-import MyPage from './component/MyPage';                 // MyPage -> My
+import Cart from "./component/Cart";
+import OrderHist from "./component/OrderHist";
+import Wishlist from "./component/Wishlist";
+import MyPage from "./component/MyPage";
 
 // 커뮤니티
-import StylingList from './component/StylingList';     // StylingListPage -> StylingList
-import StylingDetail from './component/StylingDetail'; // StylingDetailPage -> StylingDetail
-import StylingWrite from './component/StylingWrite';   // StylingWritePage -> StylingWrite
+import StylingList from "./component/StylingList";
+import StylingDetail from "./component/StylingDetail";
+import StylingWrite from "./component/StylingWrite";
 
 // 보안 라우트
-import PrivateRoute from './component/PrivateRoute';
+import PrivateRoute from "./component/PrivateRoute";
+import AdminRoute from "./component/AdminRoute";
+
+// 관리자 전용
+import AdminProduct from "./component/AdminProduct";
+import AdminProductWrite from "./component/AdminProductWrite";
+import AdminPage from "./component/AdminPage";
 
 // CSS 및 Toast
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import './App.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./App.css";
 
 function App() {
-
   const [user, setUser] = useAtom(userAtom);
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem("accessToken");
 
     // 1. [복구 로직] 토큰은 있는데, 리액트 상태가 '로그아웃'이라면? -> 로그인 복구!
     if (token && !user.isLogined) {
       // (심화: 여기서 토큰을 디코딩해서 닉네임 등을 가져오면 더 좋습니다)
       // 일단은 강제로 로그인 상태로 만듭니다.
-      setUser(prev => ({ 
-          ...prev, 
-          isLogined: true, 
-          token: token 
-      })); 
+      setUser((prev) => ({
+        ...prev,
+        isLogined: true,
+        token: token,
+      }));
     }
 
     // "로그인 상태라고 되어 있는데(isLogined: true), 토큰이 없다면?"
@@ -59,8 +64,6 @@ function App() {
       setUser(initUser); // ★ 강제 초기화 (세션 스토리지도 비워짐)
     }
   }, [setUser, user.isLogined]);
-
-
 
   return (
     <div className="App d-flex flex-column min-vh-100">
@@ -84,47 +87,80 @@ function App() {
           <Route path="/community/styling" element={<StylingList />} />
           <Route path="/community/styling/:id" element={<StylingDetail />} />
 
-
           {/* ==========================================
                 2. Private Routes (로그인 필수)
                 - PrivateRoute 컴포넌트로 감싸서 보호
                ========================================== */}
 
           {/* 마이페이지 */}
-          <Route path="/mypage" element={
-            <PrivateRoute>
-              <MyPage />
-            </PrivateRoute>
-          } />
+          <Route
+            path="/mypage"
+            element={
+              <PrivateRoute>
+                <MyPage />
+              </PrivateRoute>
+            }
+          />
 
           {/* 장바구니 */}
-          <Route path="/cart" element={
-            <PrivateRoute>
-              <Cart />
-            </PrivateRoute>
-          } />
+          <Route
+            path="/cart"
+            element={
+              <PrivateRoute>
+                <Cart />
+              </PrivateRoute>
+            }
+          />
 
           {/* 주문 내역 */}
-          <Route path="/orders" element={
-            <PrivateRoute>
-              <OrderHist />
-            </PrivateRoute>
-          } />
+          <Route
+            path="/orders"
+            element={
+              <PrivateRoute>
+                <OrderHist />
+              </PrivateRoute>
+            }
+          />
 
           {/* 찜 목록 */}
-          <Route path="/wishlist" element={
-            <PrivateRoute>
-              <Wishlist />
-            </PrivateRoute>
-          } />
+          <Route
+            path="/wishlist"
+            element={
+              <PrivateRoute>
+                <Wishlist />
+              </PrivateRoute>
+            }
+          />
 
           {/* 스타일링 글쓰기 */}
-          <Route path="/community/styling/write" element={
-            <PrivateRoute>
-              <StylingWrite />
-            </PrivateRoute>
-          } />
+          <Route
+            path="/community/styling/write"
+            element={
+              <PrivateRoute>
+                <StylingWrite />
+              </PrivateRoute>
+            }
+          />
 
+          {/* 관리자 메인 대시보드 */}
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminPage />
+              </AdminRoute>
+            }
+          />
+
+          {/* ★ 관리자 전용 라우트 (상품 등록) */}
+          <Route
+            path="/admin/product/new"
+            element={
+              <AdminRoute>
+                <AdminProductWrite />
+              </AdminRoute>
+            }
+          />
         </Routes>
       </div>
 

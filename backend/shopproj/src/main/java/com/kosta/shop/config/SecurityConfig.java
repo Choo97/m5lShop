@@ -52,10 +52,10 @@ public class SecurityConfig {
 						UsernamePasswordAuthenticationFilter.class);
 
 		http.exceptionHandling()
-        .authenticationEntryPoint((request, response, authException) -> {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-        });
-		
+				.authenticationEntryPoint((request, response, authException) -> {
+					response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+				});
+
 		// 소셜 로그인
 		http.oauth2Login().authorizationEndpoint().baseUri("/oauth2/authorization") //
 				.and().redirectionEndpoint().baseUri("/social/*").and().userInfoEndpoint()
@@ -66,8 +66,9 @@ public class SecurityConfig {
 				.antMatchers("/images/**", "/api/user/login").permitAll() // 모두 허용
 				.antMatchers("/api/auth/**").permitAll() // ★ 추가
 				.antMatchers("/api/main/**").permitAll()
-			    .antMatchers("/api/styling/**").permitAll() // ★ 추가
+				.antMatchers("/api/styling/**").permitAll() // ★ 추가
 				.antMatchers("/user/**", "/api/user/**").authenticated() // 로그인 필요
+				.antMatchers("/api/admin/**").hasRole("ADMIN")
 				.antMatchers("/admin/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
 				.antMatchers("/manager/**").access("hasRole('ROLE_MANAGER')").anyRequest().permitAll();
 
