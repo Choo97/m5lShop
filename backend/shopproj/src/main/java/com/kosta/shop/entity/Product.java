@@ -16,6 +16,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.kosta.shop.dto.ProductFormDto;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -82,6 +84,19 @@ public class Product extends BaseTimeEntity{
             throw new RuntimeException("상품의 재고가 부족합니다. (현재 재고: " + this.stockQuantity + ")");
         }
         this.stockQuantity = restStock;
+    }
+
+    public void updateProduct(ProductFormDto productFormDto) {
+        this.name = productFormDto.getName();
+        this.price = productFormDto.getPrice();
+        this.stockQuantity = productFormDto.getStockQuantity();
+        this.description = productFormDto.getDescription();
+        this.category = productFormDto.getCategory();
+        this.subCategory = productFormDto.getSubCategory();
+        this.salePrice = productFormDto.getSalePrice();
+        this.isNew = productFormDto.isNew();
+        this.isBest = productFormDto.isBest();
+        this.isSale = productFormDto.isSale();
     }
     
 }

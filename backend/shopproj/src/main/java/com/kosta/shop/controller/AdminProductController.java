@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -42,6 +43,36 @@ public class AdminProductController {
             productService.deleteProduct(productId);
             return new ResponseEntity<>("상품이 삭제되었습니다.", HttpStatus.OK);
         } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // 수정 페이지 진입 (데이터 조회)
+    @GetMapping("/{productId}")
+    public ResponseEntity<ProductFormDto> getProductDtl(@PathVariable Long productId) {
+        try {
+            return ResponseEntity.ok(productService.getProductDtl(productId));
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // 상품 수정
+    @PostMapping("/{productId}")
+    public ResponseEntity<String> updateProduct(
+            @PathVariable Long productId,
+            @RequestPart(value = "data") @Valid ProductFormDto productFormDto,
+            @RequestPart(value = "files", required = false) List<MultipartFile> itemImgFileList
+    ) {
+        try {
+            // DTO에 ID 세팅
+            productFormDto.setId(productId);
+            // (이미지 ID 리스트 처리는 프론트에서 보내줘야 함, 일단 서비스로 위임)
+            
+            productService.updateProduct(productFormDto, itemImgFileList);
+            return new ResponseEntity<>("상품 수정 완료", HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }

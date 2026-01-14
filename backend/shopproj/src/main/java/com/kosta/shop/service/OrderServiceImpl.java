@@ -92,4 +92,37 @@ public class OrderServiceImpl implements OrderService {
         }
         return orderHistDtos;
     }
+
+    @Override
+    public List<OrderHistDto> getAllOrders() {
+        // 1. 모든 주문 조회
+        List<Order> orders = orderRepository.findAllByOrderByCreatedAtDesc();
+        
+        List<OrderHistDto> orderHistDtos = new ArrayList<>();
+
+        // 2. DTO 변환 (기존 로직 재활용)
+        for (Order order : orders) {
+            OrderHistDto orderHistDto = new OrderHistDto(order);
+            // 관리자 화면에는 주문자 정보도 있으면 좋으므로 DTO에 email 필드 추가 추천 (여기선 생략)
+            
+            List<OrderItem> orderItems = order.getOrderItems();
+            for (OrderItem orderItem : orderItems) {
+                ProductImage productImage = productImageRepository.findByProductIdAndIsRepImgTrue(orderItem.getProduct().getId());
+                String imgUrl = (productImage != null) ? productImage.getImgUrl() : "";
+                
+                OrderItemDto orderItemDto = new OrderItemDto(orderItem, imgUrl);
+                orderHistDto.addOrderItemDto(orderItemDto);
+            }
+            orderHistDtos.add(orderHistDto);
+        }
+        return orderHistDtos;
+    }
+
+    @Override
+    @Transactional
+    public void cancelOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException("주문이 존재하지 않습니다."));
+        order.cancelOrder(); // 엔티티 비즈니스 로직 호출 (재고 복구 + 상태 변경)
+    }
 }

@@ -43,6 +43,12 @@ public class ProductImage extends BaseTimeEntity {
         this.product = product;
     }
 
+    public void updateImage(String oriImgName, String imgName, String imgUrl) {
+        this.oriImgName = oriImgName;
+        this.imgName = imgName;
+        this.imgUrl = imgUrl;
+    }
+
     @Builder
     public ProductImage(String imgName, String oriImgName, String imgUrl, boolean isRepImg, boolean isDetailImg, Product product) {
         this.imgName = imgName;

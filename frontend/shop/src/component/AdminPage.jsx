@@ -17,7 +17,7 @@ const AdminPage = () => {
       title: '상품 관리', 
       desc: '등록된 상품을 수정/삭제합니다.', 
       icon: <FaClipboardList size={40} className="mb-3 text-success" />,
-      link: '/products' // 추후 관리자 전용 리스트로 변경 가능
+      link: '/admin/products' // 추후 관리자 전용 리스트로 변경 가능
     },
     { 
       title: '주문 관리', 

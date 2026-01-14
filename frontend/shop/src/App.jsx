@@ -32,9 +32,11 @@ import PrivateRoute from "./component/PrivateRoute";
 import AdminRoute from "./component/AdminRoute";
 
 // 관리자 전용
-import AdminProduct from "./component/AdminProduct";
 import AdminProductWrite from "./component/AdminProductWrite";
 import AdminPage from "./component/AdminPage";
+import AdminProductList from "./component/AdminProductList";
+import AdminOrderList from "./component/AdminOrderList";
+import AdminProductEdit from "./component/AdminProductEdit";
 
 // CSS 및 Toast
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -161,6 +163,34 @@ function App() {
               </AdminRoute>
             }
           />
+
+          <Route
+            path="/admin/products"
+            element={
+              <AdminRoute>
+                <AdminProductList />
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path="/admin/orders"
+            element={
+              <AdminRoute>
+                <AdminOrderList />
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path="/admin/product/edit/:id"
+            element={
+              <AdminRoute>
+                <AdminProductEdit />
+              </AdminRoute>
+            }
+          />
+          
         </Routes>
       </div>
 

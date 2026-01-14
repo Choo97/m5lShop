@@ -27,4 +27,8 @@ public interface ProductService {
 
     public void deleteProduct(Long productId);
 
+    public ProductFormDto getProductDtl(Long productId);
+
+    public Long updateProduct(ProductFormDto productFormDto, List<MultipartFile> itemImgFileList) throws Exception;
+
 }

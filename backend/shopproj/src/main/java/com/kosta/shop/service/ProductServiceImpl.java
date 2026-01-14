@@ -1,6 +1,7 @@
 package com.kosta.shop.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,15 +10,18 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kosta.shop.dto.ProductDetailResponseDto;
 import com.kosta.shop.dto.ProductFormDto;
+import com.kosta.shop.dto.ProductImgDto;
 import com.kosta.shop.dto.ProductResponseDto;
 import com.kosta.shop.entity.Product;
 import com.kosta.shop.entity.ProductImage;
+import com.kosta.shop.repository.ProductImageRepository;
 import com.kosta.shop.repository.ProductRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -31,8 +35,10 @@ public class ProductServiceImpl implements ProductService {
 
     private final FileService fileService;
 
-    @Value("${uploadPath}")
+    @Value("")
     private String uploadPath;
+
+    private final ProductImageRepository productImageRepository;
     
 	@Override
 	public List<ProductResponseDto> getBestProductsByAge(int age) {
@@ -173,5 +179,69 @@ public class ProductServiceImpl implements ProductService {
         product.getProductImages().forEach(img -> fileService.deleteFile(uploadPath + "/" + img.getImgName()));
 
         productRepository.delete(product); // DB 삭제 (Cascade로 이미지 데이터도 자동 삭제됨)
+    }
+
+    // ★ 1. 수정 페이지용 데이터 조회 (Entity -> FormDto 변환)
+    @Override
+    @Transactional(readOnly = true)
+    public ProductFormDto getProductDtl(Long productId) {
+        // 상품 이미지 조회
+        List<ProductImage> productImages = productImageRepository.findByProductIdOrderByIdAsc(productId);
+        List<ProductImgDto> productImgDtoList = new ArrayList<>();
+        
+        for (ProductImage productImage : productImages) {
+            ProductImgDto productImgDto = ProductImgDto.of(productImage);
+            productImgDtoList.add(productImgDto);
+        }
+
+        // 상품 정보 조회
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new EntityNotFoundException("상품이 없습니다."));
+
+        ProductFormDto productFormDto = ProductFormDto.of(product);
+        productFormDto.setProductImgDtoList(productImgDtoList); // 이미지 리스트 담기
+
+        return productFormDto;
+    }
+
+    // ★ 2. 상품 수정 실행
+    @Override
+    @Transactional
+    public Long updateProduct(ProductFormDto productFormDto, List<MultipartFile> itemImgFileList) throws Exception {
+        
+        // 상품 수정 (Dirty Checking)
+        Product product = productRepository.findById(productFormDto.getId())
+                .orElseThrow(() -> new EntityNotFoundException("상품이 없습니다."));
+        product.updateProduct(productFormDto);
+
+        // 이미지 수정
+        List<Long> productImgIds = productFormDto.getProductImgIds(); // 기존 이미지 ID들
+
+        // (단순화를 위해: 기존 이미지가 있는데 새 파일이 들어오면 교체하는 로직)
+        for (int i = 0; i < itemImgFileList.size(); i++) {
+             // 기존 이미지가 있는 개수만큼만 업데이트 가능 (구조상 단순화)
+             // 더 정교하게 하려면 추가/삭제 로직이 필요하지만, 여기선 1:1 교체로 구현
+             if(i < productImgIds.size()) {
+                 updateProductImage(productImgIds.get(i), itemImgFileList.get(i));
+             }
+        }
+        return product.getId();
+    }
+
+    // 이미지 파일 업데이트 헬퍼
+    private void updateProductImage(Long productImgId, MultipartFile itemImgFile) throws Exception {
+        if (!itemImgFile.isEmpty()) {
+            ProductImage savedImage = productImageRepository.findById(productImgId)
+                    .orElseThrow(EntityNotFoundException::new);
+
+            // 기존 파일 삭제 (선택사항)
+            // fileService.deleteFile(uploadPath + "/" + savedImage.getImgName());
+
+            String oriImgName = itemImgFile.getOriginalFilename();
+            String imgName = fileService.uploadFile(uploadPath, oriImgName, itemImgFile.getBytes());
+            String imgUrl = "/images/" + imgName;
+
+            savedImage.updateImage(oriImgName, imgName, imgUrl); // 변경 감지
+        }
     }
 }
