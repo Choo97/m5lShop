@@ -37,6 +37,7 @@ import AdminPage from "./component/AdminPage";
 import AdminProductList from "./component/AdminProductList";
 import AdminOrderList from "./component/AdminOrderList";
 import AdminProductEdit from "./component/AdminProductEdit";
+import AdminUserList from "./component/AdminUserList";
 
 // CSS 및 Toast
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -187,6 +188,15 @@ function App() {
             element={
               <AdminRoute>
                 <AdminProductEdit />
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path="/admin/users"
+            element={
+              <AdminRoute>
+                <AdminUserList />
               </AdminRoute>
             }
           />

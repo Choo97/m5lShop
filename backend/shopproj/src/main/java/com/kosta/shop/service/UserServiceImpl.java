@@ -3,6 +3,7 @@ package com.kosta.shop.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -12,8 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kosta.shop.dto.AdminUserDto;
 import com.kosta.shop.dto.UserJoinDto;
 import com.kosta.shop.dto.UserUpdateDto;
+import com.kosta.shop.entity.Role;
 import com.kosta.shop.entity.SocialAccount;
 import com.kosta.shop.entity.User;
 import com.kosta.shop.repository.SocialAccountRepository;
@@ -123,6 +126,36 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         
         // (선택사항) 회원가입 시 장바구니 생성 등 추가 로직
+    }
+
+	@Override
+    public List<AdminUserDto> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(AdminUserDto::from)
+                .collect(Collectors.toList()); // List import 확인
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("회원이 없습니다."));
+        // 연관된 데이터(주문, 장바구니 등)가 있으면 Cascade 설정에 따라 같이 삭제되거나 에러가 날 수 있음.
+        // 여기서는 유저 삭제 시 관련 데이터도 삭제된다고 가정 (User 엔티티 설정 확인 필요)
+        userRepository.delete(user);
+    }
+
+    @Override
+    @Transactional
+    public void changeRole(Long userId, String roleName) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("회원이 없습니다."));
+        
+        // String -> Enum 변환
+        if(roleName.equals("ADMIN")) user.setRole(Role.ROLE_ADMIN);
+        else if(roleName.equals("USER")) user.setRole(Role.ROLE_USER);
+        
+        // User 엔티티에 setRole 메소드가 없으면 추가하거나 updateRole 메소드 생성 필요
     }
 
 }
