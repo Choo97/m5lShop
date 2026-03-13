@@ -26,8 +26,8 @@ const AdminProductWrite = () => {
     price: "",
     stockQuantity: "",
     description: "",
-    category: "outer",
-    subCategory: "coat",
+    category: "note",
+    subCategory: "diary",
     salePrice: 0,
     isNew: true,
     isBest: false,
@@ -147,45 +147,44 @@ const AdminProductWrite = () => {
           <Col md={4}>
             <FormGroup>
               <Label className="fw-bold small">대분류</Label>
-              <Input
-                type="select"
-                name="category"
-                value={product.category}
-                onChange={handleChange}
-              >
-                <option value="outer">Outer</option>
-                <option value="top">Top</option>
-                <option value="bottom">Bottom</option>
-                <option value="shoes">Shoes</option>
+              <Input type="select" name="category" value={product.category} onChange={handleChange}>
+                <option value="note">노트/다이어리</option>
+                <option value="pen">필기구</option>
+                <option value="sticker">스티커/데코</option>
+                <option value="office">사무용품</option>
               </Input>
             </FormGroup>
           </Col>
           <Col md={4}>
             <FormGroup>
               <Label className="fw-bold small">중분류</Label>
-              <Input
-                type="select"
-                name="subCategory"
-                value={product.subCategory}
-                onChange={handleChange}
-              >
-                <option value="coat">Coat</option>
-                <option value="padding">Padding</option>
-                <option value="hoodie">Hoodie</option>
-                <option value="jeans">Jeans</option>
-                <option value="slacks">Slacks</option>
+              <Input type="select" name="subCategory" value={product.subCategory} onChange={handleChange}>
+                <optgroup label="노트/다이어리">
+                  <option value="diary">다이어리</option>
+                  <option value="memo">메모지</option>
+                  <option value="planner">플래너</option>
+                  <option value="notebook">노트</option>
+                </optgroup>
+                <optgroup label="필기구">
+                  <option value="ballpoint">볼펜</option>
+                  <option value="fountain">만년필</option>
+                  <option value="pencil">연필/샤프</option>
+                  <option value="highlighter">형광펜</option>
+                </optgroup>
+                <optgroup label="스티커/사무용품">
+                  <option value="masking">마스킹테이프</option>
+                  <option value="removable">리무버블</option>
+                  <option value="seal">씰스티커</option>
+                  <option value="organizer">정리함</option>
+                  <option value="desk">데스크테리어</option>
+                </optgroup>
               </Input>
             </FormGroup>
           </Col>
           <Col md={4}>
             <FormGroup>
               <Label className="fw-bold small">재고</Label>
-              <Input
-                type="number"
-                name="stockQuantity"
-                value={product.stockQuantity}
-                onChange={handleChange}
-              />
+              <Input type="number" name="stockQuantity" value={product.stockQuantity} onChange={handleChange} />
             </FormGroup>
           </Col>
         </Row>

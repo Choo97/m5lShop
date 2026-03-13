@@ -14,8 +14,8 @@ const AdminProduct = () => {
     price: '',
     stockQuantity: '',
     description: '',
-    category: 'outer',      // 기본값
-    subCategory: 'coat',    // 기본값
+    category: 'note',      // 기본값
+    subCategory: 'diary',    // 기본값
     salePrice: 0,
     isNew: true,
     isBest: false,
@@ -122,9 +122,10 @@ const AdminProduct = () => {
             <FormGroup>
               <Label className="fw-bold small">대분류</Label>
               <Input type="select" name="category" value={product.category} onChange={handleChange}>
-                <option value="outer">Outer</option>
-                <option value="top">Top</option>
-                <option value="bottom">Bottom</option>
+                <option value="note">노트/다이어리</option>
+                <option value="pen">필기구</option>
+                <option value="sticker">스티커/데코</option>
+                <option value="office">사무용품</option>
               </Input>
             </FormGroup>
           </Col>
@@ -133,12 +134,10 @@ const AdminProduct = () => {
               <Label className="fw-bold small">중분류</Label>
               <Input type="select" name="subCategory" value={product.subCategory} onChange={handleChange}>
                 {/* 편의상 모든 옵션 나열 (실제론 category에 따라 필터링하면 좋음) */}
-                <option value="coat">Coat</option>
-                <option value="jacket">Jacket</option>
-                <option value="hoodie">Hoodie</option>
-                <option value="sweatshirt">Sweatshirt</option>
-                <option value="jeans">Jeans</option>
-                <option value="slacks">Slacks</option>
+                <option value="diary">다이어리</option>
+                <option value="memo">메모지</option>
+                <option value="planner">플래너</option>
+                <option value="notebook">노트</option>
               </Input>
             </FormGroup>
           </Col>
