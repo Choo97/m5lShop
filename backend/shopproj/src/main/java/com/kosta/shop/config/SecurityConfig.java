@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -40,6 +41,11 @@ public class SecurityConfig {
 	}
 
 	@Bean
+	public WebSecurityCustomizer webSecurityCustomizer() {
+		return (web) -> web.ignoring().antMatchers("/ws-stomp/**");
+	}
+
+	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager)
 			throws Exception {
 		http.cors() // 다른 도메인 접근 허용, @Bean 에 의해 생성된 CorsFilter 자동으로 설정됨
@@ -64,9 +70,13 @@ public class SecurityConfig {
 
 		http.addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository)).authorizeRequests()
 				.antMatchers("/images/**", "/api/user/login").permitAll() // 모두 허용
-				.antMatchers("/api/auth/**").permitAll() // ★ 추가
+				.antMatchers("/api/auth/**").permitAll()
 				.antMatchers("/api/main/**").permitAll()
-				.antMatchers("/api/styling/**").permitAll() // ★ 추가
+				.antMatchers("/api/styling/**").permitAll()
+				.antMatchers("/api/product/**").permitAll()
+				.antMatchers("/api/chat/**").permitAll()
+				.antMatchers("/ws-stomp/**").permitAll()
+				.antMatchers("/chat/**").authenticated()
 				.antMatchers("/user/**", "/api/user/**").authenticated() // 로그인 필요
 				.antMatchers("/api/admin/**").hasRole("ADMIN")
 				.antMatchers("/admin/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
