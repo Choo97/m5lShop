@@ -67,6 +67,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		responseBody.put("refresh_token", refreshToken);
 
 		Map<String, Object> userInfo = new HashMap<>();
+		userInfo.put("id", user.getId()); 
+		userInfo.put("nickname", user.getNickname()); 
 		userInfo.put("name", user.getNickname());
 		userInfo.put("username", user.getUsername());
 		userInfo.put("email", user.getEmail());

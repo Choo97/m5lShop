@@ -51,49 +51,50 @@ const HeaderNavbar = () => {
   // 1. 상품 카테고리 데이터 (code 추가: 쿼리 파라미터용)
   const productCategories = [
     {
-      label: "아우터",
-      code: "outer",
+      label: "노트/다이어리",
+      code: "note",
       subItems: [
-        { name: "코트", code: "coat" },
-        { name: "블레이저", code: "blazer" },
-        { name: "자켓", code: "jacket" },
-        { name: "패딩", code: "padding" },
-        { name: "가디건", code: "cardigan" },
+        { name: "다이어리", code: "diary" },
+        { name: "메모지", code: "memo" },
+        { name: "플래너", code: "planner" },
+        { name: "노트", code: "notebook" },
       ],
     },
     {
-      label: "상의",
-      code: "top",
+      label: "필기구",
+      code: "pen",
       subItems: [
-        { name: "긴팔 티셔츠", code: "long-sleeve" },
-        { name: "반팔 티셔츠", code: "short-sleeve" },
-        { name: "맨투맨", code: "sweatshirt" },
-        { name: "후드", code: "hoodie" },
+        { name: "볼펜", code: "ballpoint" },
+        { name: "만년필", code: "fountain" },
+        { name: "연필/샤프", code: "pencil" },
+        { name: "형광펜", code: "highlighter" },
       ],
     },
     {
-      label: "하의",
-      code: "bottom",
+      label: "스티커/데코",
+      code: "sticker",
       subItems: [
-        { name: "청바지", code: "jeans" },
-        { name: "슬랙스", code: "slacks" },
-        { name: "면바지", code: "cotton" },
-        { name: "반바지", code: "shorts" },
+        { name: "마스킹테이프", code: "masking" },
+        { name: "리무버블", code: "removable" },
+        { name: "씰스티커", code: "seal" },
       ],
     },
     {
-      label: "신발",
-      code: "shoes",
-      subItems: [],
+      label: "사무용품",
+      code: "office",
+      subItems: [
+        { name: "정리함", code: "organizer" },
+        { name: "데스크테리어", code: "desk" },
+      ],
     },
   ];
 
   // 2. 커뮤니티 메뉴 데이터
   const communityItems = [
-    { name: "스타일", path: "/community/styling", needAuth: false },
+    { name: "다꾸 갤러리", path: "/community/styling", needAuth: false }, // 스타일링 -> 다꾸 갤러리
     { name: "공지사항", path: "/community/notice", needAuth: false },
-    { name: "리뷰", path: "/community/reviews", needAuth: false },
-    { name: "1:1 문의", path: "/community/inquiry", needAuth: true }, // 로그인 필요
+    // { name: "리뷰", path: "/community/reviews", needAuth: false }, // 리뷰는 보통 상품 상세에 있으니 메뉴에선 빼도 됨
+    // { name: "1:1 문의", path: "/community/inquiry", needAuth: true }, // 채팅방(/chat)으로 연결하는 게 나을 수도 있음
   ];
 
   // 인증 체크 후 이동 핸들러

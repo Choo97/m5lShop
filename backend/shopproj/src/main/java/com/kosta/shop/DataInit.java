@@ -3,8 +3,11 @@ package com.kosta.shop;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; // ★ 암호화 주입
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +37,7 @@ public class DataInit implements CommandLineRunner {
 	private final ReviewRepository reviewRepository;
 	private final StylingRepository stylingRepository;
     private final FileService fileService; 
+    private final BCryptPasswordEncoder passwordEncoder; // ★ 임시 유저 비번 암호화용
     
     @Value("${uploadPath}")
     private String uploadPath;
@@ -41,47 +45,51 @@ public class DataInit implements CommandLineRunner {
 	@Override
 	@Transactional
 	public void run(String... args) throws Exception {
-		
-        // 1. 상품 데이터 생성
+
+		createDummyUsers();
+
+        // 1. 상품 데이터 생성 (문구점 테마)
 		if (productRepository.count() == 0) {
-            System.out.println("========== 테스트용 상품 데이터 생성 시작 (placehold.co) ==========");
+            System.out.println("========== 테스트용 문구점 데이터 생성 시작 ==========");
 
-            // 1. 아우터 (Outer) 데이터 생성
-            createProduct("미니멀 양모 코트", 250000, "outer", "coat", true, true, false,
-                    Arrays.asList("#000000", "#3E2723"), "/images/코트.jpg");
+            // 임시 관리자 계정 생성 (상품 등록자로 쓰기 위함)
+            User adminUser = createOrGetDummyUser("admin@test.com", "Admin", "총관리자", Role.ROLE_ADMIN);
 
-            createProduct("클래식 코튼 개버딘 트렌치 코트", 189000, "outer", "coat", false, true, false,
-                    Arrays.asList("#D2B48C", "#000000"), "/images/코트.jpg");
+            // 1. 노트/다이어리 (Note)
+            createProduct("미드나잇 감성 만년 다이어리", 18500, "note", "diary", true, true, false,
+                    Arrays.asList("#000000", "#191970", "#8B4513"), "/images/diary1.jpg", adminUser);
 
-            createProduct("경량 나일론 숏 패딩", 129000, "outer", "padding", true, false, true,
-                    Arrays.asList("#808080", "#000080"), "/images/패딩.jpg");
+            createProduct("심플 그리드 메모패드", 4500, "note", "memo", false, true, false,
+                    Arrays.asList("#FFFFFF", "#F5F5DC"), "/images/memo1.jpg", adminUser);
 
-            // 2. 상의 (Top) 데이터 생성
-            createProduct("오버사이즈 코튼 후디", 59000, "top", "hoodie", false, true, false,
-                    Arrays.asList("#CCCCCC", "#000000", "#000080"),	"/images/후드.jpg");
+            createProduct("위클리 데스크 플래너", 12000, "note", "planner", true, false, true,
+                    Arrays.asList("#FFFFFF"), "/images/planner1.jpg", adminUser);
 
-            createProduct("베이직 코튼 긴팔 티셔츠", 35000, "top", "long-sleeve", true, false, false,
-                    Arrays.asList("#FFFFFF", "#000000"), "/images/긴팔티셔츠.jpg");
+            // 2. 필기구 (Pen)
+            createProduct("사각사각 무광 만년필 (F촉)", 45000, "pen", "fountain", false, true, false,
+                    Arrays.asList("#000000", "#006400", "#8B0000"), "/images/fountain_pen.jpg", adminUser);
 
-            createProduct("코튼 스트라이프 맨투맨", 45000, "top", "sweatshirt", false, false, true,
-                    Arrays.asList("#000080", "#FF0000"), "/images/맨투맨.jpg");
+            createProduct("부드러운 젤 잉크 볼펜 0.5mm", 1500, "pen", "ballpoint", true, false, false,
+                    Arrays.asList("#000000", "#FF0000", "#0000FF"), "/images/ballpoint.jpg", adminUser);
 
-            // 3. 하의 (Bottom) 데이터 생성
-            createProduct("헤비 데님 와이드 진", 69000, "bottom", "jeans", true, true, false,
-                    Arrays.asList("#0000FF", "#87CEEB"), "/images/청바지.jpg");
+            createProduct("파스텔 형광펜 5색 세트", 6500, "pen", "highlighter", false, false, true,
+                    Arrays.asList("#FFB6C1", "#E6E6FA"), "/images/highlighter.jpg", adminUser);
 
-            createProduct("울 블렌드 블랙 슬랙스", 49000, "bottom", "slacks", false, true, false, Arrays.asList("#000000"),
-                    "/images/청바지2.jpg");
+            // 3. 스티커/사무용품 (Sticker & Office)
+            createProduct("빈티지 무드 마스킹 테이프", 3500, "sticker", "masking", true, true, false,
+                    Arrays.asList("#D2B48C"), "/images/masking.jpg", adminUser);
+
+            createProduct("원목 데스크 오거나이저", 32000, "office", "organizer", false, true, false, 
+                    Arrays.asList("#8B4513"), "/images/organizer.jpg", adminUser);
 
             // 4. 대량 데이터 생성 (페이지네이션 테스트용)
             for (int i = 1; i <= 20; i++) {
-                createProduct("소프트 코튼 베이직 티셔츠 " + i, 20000 + (i * 1000), "top", "short-sleeve", i % 2 == 0, // 짝수는 New
-                        i % 3 == 0, // 3의 배수는 Best
-                        i % 5 == 0, // 5의 배수는 Sale
-                        Arrays.asList("#FFFFFF", "#000000"),
-                        "/images/반팔티셔츠.jpg");
+                createProduct("소프트 컬러 볼펜 ver." + i, 1000 + (i * 100), "pen", "ballpoint", 
+                        i % 2 == 0, i % 3 == 0, i % 5 == 0,
+                        Arrays.asList("#000000", "#FF4500", "#4682B4"),
+                        "/images/color_pen.jpg", adminUser);
             }
-            System.out.println("========== 테스트용 상품 데이터 생성 완료 ==========");
+            System.out.println("========== 문구점 상품 데이터 생성 완료 ==========");
 		}
 
         // 2. 리뷰 데이터 생성
@@ -95,124 +103,109 @@ public class DataInit implements CommandLineRunner {
         }
 	}
 
-	// 상품 생성 헬퍼 메서드
-	private void createProduct(String name, int price, String category, String subCategory, boolean isNew,
-			boolean isBest, boolean isSale, List<String> colors, String imgUrl) {
+	private void createDummyUsers() {
+        createOrGetDummyUser("user1@test.com", "김문구", "문구덕후", Role.ROLE_USER);
+        createOrGetDummyUser("user2@test.com", "이펜슬", "연필수집가", Role.ROLE_USER);
+        createOrGetDummyUser("user3@test.com", "박노트", "다이어리매니아", Role.ROLE_USER);
+        System.out.println("========== 일반 유저 3명 생성 완료 ==========");
+    }
 
-		// 1. 상품 엔티티 생성
-		Product product = Product.builder().name(name).price(price).salePrice(isSale ? (int) (price * 0.8) : 0) // 세일이면
-																												// 20%
-																												// 할인 가격
-																												// 자동 설정
-				.description("이 상품은 " + name + "입니다. 미니멀한 디자인이 특징입니다.").category(category).subCategory(subCategory)
-				.stockQuantity(100).isNew(isNew).isBest(isBest).isSale(isSale).colors(colors) // 색상 리스트
+    // 유저 생성 헬퍼 메서드 (비밀번호 암호화 처리)
+    private User createOrGetDummyUser(String email, String name, String nickname, Role role) {
+        return userRepository.findByEmail(email).orElseGet(() -> {
+			User newUser = User.builder()
+                    .email(email)
+                    .username(name)
+                    .nickname(nickname)
+                    .password(passwordEncoder.encode("1234")) // ★ 1234로 암호화 저장
+					.role(role)
+                    .build();
+			return userRepository.save(newUser);
+		});
+    }
+
+	// 상품 생성 헬퍼 메서드 (seller 추가)
+	private void createProduct(String name, int price, String category, String subCategory, boolean isNew,
+			boolean isBest, boolean isSale, List<String> colors, String imgUrl, User seller) {
+
+		Product product = Product.builder()
+                .name(name)
+                .price(price)
+                .salePrice(isSale ? (int) (price * 0.8) : 0)
+				.description("이 상품은 " + name + "입니다. 감성적인 디자인이 특징입니다.")
+                .category(category)
+                .subCategory(subCategory)
+				.stockQuantity(100)
+                .isNew(isNew)
+                .isBest(isBest)
+                .isSale(isSale)
+                .colors(colors)
+                // .seller(seller) // ★ Product 엔티티에 seller 추가했다면 주석 해제하세요!
 				.build();
 
-		// 2. 대표 이미지 (상단)
 		ProductImage mainImage = ProductImage.builder().imgName("main.jpg").oriImgName("main.jpg").imgUrl(imgUrl)
-				.isRepImg(true).isDetailImg(false) // ★ false
-				.product(product).build();
+				.isRepImg(true).isDetailImg(false).product(product).build();
 
-		// 3. 추가 이미지 (상단)
 		ProductImage subImage = ProductImage.builder().imgName("sub.jpg").oriImgName("sub.jpg").imgUrl(imgUrl)
-				.isRepImg(false).isDetailImg(false) // ★ false
-				.product(product).build();
+				.isRepImg(false).isDetailImg(false).product(product).build();
 
-		// 3. ★ 상세 설명 이미지 (하단에 길게 나올 이미지)
-		// 테스트용으로 세로로 긴 이미지를 placeholder로 생성
 		ProductImage detailImage = ProductImage.builder().imgName("detail.jpg").oriImgName("detail.jpg")
-				.imgUrl("/images/상품마케팅.jpg").isRepImg(false)
-				.isDetailImg(true) // ★ true (이게 하단에 나옴)
-				.product(product).build();
+				.imgUrl("/images/상세페이지_안내.jpg").isRepImg(false).isDetailImg(true).product(product).build();
 
-		// 4. 상품에 이미지 리스트 추가
 		product.getProductImages().add(mainImage);
 		product.getProductImages().add(subImage);
 		product.getProductImages().add(detailImage);
 
-		// 5. DB 저장
 		productRepository.save(product);
 	}
 
 	private void createDummyReviews() {
-		// 리뷰를 달려면 유저와 상품이 있어야 함
-		// (간단하게 첫 번째 상품에 리뷰 달기 예시)
-		if (reviewRepository.count() > 0)
-			return;
-
 		List<Product> products = productRepository.findAll();
-		if (products.isEmpty())
-			return;
+		if (products.isEmpty()) return;
 		Product targetProduct = products.get(0); // 첫 번째 상품
 
-		// 임시 유저 생성 (없으면 만들기)
-		User user = userRepository.findByEmail("test@test.com").orElseGet(() -> {
-			User newUser = User.builder().email("test@test.com").username("Reviewer").nickname("패션왕").password("1234")
-					.role(Role.ROLE_USER).build();
-			return userRepository.save(newUser);
-		});
+        // 리뷰용 일반 유저 생성
+		User user = createOrGetDummyUser("test@test.com", "Reviewer", "다꾸왕", Role.ROLE_USER);
 
-		Review review1 = Review.builder().content("사진이랑 똑같아요! 마음에 듭니다.").rating(5).product(targetProduct).user(user)
-				.build();
-
-		Review review2 = Review.builder().content("사이즈가 생각보다 작네요.").rating(5).product(targetProduct).user(user).build();
-
-		// 2. 이미지가 없는 리뷰 생성
-		Review review3 = Review.builder().content("가성비 최고입니다. 추천해요.").rating(3).product(targetProduct).user(user)
-				.build();
+		Review review1 = Review.builder().content("종이가 두꺼워서 만년필로 써도 안 비치네요! 너무 마음에 듭니다.").rating(5).product(targetProduct).user(user).build();
+		Review review2 = Review.builder().content("표지 색감이 사진보다 살짝 어두워요. 그래도 예쁩니다.").rating(4).product(targetProduct).user(user).build();
+		Review review3 = Review.builder().content("배송도 빠르고 포장도 꼼꼼해요. 다꾸할 생각에 신나네요!").rating(5).product(targetProduct).user(user).build();
 
 		review1.addReviewImage(ReviewImage.builder().imgUrl("https://placehold.co/200").build());
 		review1.addReviewImage(ReviewImage.builder().imgUrl("https://placehold.co/200/orange/white").build());
-		review2.addReviewImage(ReviewImage.builder().imgUrl("https://placehold.co/200").build());
-		review2.addReviewImage(ReviewImage.builder().imgUrl("https://placehold.co/200/orange/white").build());
 
 		reviewRepository.save(review1);
 		reviewRepository.save(review2);
 		reviewRepository.save(review3);
-
+        System.out.println("========== 리뷰 데이터 생성 완료 ==========");
 	}
 	
 	private void createStylingDummyData() {
-        // 이미 스타일링 게시글이 있으면 실행 안 함
-        if (stylingRepository.count() > 0) {
-            return;
-        }
+        // 스타일링용 유저 생성
+        User user = createOrGetDummyUser("style@test.com", "Stylist", "데스크테리어장인", Role.ROLE_USER);
 
-        // 더미 유저 정보 (이미 존재한다고 가정)
-        // 만약 유저가 없다면 생성 로직 추가
-        User user = userRepository.findByEmail("test@test.com").orElseGet(() -> {
-			User newUser = User.builder().email("test@test.com").username("Reviewer").nickname("패션왕").password("1234")
-					.role(Role.ROLE_USER).build();
-			return userRepository.save(newUser);
-		});
+        // 1. 다꾸 갤러리
+        createStyling(user, "오늘의 다꾸 완성! 빈티지 마테가 다 했네요 ✨ #다이어리꾸미기", "/images/desk1.jpg");
 
-        // 1. 스타일링 1
-        createStyling(user, "깔끔한 미니멀 룩. #OOTD", "/images/모델1.jpg", "이거 진짜 예뻐요!");
+        // 2. 데스크테리어
+        createStyling(user, "우드톤으로 맞춘 데스크테리어 🤎 책상에 앉을 맛이 납니다.", "/images/desk2.jpg");
 
-        // 2. 스타일링 2
-        createStyling(user, "오늘의 코디: 편안함과 스타일 모두 잡은 룩", "/images/모델2.jpg", "강추!");
+        // 3. 만년필
+        createStyling(user, "새로 산 만년필 첫 개시! 사각거리는 소리가 힐링이에요 🖋️", "/images/desk3.jpg");
 
-        // 3. 스타일링 3
-        createStyling(user, "미니멀 쇼핑몰 스타일링 베스트!", "/images/모델3.jpg", "정말 좋아요");
-
-        // 4. 스타일링 4
-        createStyling(user, "데일리룩으로 딱이에요.", "/images/모델4.jpg", "강추템");
+        // 4. 사무용품
+        createStyling(user, "심플한 회사 책상 세팅. 업무 효율이 올라가는 기분!", "/images/desk4.jpg");
         
-        System.out.println("========== 스타일링 데이터 생성 완료 ==========");
+        System.out.println("========== 다꾸 갤러리 데이터 생성 완료 ==========");
     }
 	
-	private void createStyling(User user, String content, String imgUrl, String tempTag) {
-        // 실제로는 여기서 상품 태그 기능도 넣어야 하지만, 일단 생략
+	private void createStyling(User user, String content, String imgUrl) {
         Styling styling = Styling.builder()
                 .content(content)
-                .imageUrl(imgUrl) // 업로드된 이미지의 URL
+                .imageUrl(imgUrl) 
                 .user(user)
                 .build();
         
-        // FileService를 사용할 필요는 없음 (이미지 URL은 직접 경로로 제공)
-        // 실제 업로드 파일이 없어도, URL만 있어도 화면에는 보임
-        
         stylingRepository.save(styling);
-        log.info("스타일링 게시글 저장: {}", styling.getContent());
     }
 }

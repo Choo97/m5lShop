@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kosta.shop.entity.convertor.RrnConverter;
 
 import lombok.AllArgsConstructor;
@@ -21,14 +22,15 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
-@EqualsAndHashCode(callSuper=false) // ★ 이 줄을 추가하세요!
+@EqualsAndHashCode(callSuper = false)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users") // 테이블 명시
-public class User extends BaseTimeEntity{
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Table(name = "users")
+public class User extends BaseTimeEntity {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id")
 	private Long id;
 	@Column(nullable = false, length = 100, unique = true)
@@ -42,12 +44,13 @@ public class User extends BaseTimeEntity{
 	@Column(length = 20)
 	private String phone;
 	@Column(columnDefinition = "VARCHAR(255) COMMENT '회원 주민등록번호'")
-	@Convert(converter = RrnConverter.class) // ★ 이 한 줄이면 끝!
-    private String rrn;
+	@Convert(converter = RrnConverter.class)
+	@JsonIgnore
+	private String rrn;
 	@Column(length = 20)
 	private String ageRange;
 	@Column
-    private LocalDate birthDate; 
+	private LocalDate birthDate;
 	@Column(length = 20)
 	private String gender;
 	@Column(length = 10)
@@ -61,28 +64,28 @@ public class User extends BaseTimeEntity{
 
 	@Column
 	private String profileImage;
-	
-	//OAuth를 위해 만든 필드
+
+	// OAuth를 위해 만든 필드
 	@Column
 	private String provider;
 	@Column
 	private String providerId;
-	
+
 	public String getRoles() {
-        return this.role != null ? this.role.name() : "";
-    }
+		return this.role != null ? this.role.name() : "";
+	}
 
-	public void updateInfo(String nickname, String phone, String zipcode, String address, String detailAddress, String gender) {
-        this.nickname = nickname;
-        this.phone = phone;
-        this.zipcode = zipcode;
-        this.address = address;
-        this.detailAddress = detailAddress;
-        this.gender = gender;
-    }
-	
+	public void updateInfo(String nickname, String phone, String zipcode, String address, String detailAddress,
+			String gender) {
+		this.nickname = nickname;
+		this.phone = phone;
+		this.zipcode = zipcode;
+		this.address = address;
+		this.detailAddress = detailAddress;
+		this.gender = gender;
+	}
+
 	public void updateProfileImage(String profileImage) {
-        this.profileImage = profileImage;
-    }
+		this.profileImage = profileImage;
+	}
 }
-

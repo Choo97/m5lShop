@@ -148,7 +148,7 @@ const ProductDetail = () => {
 
             {/* 옵션 선택 */}
             <div className="mb-4">
-              <p className="fw-bold mb-2">Color</p>
+              <p className="fw-bold mb-2">옵션 (색상)</p>
               <div className="d-flex gap-2">
                 {product.colors.map((color, idx) => (
                   <div

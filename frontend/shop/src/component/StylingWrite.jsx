@@ -130,7 +130,7 @@ const StylingWrite = () => {
               <Input 
                 type="textarea" 
                 rows="8" 
-                placeholder="#OOTD #DailyLook 코디 정보를 공유해보세요!" 
+                placeholder="#우리집 #Desktop 정보를 공유해보세요!" 
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 // style={{ resize: 'none' }}
@@ -170,7 +170,7 @@ const StylingWrite = () => {
         <ModalBody>
           <div className="d-flex mb-3">
             <Input 
-              placeholder="상품명 입력 (ex. 코트, 후드)" 
+              placeholder="상품명 입력 (ex. 펜, 다이어리)" 
               value={keyword} 
               onChange={(e) => setKeyword(e.target.value)} 
               onKeyDown={(e) => {

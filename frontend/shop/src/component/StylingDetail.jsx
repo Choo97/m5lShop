@@ -67,7 +67,7 @@ const StylingDetail = () => {
     // http로 시작하면(외부 이미지) 그대로 반환
     if (path.startsWith('http')) return path;
 
-    // ★ 핵심: 한글 깨짐 방지를 위해 encodeURI()로 감싸줍니다.
+    // 한글 깨짐 방지를 위해 encodeURI()로 감싸줍니다.
     // 예: /images/코트.jpg -> /images/%EC%BD%94%ED%8A%B8.jpg 로 변환됨
     return `${baseUrl}${encodeURI(path)}`;
   };
@@ -77,7 +77,7 @@ const StylingDetail = () => {
   return (
     <Container className="py-5">
       <Row className="justify-content-center">
-        {/* 왼쪽: 스타일링 이미지 */}
+
         <Col lg={7} md={6} className="mb-4">
           <div className="bg-light d-flex align-items-center justify-content-center rounded overflow-hidden" style={{ minHeight: '500px', maxHeight: '700px' }}>
             <img
@@ -89,11 +89,9 @@ const StylingDetail = () => {
           </div>
         </Col>
 
-        {/* 오른쪽: 정보 영역 */}
         <Col lg={5} md={6}>
           <div className="ps-md-3 d-flex flex-column" style={{ height: '100%'}}>
 
-            {/* 1. 작성자 정보 */}
             <div className="d-flex align-items-center mb-4 pb-3 border-bottom">
               <img
                 src={getImageUrl(styling.profileImage)}
@@ -131,9 +129,6 @@ const StylingDetail = () => {
                         style={{ cursor: 'pointer' }}
                         onClick={() => navigate(`/product/${tag.productId}`)} // 상품 상세로 이동
                       >
-                        {/* 상품 이미지가 DTO에 있다면 보여주면 좋음 (현재 TagResponse에는 없음 -> 추가 추천) */}
-                        {/* <img src={getImageUrl(tag.imageUrl)} width="50" ... /> */}
-
                         <div className="ms-2">
                           <div className="fw-bold text-truncate" style={{ maxWidth: '250px' }}>
                             {tag.name}
@@ -148,10 +143,7 @@ const StylingDetail = () => {
                 </CardBody>
               </Card>
             )}
-            {/* 4. 댓글 입력 및 목록 */}
              <hr className="my-4" />
-
-            {/* ★ 댓글 영역 (스크롤 가능하게) */}
             <div className="flex-grow-1 overflow-auto mb-3" style={{ maxHeight: '300px' }}>
               <h6 className="fw-bold mb-3">댓글 ({styling.comments ? styling.comments.length : 0})</h6>
               
@@ -168,7 +160,6 @@ const StylingDetail = () => {
                       <span className="fw-bold small">{cmt.nickname}</span>
                       <div className="d-flex align-items-center">
                         <span className="text-muted extra-small me-2" style={{fontSize: '0.75rem'}}>{cmt.date}</span>
-                        {/* 본인 댓글이면 삭제 버튼 표시 */}
                         {cmt.isOwner && (
                           <FaTrashAlt 
                             className="text-secondary" 
@@ -184,7 +175,6 @@ const StylingDetail = () => {
               ))}
             </div>
 
-            {/* ★ 댓글 입력창 */}
             <div className="mt-auto">
               <form onSubmit={handleCommentSubmit} className="position-relative">
                 <input 

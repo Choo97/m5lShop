@@ -7,29 +7,31 @@ import '../App.css';
 
 const categoryNameMap = {
   // 대분류
-  'outer': '아우터',
-  'top': '상의',
-  'bottom': '하의',
-  'shoes': '신발',
+  'note': '노트/다이어리',
+  'pen': '필기구',
+  'sticker': '스티커/데코',
+  'office': '사무용품',
 
-  // 중분류 - 아우터
-  'coat': '코트',
-  'blazer': '블레이저',
-  'jacket': '자켓',
-  'padding': '패딩',
-  'cardigan': '가디건',
+  // 중분류 - 노트/다이어리
+  'diary': '다이어리',
+  'memo': '메모지',
+  'planner': '플래너',
+  'notebook': '노트',
 
-  // 중분류 - 상의
-  'long-sleeve': '긴팔 티셔츠',
-  'short-sleeve': '반팔 티셔츠',
-  'sweatshirt': '맨투맨',
-  'hoodie': '후드',
+  // 중분류 - 필기구
+  'ballpoint': '볼펜',
+  'fountain': '만년필',
+  'pencil': '연필/샤프',
+  'highlighter': '형광펜',
 
-  // 중분류 - 하의
-  'jeans': '청바지',
-  'slacks': '슬랙스',
-  'cotton': '면바지',
-  'shorts': '반바지',
+  // 중분류 - 스티커/데코
+  'masking': '마스킹테이프',
+  'removable': '리무버블 스티커',
+  'seal': '씰스티커',
+
+  // 중분류 - 사무용품
+  'organizer': '데스크 정리함',
+  'desk': '데스크테리어',
 
   // 타입 (특가, 신상 등)
   'new': '신상품',

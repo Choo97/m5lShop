@@ -67,18 +67,6 @@ const Main = () => {
       })
       .catch(err => console.error("New Products Load Error:", err));
 
-    // 더미 데이터 세팅
-    const dummyProduct = {
-      id: 1, name: 'Minimal Cotton Shirt', price: 45000,
-      imageUrl: 'https://placehold.co/600x400',
-      colors: ['#000000', '#FFFFFF', '#87CEEB']
-    };
-
-    // setSpecialProducts(Array(4).fill(dummyProduct));
-    // setNewProducts(Array(4).fill(dummyProduct));
-    // setAgeBestProducts(Array(4).fill(dummyProduct));
-
-    // (3) ★ 스타일링 게시글 가져오기 (수정됨)
     // size=4 파라미터를 주어 4개만 가져오도록 요청 (Controller에 Pageable 적용되어 있음)
     axios.get(`${baseUrl}/api/styling?size=4`)
       .then(res => {
@@ -88,10 +76,15 @@ const Main = () => {
       .catch(err => console.error("Styling Load Error:", err));
 
     setReviews(Array(3).fill({
-      id: 1, productName: 'Wide Slacks', productImageUrl: 'https://placehold.co/400x600',
-      content: '재질이 너무 좋고 핏이 딱 떨어져요. 배송도 빠릅니다.', rating: 5, date: '2023.12.01',
-      userProfileUrl: 'https://placehold.co/240x240', userNickname: 'user123'
-    }));
+    id: 1, 
+    productName: '사각사각 만년필 (F촉)', // Wide Slacks -> 만년필로 변경
+    productImageUrl: 'https://placehold.co/400x600',
+    content: '필기감이 너무 좋고 다이어리에 쓰기 딱 좋아요. 배송도 빠릅니다.', // 핏이 떨어져요 -> 필기감이 좋아요
+    rating: 5, 
+    date: '2026.03.09',
+    userProfileUrl: 'https://placehold.co/240x240', 
+    userNickname: '다꾸왕'
+  }));
 
   }, []);
 
